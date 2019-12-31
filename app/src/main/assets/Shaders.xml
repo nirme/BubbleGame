@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <shader name="base_vertex_shader.glsl" type="vertex" />
+  <shader name="base_fragment_shader.glsl" type="fragment" />
+
+</resources>

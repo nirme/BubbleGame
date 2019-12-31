@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <texture type="texture2d" name="img_1.bmp" filter="linear" />
+
+  <texture type="texture2d" group="animation" name="anim_1.bmp" filter="nearest" />
+  <texture type="texture2d" group="animation" name="anim_2.bmp" filter="nearest" />
+  <texture type="texture2d" group="animation" name="anim_3.bmp" filter="nearest" />
+  <texture type="texture2d" group="animation" name="anim_4.bmp" filter="nearest" />
+
+</resources>

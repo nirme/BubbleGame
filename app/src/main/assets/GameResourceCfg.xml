@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+  
+  <resource_manager name="texture" resource_path="textures/" script_file="Textures.xml" />
+  
+  <resource_manager name="shader" resource_path="shaders/" script_file="Shaders.xml" />
+  
+  <resource_manager name="shading_program" resource_path="/" script_file="ShadingPrograms.xml" />
+  
+  <resource_manager name="sprite" resource_path="/" script_file="Sprites.xml" />
+  
+  <resource_manager name="font" resource_path="fonts/" script_file="Fonts.xml" />
+
+</settings>
