@@ -61,23 +61,6 @@ namespace core
 	};
 
 
-    void RenderSystem::applyVertexAttribs(const ShadingProgram::VertexAttribList &_attribList)
-    {
-        for (unsigned int i = 0, iEnd = _attribList.size(); i < iEnd; ++i)
-        {
-            state->setVertexAtrib(_attribList[i].id);
-            GL_ERROR_CHECK(glVertexAttribPointer(
-                            _attribList[i].id,
-                            _attribList[i].size,
-                            _attribList[i].type,
-                            GL_FALSE,           // normalized
-                            _attribList[i].stride,
-                            (void *)_attribList[i].offsetInBytes
-            ));
-        }
-    };
-
-
 
     RenderSystem::RenderSystem() :
 			initialized(false),
@@ -451,7 +434,7 @@ glClear(GL_COLOR_BUFFER_BIT);
                         attribs[i].type,
                         GL_FALSE,           // normalized
                         attribs[i].stride,
-                        (void *)attribs[i].offsetInBytes
+                        reinterpret_cast<void *>(attribs[i].offsetInBytes)
                 ));
             }
 
@@ -532,7 +515,7 @@ glClear(GL_COLOR_BUFFER_BIT);
                         attribs[i].type,
                         GL_FALSE,           // normalized
                         attribs[i].stride,
-                        (void *)attribs[i].offsetInBytes
+                        reinterpret_cast<void *>(attribs[i].offsetInBytes)
                         ));
             }
 

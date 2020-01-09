@@ -49,7 +49,15 @@ namespace core
 			};
 
 
-			inline Quaternion operator* (const Quaternion& _q) const 
+			inline Quaternion& operator*= (float _s)
+			{
+				w = w * _s;
+				z = w * _s;
+				return *this;
+			};
+
+
+			inline Quaternion operator* (const Quaternion& _q) const
 			{
 				Quaternion tmp(*this);
 				return tmp *= _q;
@@ -62,7 +70,7 @@ namespace core
 			};
 
 
-			void normalise()
+			void normalize()
 			{
 				float len = w * w + z * z;
 				if (std::fabs(len - 1.0f) > EPSILON)
@@ -84,7 +92,6 @@ namespace core
 					_v.x - ( z * _v.y * 2 * w ) - ( 2 * z * z * _v.x ),
 					_v.y + ( z * _v.x * 2 * w ) - ( 2 * z * z * _v.y )
 				);
-
 			};
 
 			/*
@@ -93,5 +100,9 @@ namespace core
 				rotation1 * rotation2 is a quaternion with both rotations, rotation1 is the orientation of the parent node and orientation2 is the orientation of the child node 'and'
 			*/
 		};
+
+
+
+
 	}
 }

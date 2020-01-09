@@ -21,6 +21,13 @@ namespace core
 
 	Matrix3 inverse(const Matrix3 &_mx);
 
+
+	inline float dotProduct(_2d::Quaternion _q0, _2d::Quaternion _q1)
+	{
+		return _q0.w * _q1.w + _q0.z * _q1.z;
+	};
+
+
 }
 
 

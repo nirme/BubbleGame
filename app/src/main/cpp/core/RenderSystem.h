@@ -105,8 +105,6 @@ namespace core
 		void createBuffers(unsigned int _bufferSize = 8192); //default to 8k - around 250 sprites ber batch
 		void deleteBuffers();
 
-		void applyVertexAttribs(const ShadingProgram::VertexAttribList &_attribList);
-
 
 	public:
 
