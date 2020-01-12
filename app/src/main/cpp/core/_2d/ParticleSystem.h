@@ -12,13 +12,14 @@
 #include "Renderable.h"
 #include "MovableObject.h"
 #include "../GraphicBuffer.h"
-#include "SpriteCoords.h"
 
 #include "../Texture.h"
 #include "../ImageSprite.h"
 #include "../Vector2.h"
 #include "../Matrix3.h"
 #include "../Math2D.h"
+
+#include "../ControllerManager.h"
 
 #include "Particle.h"
 
@@ -52,7 +53,9 @@ namespace core
 		{
 		protected:
 
-			struct ParticleData
+			ControllerPtr controller;
+
+            struct ParticleData
 			{
 				struct
 				{
@@ -82,6 +85,13 @@ namespace core
 			float speedFactor;
 
 
+			void convertParticleToWorldSpace(Particle *_prt)
+			{
+				const Matrix3 &transform = this->getWorldTransform();
+				_prt->position = transform * _prt->position;
+				_prt->direction = transformVector(transform, _prt->direction);
+			};
+
 			void initParticles(unsigned int _particleCount);
 			void expireParticles(float _timeElapsed);
 			void updateParticles(float _timeElapsed);
@@ -92,15 +102,50 @@ namespace core
 		public:
 
 
+			short getSpriteIndex(const std::string &_spriteName)
+			{
+				for (short i =0, iEnd = sprites.size(); i < iEnd; ++i)
+				{
+					if (_spriteName.compare(sprites[i]->getName()) == 0)
+						return i;
+				}
+
+				return -1;
+			};
+
+
 			ParticleIterator getActiveParticleIterator();
 
-			ParticleSystem(const std::string &_name, Priority _renderPriority, MaterialPtr _material, std::vector<ImageSpritePtr> &_sprites);
+			ParticleSystem(const std::string &_name, Priority _renderPriority = 0, MaterialPtr _material = nullptr);
 
-			void initSystem(unsigned int _particleCount = 500);
+			virtual void notifyAttached(SceneNode* _parent)
+			{
+				MovableObject::notifyAttached(_parent);
+
+				if (parent && !controller)
+				{
+					controller = ControllerManager::getSingleton().createFrameTimeController(new TTimeframeControllerValue<ParticleSystem>(this));
+				}
+			};
+
+            void setMaterial(ShadingProgramPtr _program, TexturePtr _tex);
+
+            void setSpeedFactor(float _speedFactor);
+
+            void addSprite(ImageSpritePtr _sprite);
+
+            void addEmiter(ParticleEmitter *_emiter);
+
+            void addAffector(ParticleAffector *_affector);
+
+            void initSystem(unsigned int _particleCount = 500);
 
 			void update(float _timeElapsed);
 
 			BuffWriteResult writeVertexData(GraphicBufferPtr _buffer, unsigned int _fromSprite = 0);
 		};
+
+        typedef std::shared_ptr<ParticleSystem> ParticleSystemPtr;
+        typedef std::unique_ptr<ParticleSystem> ParticleSystemUPtr;
 	}
 }

@@ -37,14 +37,6 @@
 #include "Timer.h"
 
 
-
-
-//#include "_2d/Entity.h"
-
-
-
-
-
 namespace core
 {
 
@@ -241,6 +233,33 @@ namespace core
 	inputManager->registerControl("base_control", buttonRight);
 
 	inputManager->activateControlSet("base_control");
+
+
+
+
+
+
+// Particle system test
+
+_2d::SceneNode *node2 = mainScene->createNode("ParticleSystemTest", nullptr);
+mainScene->getRootNode()->appendChild(node2);
+
+node2->setPosition({ 0.0f, 0.0f });
+node2->setRotation(0.0f);
+node2->setScale({ 1.0f });
+
+
+_2d::ParticleSystem* particleTest = mainScene->createParticleSystem("TestParticleSystem", nullptr);
+particleTest->setEnabled(true);
+node2->appendObject(particleTest);
+				node2
+
+
+
+
+
+
+
 
 }
 

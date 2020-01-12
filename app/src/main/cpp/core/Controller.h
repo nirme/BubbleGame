@@ -15,6 +15,28 @@ namespace core
 	};
 	typedef std::shared_ptr<ControllerValue> SharedControllerValuePtr;
 
+	template<class T>
+	class TTimeframeControllerValue : ControllerValue
+	{
+	private:
+		T *owner;
+
+	public:
+		TTimeframeControllerValue(T *_owner) : ControllerValue(), owner(_owner)
+		{
+			assert(owner && "TTimeframeControllerValue must have owner");
+		};
+
+		virtual float get() const
+		{
+			return 0.0f;
+		};
+
+		virtual void set(float _value)
+		{
+			owner->update(_value);
+		};
+	};
 
 	class ControllerFunc
 	{

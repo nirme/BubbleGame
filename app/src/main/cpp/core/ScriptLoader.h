@@ -109,6 +109,7 @@ namespace core
 		_2d::Priority parseRenderablePriority(ScriptNodePtr _node);
 		SpriteCoords parseSingleSpriteCoords(ScriptNodePtr _node);
 
+		std::list<std::string> parseParticlesImageSprites(ScriptNodePtr _node);
 
 	};
 

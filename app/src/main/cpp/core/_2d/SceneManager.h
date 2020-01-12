@@ -76,8 +76,10 @@ namespace core
 			void destroyNode(SceneNode *_node);
 
 			SingleSprite *createSingleSprite(const std::string &_name, ScriptNodePtr _nodeValues);
+			ParticleSystem *createParticleSystem(const std::string &_name, ScriptNodePtr _nodeValues);
 
 
+            ControllerPtr createFrameTimeController(SharedControllerValuePtr _destination, SharedControllerFuncPtr _function = nullptr);
 
 
 			void renderScene();

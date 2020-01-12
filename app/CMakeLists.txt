@@ -79,6 +79,8 @@ add_library(
     src/main/cpp/core/_2d/Renderable.cpp
     src/main/cpp/core/_2d/SingleSprite.cpp
     src/main/cpp/core/_2d/ParticleSystem.cpp
+    src/main/cpp/core/_2d/ParticleEmitters.cpp
+    src/main/cpp/core/_2d/ParticleAffectors.cpp
 
 
     src/main/cpp/core/_2d/MovableObject.cpp

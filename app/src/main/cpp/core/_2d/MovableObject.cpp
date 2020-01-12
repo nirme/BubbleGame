@@ -49,13 +49,6 @@ namespace core
 		};
 
 
-		void MovableObject::setParent(SceneNode *_parent)
-		{
-			parent = _parent;
-			invalidateWorldTransform();
-		};
-
-
 		SceneNode *MovableObject::getParent()
 		{
 			return parent;
@@ -141,6 +134,12 @@ namespace core
 			}
 
 			return cashedWorldTransform;
+		};
+
+		void MovableObject::notifyAttached(SceneNode* _parent)
+		{
+			parent = _parent;
+			invalidateWorldTransform();
 		};
 
 	}

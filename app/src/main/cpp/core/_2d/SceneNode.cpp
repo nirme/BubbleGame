@@ -230,7 +230,7 @@ namespace core
 		void SceneNode::appendObject(MovableObject* _object)
 		{
 			objects.push_back(_object);
-			_object->setParent(this);
+			_object->notifyAttached(this);
 
             invalidateBoundingBox();
 		};
@@ -241,7 +241,7 @@ namespace core
 			auto it = std::find(objects.begin(), objects.end(), _object);
 			assert(it != objects.end() && "cannot remove unattached object");
 
-			(*it)->setParent(nullptr);
+			(*it)->notifyAttached(nullptr);
 
 			std::swap(*it, objects.back());
 			objects.pop_back();

@@ -13,10 +13,11 @@ namespace core
 
             for (unsigned int i=0, iEnd = particlesPool.size(); i < iEnd; ++i)
             {
-                particlesPool[i].spriteIndex = i;
+                //particlesPool[i].spriteIndex = i;
                 deadParticles.push_back(&particlesPool[i]);
             }
         };
+
 
         void ParticleSystem::expireParticles(float _timeElapsed)
         {
@@ -39,18 +40,20 @@ namespace core
             }
         };
 
+
         void ParticleSystem::updateParticles(float _timeElapsed)
         {
             Particle *prt = nullptr;
             for (ParticleList::iterator it = aliveParticles.begin(), itEnd = aliveParticles.end(); it != itEnd; ++it)
             {
                 prt = (*it);
-                prt->position += prt->direction * (prt->linearSpeed * _timeElapsed);
+                prt->position += prt->direction * _timeElapsed;
                 prt->size += prt->sizeChangeSpeed * _timeElapsed;
                 prt->rotation += prt->rotationalSpeed * _timeElapsed;
                 prt->ageLeft -= _timeElapsed;
             }
         };
+
 
         Particle *ParticleSystem::createParticle()
         {
@@ -59,6 +62,7 @@ namespace core
             aliveParticles.splice(deadParticles.begin(),deadParticles);
             return prt;
         };
+
 
         void ParticleSystem::emitParticles(float _timeElapsed)
         {
@@ -92,6 +96,8 @@ namespace core
                     {
                         prt = this->createParticle();
                         prtEmit->initParticle(prt);
+                        convertParticleToWorldSpace(prt);
+
 
                         for (ParticleAffectorList::iterator itAff = activeAffectors.begin(); itAff != itAffectEnd; ++itAff)
                         {
@@ -100,7 +106,7 @@ namespace core
 
                         partialParticleTime = partialTime * i;
 
-                        prt->position += prt->direction * (prt->linearSpeed * partialParticleTime);
+                        prt->position += prt->direction * partialParticleTime;
                         prt->rotation += prt->rotationalSpeed * partialParticleTime;
                         prt->size += prt->sizeChangeSpeed * partialParticleTime;
                     }
@@ -114,9 +120,6 @@ namespace core
         };
 
 
-
-
-
         ParticleIterator ParticleSystem::getActiveParticleIterator()
         {
             ParticleIterator iter;
@@ -126,12 +129,43 @@ namespace core
         };
 
 
-
-        ParticleSystem::ParticleSystem(const std::string &_name, Priority _renderPriority, MaterialPtr _material, std::vector<ImageSpritePtr> &_sprites) :
+        ParticleSystem::ParticleSystem(const std::string &_name, Priority _renderPriority = 0, MaterialPtr _material = nullptr) :
                 MovableObject(_name),
                 Renderable(_renderPriority, _material, true),
-                sprites(_sprites)
+                speedFactor(1.0f)
         {};
+
+
+        void ParticleSystem::setMaterial(ShadingProgramPtr _program, TexturePtr _tex)
+        {
+            Renderable::setMaterial(_program, _tex);
+        };
+
+
+        void ParticleSystem::setSpeedFactor(float _speedFactor)
+        {
+            speedFactor = _speedFactor;
+        };
+
+
+        void ParticleSystem::addSprite(ImageSpritePtr _sprite)
+        {
+            assert(_sprite->getTexture()->getHandle() == material->textures[0]->getHandle() && "Sprite texture dont match with system material");
+            sprites.push_back(_sprite);
+        };
+
+
+        void ParticleSystem::addEmiter(ParticleEmitter *_emiter)
+        {
+            activeEmitters.push_back(_emiter);
+        };
+
+
+        void ParticleSystem::addAffector(ParticleAffector *_affector)
+        {
+            activeAffectors.push_back(_affector);
+        };
+
 
         void ParticleSystem::initSystem(unsigned int _particleCount)
         {
@@ -141,6 +175,7 @@ namespace core
 
             initParticles(_particleCount);
         };
+
 
         void ParticleSystem::update(float _timeElapsed)
         {
@@ -157,6 +192,7 @@ namespace core
             updateParticles(_timeElapsed);
             emitParticles(_timeElapsed);
         };
+
 
         BuffWriteResult ParticleSystem::writeVertexData(GraphicBufferPtr _buffer, unsigned int _fromSprite)
         {

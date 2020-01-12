@@ -30,6 +30,46 @@ namespace core
 		return object;
 	};
 
+
+	_2d::ParticleSystemUPtr ObjectFactory::createParticleSystem(const std::string &_name, ScriptNodePtr _scriptNode)
+	{
+		// keep object as unique ptr until another object take resposibility for it
+		_2d::ParticleSystemUPtr object(new _2d::ParticleSystem(_name));
+
+		if (!_scriptNode)
+			return object;
+
+		ScriptLoader &scriptLoader = ScriptLoader::getSingleton();
+
+		std::list<std::string> spriteNames = scriptLoader.parseParticlesImageSprites(_scriptNode);
+
+		auto it = spriteNames.begin();
+		ImageSpritePtr sprite = ImageSpriteManager::getSingleton().getByName((*it));
+		object->setMaterial(
+				ShadingProgramManager::getSingleton().getByName(scriptLoader.parseObjectShader(_scriptNode)),
+				sprite->getTexture()
+		);
+		object->addSprite(sprite);
+
+		++it;
+		for (it; it != spriteNames.end(); ++it)
+		{
+			object->addSprite(ImageSpriteManager::getSingleton().getByName((*it)));
+		}
+
+		object->setScale(scriptLoader.parseObjectScale(_scriptNode));
+		object->setRotation(scriptLoader.parseObjectRotation(_scriptNode));
+		object->setPosition(scriptLoader.parseObjectPosition(_scriptNode));
+
+		object->setPriority(scriptLoader.parseRenderablePriority(_scriptNode));
+
+
+		//add affectors and emitters
+
+		return object;
+	};
+
+
 	_2d::MovableObjectUPtr ObjectFactory::createObject(ScriptNodePtr _scriptNode)
 	{
 		ScriptLoader &scriptLoader = ScriptLoader::getSingleton();

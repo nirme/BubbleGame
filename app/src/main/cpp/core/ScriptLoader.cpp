@@ -377,6 +377,31 @@ namespace core
 	};
 
 
+	std::list<std::string> ScriptLoader::parseParticlesImageSprites(ScriptNodePtr _node)
+	{
+		ScriptNodeListPtr children = _node->getChildList();
+		ScriptNodePtr spritesNode;
+		for (auto it = children->begin(), itEnd = children->end(); it != itEnd; ++it)
+		{
+			if ((*it)->getName().compare("Sprites") == 0 )
+			{
+				spritesNode = (*it);
+				break;
+			}
+		}
+
+		std::list<std::string> spriteNamesList;
+
+		if (spritesNode)
+		{
+			for (auto it = spritesNode->begin(), itEnd = spritesNode->end(); it != itEnd; ++it)
+			{
+				if ((*it)->getName().compare("Sprite") == 0 )
+					spriteNamesList.push_back((*it)->getValue("name"));
+			}
+		}
+
+		return spriteNamesList;
 
 
 }
