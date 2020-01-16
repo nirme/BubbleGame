@@ -1,4 +1,4 @@
-#include "ShadingProgram.h"
+	#include "ShadingProgram.h"
 #include "RenderSystem.h"
 #include "ScriptLoader.h"
 
@@ -81,28 +81,26 @@ namespace core
 
 				if (attribId >= 0)
 				{
-					if (vertexAttribs.size() <= index)
-						vertexAttribs.resize(index+1);
+					if (vertexAttribs.size() <= attribId)
+						vertexAttribs.resize(attribId+1);
 
-					vertexAttribs[index].id = attribId;
-					GL_ERROR_CHECK(glGetActiveAttrib(id, index, 0, nullptr, &(vertexAttribs[index].size), &(vertexAttribs[index].type), nullptr));
+					vertexAttribs[attribId].id = attribId;
+					GL_ERROR_CHECK(glGetActiveAttrib(id, attribId, 0, nullptr, &(vertexAttribs[attribId].size), &(vertexAttribs[attribId].type), nullptr));
 
 					// offset
-					vertexAttribs[index].offsetInBytes = vertexSize;
+					vertexAttribs[attribId].offsetInBytes = vertexSize;
 
-					unsigned int typeSize = GLTypeSize(vertexAttribs[index].type);
-					vertexSize += vertexAttribs[index].size * typeSize;
+					unsigned int typeSize = GLTypeSize(vertexAttribs[attribId].type);
+					vertexSize += vertexAttribs[attribId].size * typeSize;
 
-					vertexAttribs[index].type = GL_FLOAT;
-					vertexAttribs[index].size = typeSize/sizeof(GLfloat);
+					vertexAttribs[attribId].type = GL_FLOAT;
+					vertexAttribs[attribId].size = typeSize/sizeof(GLfloat);
 				}
 			}
 			vertexAttribs.shrink_to_fit();
 
 			for (unsigned int index = 0; index < vertexAttribs.size(); ++index)
 				vertexAttribs[index].stride = vertexSize;
-
-
 
 
 			GLint uniformCount(0), uniformNameLen(0);

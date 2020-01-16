@@ -4,4 +4,7 @@
   <shader name="base_vertex_shader.glsl" type="vertex" />
   <shader name="base_fragment_shader.glsl" type="fragment" />
 
+  <shader name="particle_vertex_shader.glsl" type="vertex" />
+  <shader name="particle_fragment_shader.glsl" type="fragment" />
+
 </resources>

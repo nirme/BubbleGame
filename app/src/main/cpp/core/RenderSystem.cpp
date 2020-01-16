@@ -1,4 +1,5 @@
 #include "RenderSystem.h"
+#include "_2d/SingleSprite.h"
 
 namespace core
 {
@@ -421,8 +422,10 @@ glClear(GL_COLOR_BUFFER_BIT);
         {
             state->setShadingProgram(_program->getId());
 
-            state->setVertexBuffer(batchingVertexBuffer.getId());
+            state->setVertexBuffer(singleVertexBuffer.getId());
             state->setIndexBuffer(indexBuffer.getId());
+
+            state->applyState();
 
             // set vertex attribs and apply shader values
             for (unsigned int i = 0, iEnd = attribs.size(); i < iEnd; ++i)
@@ -457,14 +460,22 @@ glClear(GL_COLOR_BUFFER_BIT);
 
             try
             {
-                glDrawElements(GL_TRIANGLES, spritesWritten * 6, indexBuffer.getElementType(), nullptr);
+                GL_ERROR_CHECK(glDrawElements(
+                        GL_TRIANGLES,
+                        spritesWritten * 6,
+                        indexBuffer.getElementType(),
+                        nullptr
+                ));
             }
             catch (const std::exception &e)
             {
                 Logger::getSingleton().write(e.what(), LL_ERROR);
             }
-			// clear buffer when done
+
+            spritesWritten = res.nextSpriteIndex;
+            // clear buffer when done
 			singleVertexBuffer.rewind();
+
 		}
 		// loop untill everything is drawn
 		while (!res.operComplete);
@@ -500,10 +511,13 @@ glClear(GL_COLOR_BUFFER_BIT);
         // set buffers and apply cashed state
         try
         {
+
             state->setShadingProgram(_program->getId());
 
             state->setVertexBuffer(batchingVertexBuffer.getId());
             state->setIndexBuffer(indexBuffer.getId());
+
+            state->applyState();
 
             // set vertex attribs and apply shader values
             for (unsigned int i = 0, iEnd = attribs.size(); i < iEnd; ++i)
@@ -524,6 +538,7 @@ glClear(GL_COLOR_BUFFER_BIT);
             _program->getParams()->applyUniformValues(_paramsPassthrough);
 
             GL_ERROR_CHECK(glDrawElements(GL_TRIANGLES, batchedSprites * 6, indexBuffer.getElementType(), nullptr));
+
         }
         catch (const std::exception &e)
         {

@@ -6,4 +6,9 @@
     <shader resource_name="base_fragment_shader.glsl" />
   </program>
 
+  <program name="particleShader">
+    <shader resource_name="particle_vertex_shader.glsl" />
+    <shader resource_name="particle_fragment_shader.glsl" />
+  </program>
+
 </resources>

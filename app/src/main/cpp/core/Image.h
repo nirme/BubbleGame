@@ -11,8 +11,6 @@
 #include "Pixel.h"
 #include "Logger.h"
 
-#define	PO2(val)	(((((((--val) | (val >> 16)) | (val >> 8)) | (val >> 4)) | (val >> 2)) | (val >> 1)) + 1);
-
 #define SWAP_ENDIAN_2(v) ((0x00FF & (v >> 8)) | (0xFF00 & (v << 8)));
 #define SWAP_ENDIAN_4(v) ((0x000000FF & (v >> 24)) | (0x0000FF00 & (v >> 8)) | (0x00FF0000 & (v << 8)) | (0xFF000000 & (v << 24)))
 
@@ -114,7 +112,20 @@ namespace core
         };
 
 
-    public:
+		unsigned int PO2(unsigned int _val)
+		{
+			--_val;
+			_val |= _val >> 1;
+			_val |= _val >> 2;
+			_val |= _val >> 4;
+			_val |= _val >> 8;
+			_val |= _val >> 16;
+			return _val + 1;
+		};
+
+
+
+	public:
 
 
 	protected:

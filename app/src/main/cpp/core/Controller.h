@@ -16,7 +16,7 @@ namespace core
 	typedef std::shared_ptr<ControllerValue> SharedControllerValuePtr;
 
 	template<class T>
-	class TTimeframeControllerValue : ControllerValue
+	class TTimeframeControllerValue : public ControllerValue
 	{
 	private:
 		T *owner;

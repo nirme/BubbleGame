@@ -45,8 +45,17 @@ namespace core
 		VA_POSITION = 0x00,
 		VA_TEXTURE1 = 0x01,
 		VA_TEXTURE2 = 0x02,
+		VA_TEXTURE3 = 0x03,
+		VA_TEXTURE4 = 0x04,
+		VA_TEXTURE5 = 0x05,
+		VA_TEXTURE6 = 0x06,
+		VA_TEXTURE7 = 0x07,
+		VA_TEXTURE8 = 0x08,
 
-		VA_ENUM_COUNT = 0X03, // do not use
+		VA_ALPHA = 0x09,
+		VA_AGE = 0x0A,
+
+		VA_ENUM_COUNT = 0X0B, // do not use
 	};
 
 
@@ -61,7 +70,7 @@ namespace core
 
 	protected:
 
-		static constexpr std::array<const char*, VA_ENUM_COUNT> vertexAttribNames{ { "position", "tex1", "tex2"} };
+		static constexpr std::array<const char*, VA_ENUM_COUNT> vertexAttribNames{ { "position", "tex1", "tex2", "tex3", "tex4", "tex5", "tex6", "tex7", "tex8", "alpha", "age"} };
 
 		RenderSystem *renderer;
 

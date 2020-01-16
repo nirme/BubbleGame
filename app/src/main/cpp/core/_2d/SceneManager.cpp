@@ -183,7 +183,7 @@ namespace core
 
 
 					// setup gpu state cashe with values for this queued list
-					renderSystem->getStateCashe()->setShadingProgram(material->program->getId());
+					//renderSystem->getStateCashe()->setShadingProgram(material->program->getId());
 					//VertexAttribList &attribs = material->program->getAttribList();
 					//renderSystem->getStateCashe()->setVertexAtribCount(material->program->getAttribList().size());
 

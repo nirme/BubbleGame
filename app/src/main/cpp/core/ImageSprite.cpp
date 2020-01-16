@@ -90,9 +90,14 @@ namespace core
 
 		if (spriteCoords.inPixels)
 			spriteCoords.toTextureSpace(texture->getWidth(), texture->getHeight());
-
-		if (texture->getOriginalWidth()!= texture->getWidth() || texture->getOriginalHeight() != texture->getHeight())
-			spriteCoords.correctExpandedTexture(texture->getOriginalWidth(), texture->getOriginalHeight(), texture->getWidth(), texture->getHeight());
+		else
+		{
+			if (texture->getOriginalWidth() != texture->getWidth() ||
+				texture->getOriginalHeight() != texture->getHeight())
+				spriteCoords.correctExpandedTexture(texture->getOriginalWidth(),
+													texture->getOriginalHeight(),
+													texture->getWidth(), texture->getHeight());
+		}
 
 		coords = spriteCoords;
 	};

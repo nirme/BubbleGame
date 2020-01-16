@@ -43,7 +43,7 @@ namespace core
             if (operation == SMO_ADD)
             {
                 Vector2 tmpDirection = direction * _timeElapsed;
-                while (iter.isEnd())
+                while (!iter.isEnd())
                 {
                     //_prt = iter.next();
                     //_prt->direction += tmpDirection;
@@ -54,7 +54,7 @@ namespace core
             {
                 float currentWeight = (1.0f - _timeElapsed) * 0.5f;
                 Vector2 tmpDirection = (direction * _timeElapsed) * 0.5f;
-                while (iter.isEnd())
+                while (!iter.isEnd())
                 {
                     _prt = iter.next();
                     _prt->direction *= currentWeight;
@@ -85,10 +85,10 @@ namespace core
             ParticleIterator iter = _system.getActiveParticleIterator();
             Particle *_prt = nullptr;
 
-            while (iter.isEnd())
+            while (!iter.isEnd())
             {
                 _prt = iter.next();
-                _prt->spriteIndex = (*spriteChangeMap.upper_bound(_prt->ageLeft - _timeElapsed)).second.spriteIndex;
+                _prt->spriteIndex = (*spriteChangeMap.upper_bound((_prt->ageLeft - _timeElapsed)/_prt->totalAge)).second.spriteIndex;
             }
         };
 

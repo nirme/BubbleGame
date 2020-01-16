@@ -12,6 +12,7 @@
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
+#include <string>
 
 #include "SingletonTemplate.h"
 #include "Exceptions.h"
@@ -102,7 +103,7 @@ namespace core
 
 
 
-		void createBuffers(unsigned int _bufferSize = 8192); //default to 8k - around 250 sprites ber batch
+		void createBuffers(unsigned int _bufferSize = 16384); //default to 16k - around 500 sprites ber batch
 		void deleteBuffers();
 
 
@@ -159,8 +160,8 @@ namespace core
             try
             {
                 GLbitfield clearMask = GL_COLOR_BUFFER_BIT;
-                //GL_ERROR_CHECK(glClearColor(bgColor.red, bgColor.green, bgColor.blue, bgColor.alpha));
-                GL_ERROR_CHECK(glClearColor(0.2f, 0.6f, 0.2f, 1.0f));
+                GL_ERROR_CHECK(glClearColor(bgColor.red, bgColor.green, bgColor.blue, bgColor.alpha));
+                //GL_ERROR_CHECK(glClearColor(0.2f, 0.2f, 0.2f, 1.0f));
                 GL_ERROR_CHECK(glClear(clearMask));
 			}
             catch (const std::exception &e)

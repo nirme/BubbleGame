@@ -113,6 +113,30 @@ namespace core
 			};
 
 
+			inline AxisAlignedBox& merge(const Vector2 &_point)
+			{
+				if (isEmpty())
+				{
+					this->vMin = _point;
+					this->vMax = _point;
+					this->boxRange = R_BOX;
+					return *this;
+				}
+
+				if (vMin.x > _point.x)
+					vMin.x = _point.x;
+				else if (vMax.x < _point.x)
+					vMax.x = _point.x;
+
+				if (vMin.y > _point.y)
+					vMin.y = _point.y;
+				else if (vMax.y < _point.y)
+					vMax.y = _point.y;
+
+				return *this;
+			};
+
+
 			inline AxisAlignedBox& merge(const AxisAlignedBox &_box)
 			{
 				if (_box.isEmpty())

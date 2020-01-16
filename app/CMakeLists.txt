@@ -93,6 +93,9 @@ add_library(
     src/main/cpp/core/GraphicBuffer.cpp
     src/main/cpp/core/GLutils.cpp
 
+
+    src/main/cpp/core/SoundSystem.cpp
+
     src/main/cpp/core/Controller.cpp
     src/main/cpp/core/ControllerManager.cpp
 
@@ -113,4 +116,5 @@ target_link_libraries(
         ${log-lib}
         EGL
         GLESv2
+        SLES
 )

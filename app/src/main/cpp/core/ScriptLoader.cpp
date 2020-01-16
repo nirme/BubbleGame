@@ -381,10 +381,8 @@ namespace core
 	{
 		ScriptNodeListPtr children = _node->getChildList();
 		ScriptNodePtr spritesNode;
-		for (auto it = children->begin(), itEnd = children->end(); it != itEnd; ++it)
-		{
-			if ((*it)->getName().compare("Sprites") == 0 )
-			{
+		for (auto it = children->begin(), itEnd = children->end(); it != itEnd; ++it) {
+			if ((*it)->getName().compare("Sprites") == 0) {
 				spritesNode = (*it);
 				break;
 			}
@@ -392,16 +390,16 @@ namespace core
 
 		std::list<std::string> spriteNamesList;
 
-		if (spritesNode)
-		{
-			for (auto it = spritesNode->begin(), itEnd = spritesNode->end(); it != itEnd; ++it)
-			{
-				if ((*it)->getName().compare("Sprite") == 0 )
+		if (spritesNode) {
+			children = spritesNode->getChildList();
+
+			for (auto it = children->begin(), itEnd = children->end(); it != itEnd; ++it) {
+				if ((*it)->getName().compare("Sprite") == 0)
 					spriteNamesList.push_back((*it)->getValue("name"));
 			}
 		}
 
 		return spriteNamesList;
 
-
+	}
 }

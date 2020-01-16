@@ -51,8 +51,7 @@ namespace core
 		);
 		object->addSprite(sprite);
 
-		++it;
-		for (it; it != spriteNames.end(); ++it)
+		for (++it; it != spriteNames.end(); ++it)
 		{
 			object->addSprite(ImageSpriteManager::getSingleton().getByName((*it)));
 		}

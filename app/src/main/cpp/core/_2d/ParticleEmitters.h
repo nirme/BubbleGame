@@ -21,14 +21,27 @@ namespace core
         class RandomParticleEmitter : public ParticleEmitter
         {
         protected:
-            constexpr static float Div = 1.0f / 256.0f;
+            constexpr static unsigned short Mask = 0x3FF;
+            constexpr static float Div = 1.0f / (Mask + 1);
 
         public:
 
             RandomParticleEmitter(ParticleSystem *_parent);
-
             void initParticle(Particle *_prt);
-
         };
+
+
+        class PointRandomParticleEmitter : public ParticleEmitter
+        {
+        protected:
+            constexpr static unsigned short Mask = 0x3FF;
+            constexpr static float Div = 1.0f / (Mask + 1);
+
+        public:
+
+            PointRandomParticleEmitter(ParticleSystem *_parent);
+            void initParticle(Particle *_prt);
+        };
+
     }
 }

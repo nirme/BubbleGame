@@ -59,22 +59,34 @@ namespace core
 			return *this;
 		};
 
-		inline Vector2& operator*= (float _s)
-		{
-			x *= _s;
-			y *= _s;
-			return *this;
-		};
+        inline Vector2& operator+= (float _s)
+        {
+            x += _s;
+            y += _s;
+            return *this;
+        };
 
-		inline Vector2& operator/= (float _s)
-		{
-			return *this *= 1.0f / _s;
-		};
+        inline Vector2& operator-= (float _s)
+        {
+            return *this += -_s;
+        };
+
+        inline Vector2& operator*= (float _s)
+        {
+            x *= _s;
+            y *= _s;
+            return *this;
+        };
+
+        inline Vector2& operator/= (float _s)
+        {
+            return *this *= 1.0f / _s;
+        };
 
 
 
 
-		inline Vector2 operator+ (const Vector2& _v) const
+        inline Vector2 operator+ (const Vector2& _v) const
 		{
 			return Vector2(*this) += _v;
 		};
@@ -82,6 +94,16 @@ namespace core
 		inline Vector2 operator- (const Vector2& _v) const
 		{
 			return Vector2(*this) -= _v;
+		};
+
+		inline Vector2 operator+ (float _s) const
+		{
+			return Vector2(*this) += _s;
+		};
+
+		inline Vector2 operator- (float _s) const
+		{
+			return Vector2(*this) -= _s;
 		};
 
 		inline Vector2 operator* (float _s) const

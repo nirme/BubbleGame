@@ -5,6 +5,47 @@ namespace core
 {
 	namespace _2d
 	{
+        AxisAlignedBox ParticleSystem::_boundingBoxImpl() const
+        {
+            AxisAlignedBox box;
+            if (!aliveParticles.size())
+                return box;
+
+            Particle *prt = nullptr;
+            float maxSize = 0;
+            for (ParticleSystem::ParticleList::const_iterator it = aliveParticles.begin(), itEnd = aliveParticles.end();
+                 it != itEnd;
+                 ++it)
+            {
+                prt = (*it);
+                if (maxSize < prt->size)
+                    maxSize = prt->size;
+                box.merge((*it)->position);
+            }
+
+            box.setMinimum(box.getMinimum() - maxSize);
+            box.setMaximum(box.getMaximum() + maxSize);
+
+            return box;
+        };
+
+        void ParticleSystem::_findVisibleRenderablesImpl(Camera *_camera, RenderQueue *_queue, const AxisAlignedBox *_bounds) const
+        {
+            _queue->addRenderable(this);
+        };
+
+
+
+        void ParticleSystem::convertParticleToWorldSpace(Particle *_prt)
+        {
+            const Matrix3 &transform = getWorldTransform();
+            _prt->position = transform * _prt->position;
+            _prt->direction = transformVector(transform, _prt->direction);
+        };
+
+
+
+
         void ParticleSystem::initParticles(unsigned int _particleCount)
         {
             particlesPool.resize(_particleCount);
@@ -22,15 +63,21 @@ namespace core
         void ParticleSystem::expireParticles(float _timeElapsed)
         {
             Particle *prt = nullptr;
+            ParticleList::iterator itTmp;
+            unsigned int particlesRemoved = 0;
             for (ParticleList::iterator it = aliveParticles.begin(), itEnd = aliveParticles.end(); it != itEnd; ++it)
             {
                 prt = (*it);
                 if (prt->ageLeft < _timeElapsed)
                 {
+                    ++particlesRemoved;
                     prt->alive = false;
                     if (prt->type == Particle::PT_NORMAL)
                     {
-                        deadParticles.splice(it,aliveParticles);
+                        itTmp = it;
+                        --itTmp;
+                        deadParticles.splice(deadParticles.end(),aliveParticles,it);
+                        it = itTmp;
                     }
                     else
                     {
@@ -38,6 +85,9 @@ namespace core
                     }
                 }
             }
+
+            if (particlesRemoved)
+                MovableObject::invalidateBoundingBox();
         };
 
 
@@ -59,7 +109,7 @@ namespace core
         {
             Particle *prt = deadParticles.front();
             prt->alive = true;
-            aliveParticles.splice(deadParticles.begin(),deadParticles);
+            aliveParticles.splice(aliveParticles.end(), deadParticles, deadParticles.begin());
             return prt;
         };
 
@@ -67,6 +117,7 @@ namespace core
         void ParticleSystem::emitParticles(float _timeElapsed)
         {
             unsigned int particlesToEmit = 0;
+            unsigned int particlesEmited = 0;
             unsigned int i = 0;
             float partialTime;
             float partialParticleTime;
@@ -80,7 +131,7 @@ namespace core
             }
 
             // correct timer for available particles
-            float particleRatio = particlesToEmit <= deadParticles.size() ? 1.0f : (deadParticles.size() / particlesToEmit);
+            float particleRatio = particlesToEmit <= deadParticles.size() ? 1.0f : ((float)(deadParticles.size()) / particlesToEmit);
 
             for (ParticleEmitterList::iterator it = activeEmitters.begin(), itEnd = activeEmitters.end(); it != itEnd; ++it)
             {
@@ -90,8 +141,7 @@ namespace core
 
                 if (prtEmit->emitParticles())
                 {
-                    particlesToEmit = particleRatio * prtEmit->getEmissionCount(_timeElapsed);
-
+                    particlesEmited += particlesToEmit;
                     for (unsigned int i = 0; i < particlesToEmit; ++i)
                     {
                         prt = this->createParticle();
@@ -115,8 +165,12 @@ namespace core
                 {
                     throw std::logic_error("unimplemented");
                 }
+
+                (*it)->addTimeToRemains(_timeElapsed);
             }
 
+            if (particlesEmited)
+                MovableObject::invalidateBoundingBox();
         };
 
 
@@ -129,16 +183,22 @@ namespace core
         };
 
 
-        ParticleSystem::ParticleSystem(const std::string &_name, Priority _renderPriority = 0, MaterialPtr _material = nullptr) :
+        ParticleSystem::ParticleSystem(const std::string &_name, Priority _renderPriority, MaterialPtr _material) :
                 MovableObject(_name),
-                Renderable(_renderPriority, _material, true),
+                Renderable(_renderPriority, _material, false),
                 speedFactor(1.0f)
         {};
 
 
-        void ParticleSystem::setMaterial(ShadingProgramPtr _program, TexturePtr _tex)
+        short ParticleSystem::getSpriteIndex(const std::string &_spriteName)
         {
-            Renderable::setMaterial(_program, _tex);
+            for (short i =0, iEnd = sprites.size(); i < iEnd; ++i)
+            {
+                if (_spriteName.compare(sprites[i]->getName()) == 0)
+                    return i;
+            }
+
+            return -1;
         };
 
 
@@ -150,6 +210,8 @@ namespace core
 
         void ParticleSystem::addSprite(ImageSpritePtr _sprite)
         {
+            assert(_sprite && "Sprite cannot be null!");
+            _sprite->load();
             assert(_sprite->getTexture()->getHandle() == material->textures[0]->getHandle() && "Sprite texture dont match with system material");
             sprites.push_back(_sprite);
         };
@@ -170,6 +232,7 @@ namespace core
         void ParticleSystem::initSystem(unsigned int _particleCount)
         {
             // cashe sprites
+            cashedSpriteCoords.resize(sprites.size());
             for (unsigned int i = 0, iEnd = sprites.size(); i < iEnd; ++i)
                 cashedSpriteCoords[i] = sprites[i]->getCoords();
 
@@ -194,13 +257,39 @@ namespace core
         };
 
 
-        BuffWriteResult ParticleSystem::writeVertexData(GraphicBufferPtr _buffer, unsigned int _fromSprite)
+        void ParticleSystem::setMaterial(ShadingProgramPtr _program, TexturePtr _tex)
+        {
+            _program->load();
+            _tex->load();
+            Renderable::setMaterial(_program, _tex);
+        };
+
+
+        const Matrix3& ParticleSystem::getTransform() const
+        {
+            return MovableObject::getWorldTransform();
+        };
+
+
+        void ParticleSystem::notifyAttached(SceneNode* _parent)
+        {
+            MovableObject::notifyAttached(_parent);
+
+            if (parent && !controller)
+            {
+                std::shared_ptr<TTimeframeControllerValue<ParticleSystem>> controllerValue( new TTimeframeControllerValue<ParticleSystem>(this));
+                controller = ControllerManager::getSingleton().createFrameTimeController(std::static_pointer_cast<ControllerValue>(controllerValue));
+            }
+        };
+
+
+        BuffWriteResult ParticleSystem::writeVertexData(GraphicBuffer &_buffer, unsigned int _fromSprite) const
         {
             unsigned int fromSprite = _fromSprite;
-            ParticleList::iterator it = aliveParticles.begin();
+            ParticleList::const_iterator it = aliveParticles.begin();
             for (;fromSprite; ++it, --fromSprite);
 
-            assert(_buffer->elementSize() == 4 && "Buffer element size must be 4 for float data");
+            assert(_buffer.elementSize() == 4 && "Buffer element size must be 4 for float data");
             // temporary array to write particles
 
             ParticleData particleData[100];
@@ -211,20 +300,21 @@ namespace core
             Particle *prt = nullptr;
             Matrix3 particleTransform;
             float particleAge;
-            for (; it != aliveParticles.end(); ++it)
+            while ( it != aliveParticles.end())
             {
-                maxParticles = _buffer->getRemainingLength() / particleSize;
+                maxParticles = _buffer.getRemainingLength() / particleSize;
                 if (maxParticles > 100)
                     maxParticles = 100;
-                if (maxParticles > (aliveParticles.size() - fromSprite))
-                    maxParticles = (aliveParticles.size() - fromSprite);
+                if (maxParticles > (aliveParticles.size() - fromSprite - particlesWritten))
+                    maxParticles = (aliveParticles.size() - fromSprite - particlesWritten);
 
-                for (unsigned int i = 0; i < maxParticles; ++i, ++it, ++particlesWritten)
+                unsigned int i = 0;
+                for (; i < maxParticles; ++i, ++it)
                 {
                     prt = (*it);
 
                     particleTransform = affine2DMatrix(prt->size, prt->rotation, prt->position );
-                    particleAge = 1.0f - (prt->ageLeft / prt->totalAge);
+                    particleAge = prt->ageLeft / prt->totalAge;
 
                     particleData[i].vertex[0].position = particleTransform * SpriteCoords::SPRITE_SQUARE.uvPoints[0];
                     particleData[i].vertex[0].texel = cashedSpriteCoords[prt->spriteIndex].uvPoints[0];
@@ -248,16 +338,18 @@ namespace core
 
                 }
 
-                _buffer->write(reinterpret_cast<float*>(particleData), maxParticles * particleSize);
+                particlesWritten += i;
+
+                _buffer.write(reinterpret_cast<float*>(particleData), maxParticles * particleSize);
 
                 if (it == aliveParticles.end())
-                    return BuffWriteResult({ particlesWritten, true });
+                    return BuffWriteResult({ particlesWritten + _fromSprite, true });
 
-                if (_buffer->getRemainingLength() < particleSize)
-                    return BuffWriteResult({ particlesWritten, false });
+                if (_buffer.getRemainingLength() < particleSize)
+                    return BuffWriteResult({ particlesWritten + _fromSprite, false });
             }
 
-            return BuffWriteResult({ particlesWritten, true });
+            return BuffWriteResult({ particlesWritten + _fromSprite, true });
         };
 
 	}

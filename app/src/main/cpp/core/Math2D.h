@@ -28,6 +28,16 @@ namespace core
 	};
 
 
+	inline Vector2 rotateVector(const Vector2 &_v, float _r)
+	{
+		float rc = std::cos(_r);
+		float rs = std::sin(_r);
+		return Vector2(rc * _v.x + rs * _v.y,
+					   -rs * _v.x + rc * _v.y
+		);
+	};
+
+
 }
 
 

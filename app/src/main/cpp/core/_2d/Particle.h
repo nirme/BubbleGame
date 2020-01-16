@@ -80,6 +80,7 @@ namespace core
 			bool doesEmitParticles;
 
 			float emissionRate;
+			float emissionTimeRemains;
 
 			Vector2 minPosition;
 			Vector2 maxPosition;
@@ -90,8 +91,10 @@ namespace core
 			float minSize;
 			float maxSize;
 
-			Vector2 minDirection;
-			Vector2 maxDirection;
+			float minDirection;
+			float maxDirection;
+			float minDirectionSpeed;
+			float maxDirectionSpeed;
 
 			float minRotationalSpeed;
 			float maxRotationalSpeed;
@@ -110,6 +113,7 @@ namespace core
 				parent(_parent),
 				doesEmitParticles(_doesEmitParticles),
 				emissionRate(_emissionRate),
+				emissionTimeRemains(0.0f),
 				minPosition(0.0f),
 				maxPosition(0.0f),
 				minRotation(0.0f),
@@ -128,12 +132,17 @@ namespace core
 
 			virtual ~ParticleEmitter(){};
 
+			float getEmissionRate()
+			{
+				return emissionRate;
+			};
+
 			void setEmissionRate(float _emissionRate)
 			{
 				emissionRate = _emissionRate;
 			};
 
-            void setEmissionPosition(Vector2 _minPosition, Vector2 _maxPosition)
+			void setEmissionPosition(Vector2 _minPosition, Vector2 _maxPosition)
 			{
 				minPosition = _minPosition;
 				maxPosition = _maxPosition;
@@ -151,10 +160,26 @@ namespace core
 				maxSize = _maxSize;
 			}
 
-			void setEmissionDirection(Vector2 _minDirection, Vector2 _maxDirection)
+			void setEmissionDirection(float _minDirection, float _maxDirection)
 			{
 				minDirection = _minDirection;
 				maxDirection = _maxDirection;
+			};
+
+			void setEmissionLinearSpeed(float _minDirectionSpeed, float _maxDirectionSpeed)
+			{
+				minDirectionSpeed = _minDirectionSpeed;
+				maxDirectionSpeed = _maxDirectionSpeed;
+			};
+
+			float getEmissionMinLinearSpeed() const
+			{
+				return minDirectionSpeed;
+			};
+
+			float getEmissionMaxLinearSpeed() const
+			{
+				return maxDirectionSpeed;
 			};
 
 			void setEmissionRotationalSpeed(float _minRotationalSpeed, float _maxRotationalSpeed)
@@ -185,7 +210,12 @@ namespace core
 
 			unsigned int getEmissionCount(float _timeElapsed)
 			{
-				return _timeElapsed * emissionRate;
+				return _timeElapsed * emissionRate + emissionTimeRemains;
+			};
+
+			void addTimeToRemains(float _time)
+			{
+				emissionTimeRemains = std::fmod(emissionTimeRemains + (_time * emissionRate), 1.0f);
 			};
 		};
 

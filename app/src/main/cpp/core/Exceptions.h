@@ -10,8 +10,6 @@ constexpr static int loaderError = -200;
 
 
 
-
-
 #define GL_ERROR_CHECK(glFunc) \
 	{ \
 		glFunc; \
@@ -74,6 +72,51 @@ constexpr static int loaderError = -200;
                     throw std::runtime_error(#eglFunc " function failed with error EGL_BAD_NATIVE_WINDOW"); \
                 case EGL_CONTEXT_LOST: \
                     throw std::runtime_error(#eglFunc " function failed with error EGL_CONTEXT_LOST"); \
+            } \
+        } \
+	}\
+
+
+
+#define SL_ERROR_CHECK(slFunc) \
+	{ \
+		SLresult err = slFunc; \
+		if (err != SL_RESULT_SUCCESS) \
+        { \
+            switch (err) \
+            { \
+                case SL_RESULT_PRECONDITIONS_VIOLATED: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_PRECONDITIONS_VIOLATED"); \
+				case SL_RESULT_PARAMETER_INVALID: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_PARAMETER_INVALID"); \
+				case SL_RESULT_MEMORY_FAILURE: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_MEMORY_FAILURE"); \
+				case SL_RESULT_RESOURCE_ERROR: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_RESOURCE_ERROR"); \
+				case SL_RESULT_RESOURCE_LOST: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_RESOURCE_LOST"); \
+				case SL_RESULT_IO_ERROR: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_IO_ERROR"); \
+				case SL_RESULT_BUFFER_INSUFFICIENT: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_BUFFER_INSUFFICIENT"); \
+				case SL_RESULT_CONTENT_CORRUPTED: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_CONTENT_CORRUPTED"); \
+				case SL_RESULT_CONTENT_UNSUPPORTED: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_CONTENT_UNSUPPORTED"); \
+				case SL_RESULT_CONTENT_NOT_FOUND: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_CONTENT_NOT_FOUND"); \
+				case SL_RESULT_PERMISSION_DENIED: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_PERMISSION_DENIED"); \
+				case SL_RESULT_FEATURE_UNSUPPORTED: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_FEATURE_UNSUPPORTED"); \
+				case SL_RESULT_INTERNAL_ERROR: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_INTERNAL_ERROR"); \
+				case SL_RESULT_UNKNOWN_ERROR: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_UNKNOWN_ERROR"); \
+				case SL_RESULT_OPERATION_ABORTED: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_OPERATION_ABORTED"); \
+				case SL_RESULT_CONTROL_LOST: \
+					throw std::runtime_error(#slFunc " function failed with error SL_RESULT_CONTROL_LOST"); \
             } \
         } \
 	}\

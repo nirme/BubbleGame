@@ -75,6 +75,9 @@ namespace core
 
 			renderer->getStateCashe()->immediateSetTextureParami(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			renderer->getStateCashe()->immediateSetTextureParami(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			
+			// http://docs.gl/es2/glTexParameter
+			// all sprites should be clamped to [1/2N,1−1/2N]
 
 
 			GL_ERROR_CHECK(glTexImage2D(GL_TEXTURE_2D,

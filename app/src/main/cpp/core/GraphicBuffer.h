@@ -39,6 +39,25 @@ namespace core
 
 	public:
 
+		void log() const
+		{
+#ifndef NDEBUG
+			switch(elementType)
+			{
+				//case GL_SHORT:
+				//case GL_UNSIGNED_SHORT:
+				case GL_FLOAT:
+				{
+					const float *pos = reinterpret_cast<const float*>(localBuffer.data());
+					for (unsigned int i=0; i<bufferCurrentPos; ++i)
+					{
+						Logger::getSingleton().write(std::to_string(pos[i]));
+					}
+				}
+			}
+#endif
+		};
+
 		GraphicBuffer(RenderSystem *_renderer = nullptr, GLenum _bufferUsageType = GL_DYNAMIC_DRAW, GLenum _bufferType = GL_ARRAY_BUFFER, GLenum _elementType = GL_FLOAT);
 		~GraphicBuffer();
 
