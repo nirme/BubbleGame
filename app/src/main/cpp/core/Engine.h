@@ -32,6 +32,9 @@
 #include "ImageSpriteManager.h"
 #include "SpritedFontManager.h"
 #include "TextureManager.h"
+#include "SoundManager.h"
+
+#include "SoundSystem.h"
 
 #include "_2d/ViewPort.h"
 #include "Timer.h"
@@ -56,7 +59,8 @@ namespace core
         std::unique_ptr<ControllerManager> controllerManager;
         std::unique_ptr<ScriptLoader> loader;
         std::unique_ptr<ResourceSystem> resourceManager;
-        std::unique_ptr<RenderSystem> renderer;
+		std::unique_ptr<RenderSystem> renderer;
+		std::unique_ptr<SoundSystem> soundSystem;
 
 		InputManager *inputManager;
 
@@ -74,6 +78,7 @@ namespace core
             loader(nullptr),
             resourceManager(nullptr),
             renderer(nullptr),
+			soundSystem(nullptr),
             inputManager(nullptr),
             mainScene(nullptr),
             frameTime()
@@ -115,19 +120,22 @@ namespace core
 
 		void onInitWindow()
 		{
-            controllerManager.release();
+            //controllerManager.release();
             controllerManager = std::unique_ptr<ControllerManager>(new ControllerManager());
 
-            loader.release();
+            //loader.release();
             loader = std::unique_ptr<ScriptLoader>(new ScriptLoader());
 
-            resourceManager.release();
+            //resourceManager.release();
             resourceManager = std::unique_ptr<ResourceSystem>(new ResourceSystem());
 
-            renderer.release();
+            //renderer.release();
             renderer = std::unique_ptr<RenderSystem>(new RenderSystem());
 
-            mainScene.release();
+			//soundSystem.release();
+			soundSystem = std::unique_ptr<SoundSystem>(new SoundSystem());
+
+            //mainScene.release();
             mainScene = std::unique_ptr<_2d::SceneManager>(new _2d::SceneManager());
 
 
@@ -145,6 +153,8 @@ namespace core
             renderer->enableMultisampling(true);
 			renderer->initialize(androidApp);
 
+            soundSystem->initialize();
+
 {
 	renderer->getStateCashe()->setFaceCulling(false);
 	renderer->getStateCashe()->setBlending(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_FUNC_ADD);
@@ -160,6 +170,7 @@ namespace core
 			resourceManager->registerResourceManager("shading_program", new ShadingProgramManager(renderer.get()));
 			resourceManager->registerResourceManager("sprite", new ImageSpriteManager);
 			resourceManager->registerResourceManager("font", new SpritedFontManager);
+			resourceManager->registerResourceManager("sound", new SoundManager(soundSystem.get()));
 
 			resourceManager->parseConfiguration("GameResourceCfg.xml");
 
@@ -370,6 +381,10 @@ particleTest->setScale(1.0f);
 
 			frameTime.reset();
             initialized = true;
+
+SoundPtr testSound = SoundManager::getSingleton().getByName("test.mp3");
+testSound->load();
+soundSystem->runTest(testSound);
 
 		};
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <sound name="bg_music_01.mp3" />
+  <sound name="bg_music_02.mp3" />
+  <sound name="bg_music_03.mp3" />
+
+
+  <sound name="test.mp3" />
+  <sound name="test.flac" />
+  <sound name="test.wav" />
+  <sound name="test.ogg" />
+  <sound name="test.aac" />
+
+</resources>

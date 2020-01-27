@@ -41,4 +41,12 @@ namespace core
 		return AAsset_read(asset, _buf, _length ? _length : getRemainingSize());
 	};
 
+    FileDescriptorData AndroidDataStream::openFileDescriptor()
+    {
+        FileDescriptorData desc;
+        desc.file = AAsset_openFileDescriptor(asset, &desc.startOffset, &desc.lenght);
+		return desc;
+
+    };
+
 }

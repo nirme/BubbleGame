@@ -95,6 +95,9 @@ add_library(
 
 
     src/main/cpp/core/SoundSystem.cpp
+    src/main/cpp/core/SoundPlayer.cpp
+    src/main/cpp/core/Sound.cpp
+    src/main/cpp/core/SoundManager.cpp
 
     src/main/cpp/core/Controller.cpp
     src/main/cpp/core/ControllerManager.cpp
@@ -116,5 +119,6 @@ target_link_libraries(
         ${log-lib}
         EGL
         GLESv2
-        SLES
+        OpenSLES
+        mediandk
 )

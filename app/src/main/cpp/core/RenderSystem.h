@@ -134,8 +134,6 @@ namespace core
 		unsigned short getScreenHeight();
 		unsigned int getScreenDensity();
 
-
-
 		void notifyOnContextLost()
 		{};
 
@@ -143,49 +141,11 @@ namespace core
 		{};
 
 
-		GraphicBuffer &getBatchingVertexBuffer()
-		{
-			return batchingVertexBuffer;
-		};
+		GraphicBuffer &getBatchingVertexBuffer();
+		GraphicBuffer &getIndexVertexBuffer();
 
-		GraphicBuffer &getIndexVertexBuffer()
-		{
-			return indexBuffer;
-		};
-
-
-
-		void beforeRendering()
-		{
-            try
-            {
-                GLbitfield clearMask = GL_COLOR_BUFFER_BIT;
-                GL_ERROR_CHECK(glClearColor(bgColor.red, bgColor.green, bgColor.blue, bgColor.alpha));
-                //GL_ERROR_CHECK(glClearColor(0.2f, 0.2f, 0.2f, 1.0f));
-                GL_ERROR_CHECK(glClear(clearMask));
-			}
-            catch (const std::exception &e)
-            {
-                Logger::getSingleton().write(e.what(), LL_ERROR);
-            }
-		};
-
-
-		void afterRendering()
-		{
-            try
-            {
-            	if (eglSwapBuffers(display, surface) != EGL_TRUE)
-					throw std::runtime_error("eglSwapBuffers function failed"); \
-                //EGL_ERROR_CHECK(eglSwapBuffers(display, surface));
-            }
-            catch (const std::exception &e)
-            {
-                Logger::getSingleton().write(e.what(), LL_ERROR);
-            }
-		};
-
-
+		void beforeRendering();
+		void afterRendering();
 
 		void render(const _2d::Renderable *_renderable, const ShadingProgram *_program, const ShadingParamsPassthru *_paramsPassthrough);
 		void singleRender(const _2d::Renderable *_renderable, const ShadingProgram *_program, const ShadingParamsPassthru *_paramsPassthrough);

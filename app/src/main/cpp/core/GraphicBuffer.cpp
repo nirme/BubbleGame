@@ -108,9 +108,7 @@ namespace core
 
 			GLint params;
 			glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &params);
-			Logger::getSingleton().write(std::string("GL_ARRAY_BUFFER_BINDING: ") + std::to_string(params));
 			glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &params);
-			Logger::getSingleton().write(std::string("GL_ELEMENT_ARRAY_BUFFER_BINDING: ") + std::to_string(params));
 
 			GL_ERROR_CHECK(glBufferSubData(bufferType, 0, bufferCurrentPos * elemTypeMultiplier, localBuffer.data()));
 		}

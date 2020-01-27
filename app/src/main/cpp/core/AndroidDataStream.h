@@ -26,6 +26,8 @@ namespace core
 
 		virtual data_size readData(void * _buf, data_size _length = 0);
 
+		virtual FileDescriptorData openFileDescriptor();
+
 	};
 
 }

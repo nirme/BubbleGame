@@ -7,6 +7,13 @@ namespace core
 {
 	typedef int data_size;
 
+	struct FileDescriptorData
+	{
+		int file;
+		long startOffset;
+		long lenght;
+	};
+
 	class DataStream
 	{
 	public:
@@ -21,6 +28,8 @@ namespace core
 
 		virtual data_size skip(data_size _length);
 		virtual data_size getRemainingSize();
+
+		virtual FileDescriptorData openFileDescriptor() = 0;
 	};
 
 

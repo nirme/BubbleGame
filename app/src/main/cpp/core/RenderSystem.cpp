@@ -388,11 +388,50 @@ glClear(GL_COLOR_BUFFER_BIT);
 	};
 
 
+    GraphicBuffer &RenderSystem::getBatchingVertexBuffer()
+    {
+        return batchingVertexBuffer;
+    };
 
 
+    GraphicBuffer &RenderSystem::getIndexVertexBuffer()
+    {
+        return indexBuffer;
+    };
 
 
-	void RenderSystem::render(const _2d::Renderable *_renderable, const ShadingProgram *_program, const ShadingParamsPassthru *_paramsPassthrough)
+    void RenderSystem::beforeRendering()
+    {
+        try
+        {
+            GLbitfield clearMask = GL_COLOR_BUFFER_BIT;
+            GL_ERROR_CHECK(glClearColor(bgColor.red, bgColor.green, bgColor.blue, bgColor.alpha));
+            //GL_ERROR_CHECK(glClearColor(0.2f, 0.2f, 0.2f, 1.0f));
+            GL_ERROR_CHECK(glClear(clearMask));
+        }
+        catch (const std::exception &e)
+        {
+            Logger::getSingleton().write(e.what(), LL_ERROR);
+        }
+    };
+
+
+    void RenderSystem::afterRendering()
+    {
+        try
+        {
+            if (eglSwapBuffers(display, surface) != EGL_TRUE)
+                throw std::runtime_error("eglSwapBuffers function failed"); \
+                //EGL_ERROR_CHECK(eglSwapBuffers(display, surface));
+        }
+        catch (const std::exception &e)
+        {
+            Logger::getSingleton().write(e.what(), LL_ERROR);
+        }
+    };
+
+
+    void RenderSystem::render(const _2d::Renderable *_renderable, const ShadingProgram *_program, const ShadingParamsPassthru *_paramsPassthrough)
 	{
 	    try
         {

@@ -66,7 +66,7 @@ namespace core
 		typedef std::vector<Attrib> VertexAttribList;
 
 		// !!!need replacing from resource system loader!!!
-		constexpr static char *ProgramDefinitionFile = "ShadingPrograms.xml";
+		static constexpr char *ProgramDefinitionFile = "ShadingPrograms.xml";
 
 	protected:
 

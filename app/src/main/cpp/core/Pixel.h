@@ -1,9 +1,6 @@
 #pragma once
 
 
-#include "Logger.h"
-
-
 namespace core
 {
 #pragma pack(push, 1)

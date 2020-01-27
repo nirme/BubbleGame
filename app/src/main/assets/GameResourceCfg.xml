@@ -8,7 +8,9 @@
   <resource_manager name="shading_program" resource_path="/" script_file="ShadingPrograms.xml" />
   
   <resource_manager name="sprite" resource_path="/" script_file="Sprites.xml" />
-  
+
   <resource_manager name="font" resource_path="fonts/" script_file="Fonts.xml" />
+
+  <resource_manager name="sound" resource_path="sounds/" script_file="Sounds.xml" />
 
 </settings>
