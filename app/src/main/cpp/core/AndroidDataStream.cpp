@@ -45,8 +45,12 @@ namespace core
     {
         FileDescriptorData desc;
         desc.file = AAsset_openFileDescriptor(asset, &desc.startOffset, &desc.lenght);
-		return desc;
+        if (!desc.file)
+		{
+        	throw std::runtime_error("AAsset_openFileDescriptor failed!");
+		}
 
+		return desc;
     };
 
 }

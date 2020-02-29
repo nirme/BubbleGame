@@ -148,9 +148,31 @@ namespace core
 
 	// sprited font
 
+	std::string ScriptLoader::parseFontName(ScriptNodePtr _node)
+	{
+		return _node->getValue("name");
+	};
+
+
 	std::string ScriptLoader::parseCodePoint(ScriptNodePtr _node)
 	{
 		return _node->getValue("cp");
+	};
+
+
+	float ScriptLoader::parseCharWidth(ScriptNodePtr _node)
+	{
+		std::string text = _node->getValue("width");
+		if (text.length())
+			return std::stof(text);
+		return 1.0f;
+	};
+
+
+	bool ScriptLoader::parseCharVisibility(ScriptNodePtr _node)
+	{
+		std::string text = _node->getValue("visible");
+		return (text.compare("false") != 0) ? true : false;
 	};
 
 
@@ -170,15 +192,15 @@ namespace core
 	};
 
 
-	FONT_SPACING ScriptLoader::parseFontSpacing(ScriptNodePtr _node)
+	SpritedFont::FONT_SPACING ScriptLoader::parseFontSpacing(ScriptNodePtr _node)
 	{
 		std::string spacing = _node->getValue("spacing");
 
 		if (spacing.compare("proportional") == 0)
-			return FS_PROPORTIONAL;
+			return SpritedFont::FS_PROPORTIONAL;
 
 		//if (spacing.compare("mono") == 0)
-		return FS_MONOSPACE;
+		return SpritedFont::FS_MONOSPACE;
 	};
 
 

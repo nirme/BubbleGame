@@ -7,8 +7,7 @@
 
   <sound name="test.mp3" />
   <sound name="test.flac" />
-  <sound name="test.wav" />
   <sound name="test.ogg" />
   <sound name="test.aac" />
-
+  <sound name="test.ac3" />
 </resources>

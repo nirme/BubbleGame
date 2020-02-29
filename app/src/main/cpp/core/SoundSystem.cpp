@@ -1,254 +1,242 @@
 #include "SoundSystem.h"
 
+
+template<>
+core::SoundSystem* Singleton<core::SoundSystem>::impl = nullptr;
+
 namespace core
 {
 
-    std::array<SLInterfaceID,1> SoundSystem::EngineInterfacesArr = {
-            SL_IID_3DCOMMIT,
-    };
-
-    std::array<SLInterfaceID,1> SoundSystem::OutputInterfaces = {
-            SL_IID_VOLUME,
-    };
-
+	std::array<SLInterfaceID,1> SoundSystem::EngineInterfacesArray = {
+			SL_IID_ENGINE
+	};
 /*
-    void SoundSystem::createSoundPlayer(SoundPlayer *_player)
-    {
-        _player->inputLocatorStruct.locatorType = SL_DATALOCATOR_BUFFERQUEUE;
-        _player->inputLocatorStruct.numBuffers = 6;
-
-        //_player->inputFormatStruct.formatType = SL_DATAFORMAT_MIME;
-        //_player->inputFormatStruct.mimeType = reinterpret_cast<SLchar*>(_player->playerMimeType);
-        //_player->inputFormatStruct.containerType = SL_CONTAINERTYPE_MP3;
-
-        memset(&_player->inputFormatStruct, 0, sizeof(_player->inputFormatStruct));
-        _player->inputFormatStruct.formatType = SL_DATAFORMAT_PCM;
-        _player->inputFormatStruct.numChannels = 2;
-        _player->inputFormatStruct.samplesPerSec = SL_SAMPLINGRATE_44_1;
-        _player->inputFormatStruct.bitsPerSample = SL_PCMSAMPLEFORMAT_FIXED_16;
-        _player->inputFormatStruct.containerSize = 16;  // packing of samples, best same as BPS
-        _player->inputFormatStruct.channelMask = SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT;
-        _player->inputFormatStruct.endianness = SL_BYTEORDER_LITTLEENDIAN;
-
-
-        _player->inputSourceStruct.pLocator = (void *) &_player->inputLocatorStruct;
-        _player->inputSourceStruct.pFormat = (void *) &_player->inputFormatStruct;
-
-        std::vector<SLboolean> interfacesRequired(_player->PlayersInterfaces.size(), SL_BOOLEAN_TRUE);
-
-        SL_ERROR_CHECK((*slEngine)->CreateAudioPlayer(slEngine,
-                                                      &_player->slPlayerObject,
-                                                      &_player->inputSourceStruct,
-                                                      &outputSinkStruct,
-                                                      _player->PlayersInterfaces.size(),
-                                                      _player->PlayersInterfaces.data(),
-                                                      interfacesRequired.data()
-        ));
-
-        SL_ERROR_CHECK((*_player->slPlayerObject)->Realize(_player->slPlayerObject,
-                                                           SL_BOOLEAN_FALSE
-        ));
-
-        SL_ERROR_CHECK((*_player->slPlayerObject)->GetInterface(_player->slPlayerObject,
-                                                                SL_IID_ANDROIDSIMPLEBUFFERQUEUE,
-                                                                (void *) &_player->slBufferQueue
-        ));
-
-        SL_ERROR_CHECK((*_player->slPlayerObject)->GetInterface(_player->slPlayerObject,
-                                                                SL_IID_PLAY,
-                                                                (void *) &_player->slPlay
-        ));
-
-        SL_ERROR_CHECK((*_player->slPlayerObject)->GetInterface(_player->slPlayerObject,
-                                                                SL_IID_MUTESOLO,
-                                                                (void *) &_player->slMuteSolo
-        ));
-
-        SL_ERROR_CHECK((*_player->slPlayerObject)->GetInterface(_player->slPlayerObject,
-                                                                SL_IID_VOLUME,
-                                                                (void *) &_player->slVolume
-        ));
-
-        unsigned int sampleSize = _player->inputFormatStruct.numChannels * _player->inputFormatStruct.bitsPerSample;
-
-        SL_ERROR_CHECK((*_player->slBufferQueue)->Enqueue(_player->slBufferQueue,
-                                                          _player->EmptyBuffer.data(),
-                                                          sampleSize < _player->EmptyBuffer.size() ?
-                                                              sampleSize :
-                                                             _player->EmptyBuffer.size()
-        ));
-
-
-        SL_ERROR_CHECK((*_player->slBufferQueue)->RegisterCallback(
-            _player->slBufferQueue,
-            BufferQueueCallback,
-            _player
-        ));
-
-
-        SL_ERROR_CHECK((*_player->slPlay)->SetPlayState(_player->slPlay, SL_PLAYSTATE_PAUSED ));
-    };
+	std::array<SLInterfaceID,2> SoundSystem::OutputInterfacesArray = {
+			SL_IID_VOLUME,
+			SL_IID_OUTPUTMIX
+	};
 */
-
-    SoundSystem::SoundSystem() :
-            slEngineObject(nullptr),
-            slEngine(nullptr),
-            slOutputMixObject(nullptr)
-    {};
-
-
-    void SoundSystem::initialize()
-    {
-        // all interfaces used in system are required so we use array full of SL_BOOLEAN_TRUE
-        std::vector<SLboolean> interfacesRequired(10, SL_BOOLEAN_TRUE);
-        /*
-        = {
-                SL_BOOLEAN_TRUE
-        };
-*/
-        try
-        {
-            //slQueryNumSupportedEngineInterfaces
-            //slQuerySupportedEngineInterfaces
-
-            //QuerySupportedProfiles
-            //SL_PROFILES_GAME
-
-            /* Query available voices for 2D audio */
-            //res = (*EngineCapabilitiesItf)->QueryAvailableVoices(
-            //        EngineCapabilitiesItf, SL_VOICETYPE_2D_AUDIO, &numMax2DVoices,
-            //        &isAbsoluteMax2D, &numFree2DVoices); CheckErr(res);
-
-
-            /* Query number of vibra devices present in the system */
-            /*
-            res = (*EngineCapabilitiesItf)->QueryVibraCapabilities(
-                    EngineCapabilitiesItf, &numVibraDevices, NULL, NULL); CheckErr(res);
-            */
-
-            /* 3D audio functionality is mandated only in the game profile, so
-might want to query for 3D voice types only if GAME profile is supported
-*/
-            /*
-            if (isGameProfileSupported) {
-                res = (*EngineCapabilitiesItf)->QueryAvailableVoices(
-                        EngineCapabilitiesItf, SL_VOICETYPE_3D_AUDIO, &numMax3DVoices,
-                        &isAbsoluteMax3D, &numFree3DVoices); CheckErr(res);
-                res = (*EngineCapabilitiesItf)->QueryAvailableVoices(
-                        EngineCapabilitiesItf, SL_VOICETYPE_3D_MIDIOUTPUT, &numMax3DMidiVoices,
-                        &isAbsoluteMax3DMidi, &numFree3DMidiVoices); CheckErr(res);
-            }
-            */
-
-
-            // create engine and get its interfaces
-            SL_ERROR_CHECK(slCreateEngine(&slEngineObject,
-                                          EngineOptionsArr.size() / 2,
-                                          EngineOptionsArr.data(),
-                                          0,
-                                          nullptr,
-                                          nullptr
-            ));
-
-            SL_ERROR_CHECK((*slEngineObject)->Realize(slEngineObject,
-                                                      SL_BOOLEAN_FALSE
-            ));
-
-            SL_ERROR_CHECK((*slEngineObject)->GetInterface(slEngineObject,
-                                                           SL_IID_ENGINE,
-                                                           (void *) &slEngine
-            ));
+	std::array<SLInterfaceID,1> SoundSystem::OutputInterfacesArray = {
+			SL_IID_OUTPUTMIX
+	};
 
 
 
-            // create output mix and get its interfaces
-            SL_ERROR_CHECK((*slEngine)->CreateOutputMix(slEngine,
-                                                        &slOutputMixObject,
-                                                        0,
-                                                        nullptr,
-                                                        nullptr
-            ));
+	SoundPlayer* SoundSystem::getPlayer(SoundPriority _priority)
+	{
+		SoundPlayer *player = nullptr;
 
-            SL_ERROR_CHECK((*slOutputMixObject)->Realize(slOutputMixObject,
-                                                         SL_BOOLEAN_FALSE
-            ));
+		if (freePlayers.size())
+		{
+			player = freePlayers.front();
+			freePlayers.pop_front();
+		}
+		else if (usedPlayers.size())
+		{
+			auto pair = usedPlayers.front();
+			if (_priority > pair.first)
+			{
+				player = pair.second;
+				usedPlayers.pop_front();
 
-            outputLocatorStruct.locatorType = SL_DATALOCATOR_OUTPUTMIX;
-            outputLocatorStruct.outputMix = slOutputMixObject;
+			}
+		}
 
-            outputSinkStruct.pLocator = (void *) &outputLocatorStruct;
-            outputSinkStruct.pFormat = NULL;
+		if (player)
+		{
+			bool insertFlag = false;
+			for (auto it = usedPlayers.begin(), itEnd = usedPlayers.end(); it != itEnd; ++it)
+			{
+				if ((*it).first > _priority)
+				{
+					usedPlayers.insert(it, {_priority, player});
+					insertFlag = true;
+					break;
+				}
+			}
 
+			if (!insertFlag)
+				usedPlayers.push_back({_priority, player});
+		}
 
-            //activePlayerList.resize(1);
-            //std::memset(&activePlayerList[0], 0, sizeof(SoundPlayer));
-
-            //createSoundPlayer(&activePlayerList[0]);
-
-
-        }
-        catch (const std::exception &e)
-        {
-            // init failed
-            Logger::getSingleton().write(e.what(), LL_ERROR);
-
-            // clear all vars and release everything
-            if (slOutputMixObject)
-            {
-                (*slOutputMixObject)->Destroy(slOutputMixObject);
-                slOutputMixObject = nullptr;
-            }
-
-            if (slEngineObject)
-            {
-                (*slEngineObject)->Destroy(slEngineObject);
-                slEngineObject = nullptr;
-            }
+		return player;
+	};
 
 
-            slEngine = nullptr;
-        }
+	void SoundSystem::createSoundPlayerObject(SLObjectItf *_slPlayerObject, SLDataSource *_sInputSourceStructure, SLuint32 _interfacesNumber, const SLInterfaceID *_interfaces)
+	{
+		std::vector<SLboolean> interfaceRequired(SL_BOOLEAN_TRUE, _interfacesNumber);
 
-    };
-
-
-    void SoundSystem::uninitialize()
-    {
-        if (!slEngineObject)
-            return;
-
-        (*slOutputMixObject)->Destroy(slOutputMixObject);
-        (*slEngineObject)->Destroy(slEngineObject);
-
-        slEngine = nullptr;
-        slEngineObject = nullptr;
-    };
+		SL_ERROR_CHECK((*slEngine)->CreateAudioPlayer(slEngine,
+													  _slPlayerObject,
+													  _sInputSourceStructure,
+													  &outputSinkStructure,
+													  _interfacesNumber,
+													  _interfaces,
+													  interfaceRequired.data()
+		));
+	};
 
 
-    void SoundSystem::runTest(SoundPtr _sound)
-    {
-/*
-        try
-        {
-            for (int i=0; i<5; ++i)
-            {
-                SL_ERROR_CHECK((*activePlayerList[0].slBufferQueue)->Enqueue(activePlayerList[0].slBufferQueue,
-                                                                             _sound->getData().data(),
-                                                                             _sound->getData().size()
-                ));
-            }
+	SoundSystem::SoundSystem() :
+			initialized(false),
+			slEngineObject(nullptr),
+			slEngine(nullptr),
+			slOutputMixObject(nullptr),
+			slOutputVolume(nullptr),
+			slOutputMix(nullptr),
+			outputLocatorStructure({0, nullptr}),
+			outputSinkStructure({nullptr, nullptr}),
+			activePlayersCount(0)
+	{};
 
-            SL_ERROR_CHECK((*activePlayerList[0].slPlay)->SetPlayState(activePlayerList[0].slPlay,
-                                                                       SL_PLAYSTATE_PLAYING
-            ));
 
-        }
-        catch (const std::exception &e)
-        {
-            Logger::getSingleton().write(e.what(), LL_ERROR);
-        }
-*/
-    };
+	void SoundSystem::initialize(unsigned int _activePlayersCount)
+	{
+		try
+		{
+			std::vector<SLboolean> interfaceRequired(SL_BOOLEAN_TRUE, EngineInterfacesArray.size());
 
+			// create engine and get its interfaces
+			SL_ERROR_CHECK(slCreateEngine(&slEngineObject,
+										  EngineOptionsArr.size() / 2,
+										  EngineOptionsArr.data(),
+										  EngineInterfacesArray.size(),
+										  EngineInterfacesArray.data(),
+										  interfaceRequired.data()
+			));
+
+
+			SL_ERROR_CHECK((*slEngineObject)->Realize(slEngineObject,
+													  SL_BOOLEAN_FALSE
+			));
+
+
+			SL_ERROR_CHECK((*slEngineObject)->GetInterface(slEngineObject,
+														   SL_IID_ENGINE,
+														   (void *) &slEngine
+			));
+
+
+			interfaceRequired.resize(OutputInterfacesArray.size(), SL_BOOLEAN_TRUE);
+
+			// create output mix and get its interfaces
+			SL_ERROR_CHECK((*slEngine)->CreateOutputMix(slEngine,
+														&slOutputMixObject,
+														OutputInterfacesArray.size(),
+														OutputInterfacesArray.data(),
+														interfaceRequired.data()
+			));
+
+			SL_ERROR_CHECK((*slOutputMixObject)->Realize(slOutputMixObject,
+														 SL_BOOLEAN_FALSE
+			));
+
+			SL_ERROR_CHECK((*slOutputMixObject)->GetInterface(slOutputMixObject,
+														   SL_IID_OUTPUTMIX,
+														   (void *) &slOutputMix
+			));
+
+
+
+			outputLocatorStructure.locatorType = SL_DATALOCATOR_OUTPUTMIX;
+			outputLocatorStructure.outputMix = slOutputMixObject;
+
+			outputSinkStructure.pLocator = (void *) &outputLocatorStructure;
+			outputSinkStructure.pFormat = NULL;
+
+
+			// create players
+
+			activePlayersCount = _activePlayersCount < MaxActivePlayers ? _activePlayersCount : MaxActivePlayers;
+			playerList.resize(activePlayersCount);
+
+			for (unsigned int i = 0; i < activePlayersCount; ++i)
+			{
+				playerList[i].initialize(this);
+				freePlayers.push_back(&playerList[i]);
+			}
+
+			initialized = true;
+		}
+		catch (const std::exception &e)
+		{
+			// init failed
+			Logger::getSingleton().write(e.what(), LL_ERROR);
+
+			if (playerList.size())
+				playerList.clear();
+
+			// clear all vars and release everything
+			if (slOutputMixObject)
+			{
+				(*slOutputMixObject)->Destroy(slOutputMixObject);
+				slOutputMixObject = nullptr;
+				slOutputVolume = nullptr;
+				slOutputMix = nullptr;
+			}
+
+			if (slEngineObject)
+			{
+				(*slEngineObject)->Destroy(slEngineObject);
+				slEngineObject = nullptr;
+				slEngine = nullptr;
+			}
+
+			memset(&outputLocatorStructure, 0, sizeof(outputLocatorStructure));
+			memset(&outputSinkStructure, 0, sizeof(outputSinkStructure));
+
+			activePlayersCount = 0;
+
+			initialized = false;
+		}
+
+	};
+
+
+	void SoundSystem::uninitialize()
+	{
+		initialized = false;
+
+		activePlayersCount = 0;
+		if (playerList.size())
+			playerList.clear();
+
+		(*slOutputMixObject)->Destroy(slOutputMixObject);
+		slOutputMixObject = nullptr;
+		slOutputVolume = nullptr;
+		slOutputMix = nullptr;
+
+		(*slEngineObject)->Destroy(slEngineObject);
+		slEngineObject = nullptr;
+		slEngine = nullptr;
+
+		memset(&outputLocatorStructure, 0, sizeof(outputLocatorStructure));
+		memset(&outputSinkStructure, 0, sizeof(outputSinkStructure));
+	};
+
+
+	void SoundSystem::playSound(SoundPriority _priority, SoundPtr _sound)
+	{
+		SoundPlayer *player = getPlayer(_priority);
+		if (player)
+		{
+			player->playSound(_sound);
+		}
+	};
+
+
+	void SoundSystem::freePlayer(SoundPlayer *_player)
+	{
+		for (auto it = usedPlayers.begin(), itEnd = usedPlayers.end(); it != itEnd; ++it)
+		{
+			if ((*it).second == _player)
+			{
+				usedPlayers.erase(it);
+				freePlayers.push_back(_player);
+				return;
+			}
+		}
+	};
 
 }

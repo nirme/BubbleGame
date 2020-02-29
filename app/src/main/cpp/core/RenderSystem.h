@@ -26,6 +26,7 @@
 #include "GraphicBuffer.h"
 #include "_2d/MaterialManager.h"
 
+#define CLAMP(val,min,max) (val < min ? min : (val > max ? max : val))
 
 /*
    0---1
@@ -116,6 +117,14 @@ namespace core
 
 		// enable multisampling
 		void enableMultisampling(bool _multisampling);
+
+		void setBackgroundColor(float _red, float _green, float _blue)
+		{
+			bgColor.red = CLAMP(_red, 0.0f, 1.0f);
+			bgColor.green = CLAMP(_red, 0.0f, 1.0f);
+			bgColor.blue = CLAMP(_red, 0.0f, 1.0f);
+		};
+
 
 		bool initialize(android_app* _androidApp = nullptr);
 		void uninitialize();

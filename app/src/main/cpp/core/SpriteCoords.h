@@ -20,6 +20,7 @@ namespace core
 
 		SpriteCoords(const SpriteCoords &_rhs = SpriteCoords::SPRITE_SQUARE);
 		SpriteCoords(float _left, float _right, float _top, float _bottom);
+		SpriteCoords(const Vector2 &_minV, const Vector2 &_maxV);
 		SpriteCoords(const Vector2 &_v0, const Vector2 &_v1, const Vector2 &_v2, const Vector2 &_v3);
 
 		SpriteCoords& operator*=(const Vector2 &_mod);

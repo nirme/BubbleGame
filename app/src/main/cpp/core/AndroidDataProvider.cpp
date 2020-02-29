@@ -21,7 +21,7 @@ namespace core
 		if (!asset)
 		{
 			std::string message = "Cannot find asset file '" + fullPath + "'";
-			Logger::getSingleton().write(message, LL_CRITICAL);
+			throw std::runtime_error(message);
 		}
 
 		return DataStreamPtr(new AndroidDataStream(asset));

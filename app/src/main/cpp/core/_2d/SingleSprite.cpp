@@ -25,8 +25,7 @@ namespace core
 			MovableObject(_name),
 			Renderable(_renderPriority, _material, true),
 			spriteCoords(),
-			sprite(nullptr),
-			material(nullptr)
+			sprite(_sprite)
 		{};
 
 

@@ -100,7 +100,7 @@
 	<sprite name="lucida_sprites.bmp#?" right="0.2607421875" bottom="0.787109375" left="0.1787109375" top="0.8984375" />
 
 
-	<sprite name="explosion.bmp#0" in_pixel="true" left="" top="" right="128" bottom="128" />
+	<sprite name="explosion.bmp#0" in_pixel="true" left="0" top="" right="128" bottom="128" />
 	<sprite name="explosion.bmp#1" in_pixel="true" left="128" top="" right="256" bottom="128" />
 	<sprite name="explosion.bmp#2" in_pixel="true" left="256" top="" right="384" bottom="128" />
 	<sprite name="explosion.bmp#3" in_pixel="true" left="384" top="" right="512" bottom="128" />
@@ -108,7 +108,7 @@
 	<sprite name="explosion.bmp#5" in_pixel="true" left="640" top="" right="768" bottom="128" />
 	<sprite name="explosion.bmp#6" in_pixel="true" left="768" top="" right="896" bottom="128" />
 	<sprite name="explosion.bmp#7" in_pixel="true" left="896" top="" right="1024" bottom="128" />
-	<sprite name="explosion.bmp#8" in_pixel="true" left="" top="128" right="128" bottom="256" />
+	<sprite name="explosion.bmp#8" in_pixel="true" left="0" top="128" right="128" bottom="256" />
 	<sprite name="explosion.bmp#9" in_pixel="true" left="128" top="128" right="256" bottom="256" />
 	<sprite name="explosion.bmp#10" in_pixel="true" left="256" top="128" right="384" bottom="256" />
 	<sprite name="explosion.bmp#11" in_pixel="true" left="384" top="128" right="512" bottom="256" />
@@ -116,7 +116,7 @@
 	<sprite name="explosion.bmp#13" in_pixel="true" left="640" top="128" right="768" bottom="256" />
 	<sprite name="explosion.bmp#14" in_pixel="true" left="768" top="128" right="896" bottom="256" />
 	<sprite name="explosion.bmp#15" in_pixel="true" left="896" top="128" right="1024" bottom="256" />
-	<sprite name="explosion.bmp#16" in_pixel="true" left="" top="256" right="128" bottom="384" />
+	<sprite name="explosion.bmp#16" in_pixel="true" left="0" top="256" right="128" bottom="384" />
 	<sprite name="explosion.bmp#17" in_pixel="true" left="128" top="256" right="256" bottom="384" />
 	<sprite name="explosion.bmp#18" in_pixel="true" left="256" top="256" right="384" bottom="384" />
 	<sprite name="explosion.bmp#19" in_pixel="true" left="384" top="256" right="512" bottom="384" />
@@ -124,7 +124,7 @@
 	<sprite name="explosion.bmp#21" in_pixel="true" left="640" top="256" right="768" bottom="384" />
 	<sprite name="explosion.bmp#22" in_pixel="true" left="768" top="256" right="896" bottom="384" />
 	<sprite name="explosion.bmp#23" in_pixel="true" left="896" top="256" right="1024" bottom="384" />
-	<sprite name="explosion.bmp#24" in_pixel="true" left="" top="384" right="128" bottom="512" />
+	<sprite name="explosion.bmp#24" in_pixel="true" left="0" top="384" right="128" bottom="512" />
 	<sprite name="explosion.bmp#25" in_pixel="true" left="128" top="384" right="256" bottom="512" />
 	<sprite name="explosion.bmp#26" in_pixel="true" left="256" top="384" right="384" bottom="512" />
 	<sprite name="explosion.bmp#27" in_pixel="true" left="384" top="384" right="512" bottom="512" />
@@ -132,7 +132,7 @@
 	<sprite name="explosion.bmp#29" in_pixel="true" left="640" top="384" right="768" bottom="512" />
 	<sprite name="explosion.bmp#30" in_pixel="true" left="768" top="384" right="896" bottom="512" />
 	<sprite name="explosion.bmp#31" in_pixel="true" left="896" top="384" right="1024" bottom="512" />
-	<sprite name="explosion.bmp#32" in_pixel="true" left="" top="512" right="128" bottom="640" />
+	<sprite name="explosion.bmp#32" in_pixel="true" left="0" top="512" right="128" bottom="640" />
 	<sprite name="explosion.bmp#33" in_pixel="true" left="128" top="512" right="256" bottom="640" />
 	<sprite name="explosion.bmp#34" in_pixel="true" left="256" top="512" right="384" bottom="640" />
 	<sprite name="explosion.bmp#35" in_pixel="true" left="384" top="512" right="512" bottom="640" />
@@ -140,8 +140,200 @@
 	<sprite name="explosion.bmp#37" in_pixel="true" left="640" top="512" right="768" bottom="640" />
 	<sprite name="explosion.bmp#38" in_pixel="true" left="768" top="512" right="896" bottom="640" />
 	<sprite name="explosion.bmp#39" in_pixel="true" left="896" top="512" right="1024" bottom="640" />
-	<sprite name="explosion.bmp#40" in_pixel="true" left="" top="640" right="128" bottom="768" />
+	<sprite name="explosion.bmp#40" in_pixel="true" left="0" top="640" right="128" bottom="768" />
 	<sprite name="explosion.bmp#41" in_pixel="true" left="128" top="640" right="256" bottom="768" />
+
+
+
+
+	<sprite name="font1_tex.bmp#Connection_II#0" in_pixel="true" left="0" top="0" right="50" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#1" in_pixel="true" left="50" top="0" right="90" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#2" in_pixel="true" left="90" top="0" right="140" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#3" in_pixel="true" left="140" top="0" right="190" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#4" in_pixel="true" left="190" top="0" right="240" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#5" in_pixel="true" left="240" top="0" right="290" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#6" in_pixel="true" left="290" top="0" right="340" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#7" in_pixel="true" left="340" top="0" right="390" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#8" in_pixel="true" left="390" top="0" right="440" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#9" in_pixel="true" left="440" top="0" right="490" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#A" in_pixel="true" left="490" top="0" right="550" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#B" in_pixel="true" left="550" top="0" right="610" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#C" in_pixel="true" left="610" top="0" right="670" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#D" in_pixel="true" left="670" top="0" right="730" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#E" in_pixel="true" left="730" top="0" right="780" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#F" in_pixel="true" left="780" top="0" right="830" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#G" in_pixel="true" left="830" top="0" right="890" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#H" in_pixel="true" left="890" top="0" right="950" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#I" in_pixel="true" left="950" top="0" right="970" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#J" in_pixel="true" left="970" top="0" right="1020" bottom="100" />
+	<sprite name="font1_tex.bmp#Connection_II#K" in_pixel="true" left="0" top="90" right="60" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#L" in_pixel="true" left="60" top="90" right="110" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#M" in_pixel="true" left="110" top="90" right="190" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#N" in_pixel="true" left="190" top="90" right="250" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#O" in_pixel="true" left="250" top="90" right="310" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#P" in_pixel="true" left="310" top="90" right="370" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#Q" in_pixel="true" left="370" top="90" right="440" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#R" in_pixel="true" left="440" top="90" right="500" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#S" in_pixel="true" left="500" top="90" right="560" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#T" in_pixel="true" left="560" top="90" right="620" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#U" in_pixel="true" left="620" top="90" right="680" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#V" in_pixel="true" left="680" top="90" right="740" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#W" in_pixel="true" left="740" top="90" right="840" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#X" in_pixel="true" left="840" top="90" right="900" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#Y" in_pixel="true" left="900" top="90" right="960" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#Z" in_pixel="true" left="960" top="90" right="1020" bottom="190" />
+	<sprite name="font1_tex.bmp#Connection_II#a" in_pixel="true" left="0" top="184" right="60" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#b" in_pixel="true" left="60" top="184" right="120" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#c" in_pixel="true" left="120" top="184" right="180" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#d" in_pixel="true" left="180" top="184" right="240" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#e" in_pixel="true" left="240" top="184" right="300" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#f" in_pixel="true" left="0" top="286" right="50" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#g" in_pixel="true" left="300" top="174" right="360" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#h" in_pixel="true" left="360" top="184" right="420" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#i" in_pixel="true" left="420" top="184" right="440" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#j" in_pixel="true" left="440" top="184" right="470" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#k" in_pixel="true" left="470" top="184" right="520" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#l" in_pixel="true" left="520" top="184" right="540" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#m" in_pixel="true" left="540" top="184" right="630" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#n" in_pixel="true" left="630" top="184" right="690" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#o" in_pixel="true" left="690" top="184" right="750" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#p" in_pixel="true" left="750" top="184" right="810" bottom="285" />
+	<sprite name="font1_tex.bmp#Connection_II#q" in_pixel="true" left="810" top="184" right="870" bottom="285" />
+	<sprite name="font1_tex.bmp#Connection_II#r" in_pixel="true" left="870" top="184" right="920" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#s" in_pixel="true" left="920" top="184" right="980" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#t" in_pixel="true" left="980" top="184" right="1021" bottom="284" />
+	<sprite name="font1_tex.bmp#Connection_II#u" in_pixel="true" left="50" top="286" right="110" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#v" in_pixel="true" left="110" top="286" right="170" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#w" in_pixel="true" left="170" top="286" right="270" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#x" in_pixel="true" left="270" top="286" right="330" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#y" in_pixel="true" left="620" top="270" right="680" bottom="380" />
+	<sprite name="font1_tex.bmp#Connection_II#z" in_pixel="true" left="330" top="286" right="390" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#'" in_pixel="true" left="390" top="286" right="420" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#-" in_pixel="true" left="420" top="286" right="480" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#!" in_pixel="true" left="480" top="286" right="500" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II##" in_pixel="true" left="500" top="286" right="560" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#$" in_pixel="true" left="560" top="286" right="620" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#%" in_pixel="true" left="680" top="286" right="780" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#&amp;" in_pixel="true" left="780" top="286" right="850" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#&lt;" in_pixel="true" left="850" top="286" right="890" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#&quot;" in_pixel="true" left="890" top="286" right="940" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#(" in_pixel="true" left="940" top="286" right="970" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#)" in_pixel="true" left="970" top="286" right="1000" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#*" in_pixel="true" left="0" top="384" right="40" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#," in_pixel="true" left="40" top="384" right="70" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#." in_pixel="true" left="1000" top="286" right="1020" bottom="386" />
+	<sprite name="font1_tex.bmp#Connection_II#/" in_pixel="true" left="70" top="384" right="150" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#:" in_pixel="true" left="150" top="384" right="170" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#;" in_pixel="true" left="170" top="384" right="200" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#?" in_pixel="true" left="200" top="384" right="250" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#@" in_pixel="true" left="250" top="384" right="330" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#[" in_pixel="true" left="330" top="384" right="360" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#\" in_pixel="true" left="360" top="384" right="440" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#]" in_pixel="true" left="440" top="384" right="470" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#^" in_pixel="true" left="470" top="384" right="530" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#_" in_pixel="true" left="530" top="384" right="590" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#`" in_pixel="true" left="590" top="384" right="620" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#{" in_pixel="true" left="620" top="384" right="660" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#|" in_pixel="true" left="660" top="384" right="680" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#}" in_pixel="true" left="680" top="384" right="720" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#~" in_pixel="true" left="720" top="384" right="770" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#+" in_pixel="true" left="770" top="384" right="830" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#=" in_pixel="true" left="830" top="384" right="880" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#>" in_pixel="true" left="880" top="384" right="920" bottom="484" />
+	<sprite name="font1_tex.bmp#Connection_II#undefined" in_pixel="true" left="920" top="384" right="970" bottom="484" />
+
+
+
+
+
+	<sprite name="font1_tex.bmp#Kidpixies#undefined" in_pixel="true" left="934" top="785" right="996" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#!" in_pixel="true" left="449" top="785" right="469" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#&quot;" in_pixel="true" left="469" top="785" right="505" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies##" in_pixel="true" left="505" top="785" right="558" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#$" in_pixel="true" left="558" top="785" right="633" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#&amp;" in_pixel="true" left="633" top="785" right="682" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#'" in_pixel="true" left="682" top="785" right="701" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#(" in_pixel="true" left="701" top="785" right="743" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#)" in_pixel="true" left="743" top="785" right="785" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#*" in_pixel="true" left="785" top="785" right="818" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#," in_pixel="true" left="818" top="785" right="847" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#-" in_pixel="true" left="847" top="785" right="868" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#." in_pixel="true" left="868" top="785" right="892" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#/" in_pixel="true" left="892" top="785" right="934" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#0" in_pixel="true" left="783" top="685" right="845" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#1" in_pixel="true" left="845" top="685" right="881" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#2" in_pixel="true" left="881" top="685" right="938" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#3" in_pixel="true" left="938" top="685" right="996" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#4" in_pixel="true" left="0" top="785" right="49" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#5" in_pixel="true" left="49" top="785" right="102" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#6" in_pixel="true" left="102" top="785" right="165" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#7" in_pixel="true" left="165" top="785" right="227" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#8" in_pixel="true" left="227" top="785" right="290" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#9" in_pixel="true" left="290" top="785" right="339" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#:" in_pixel="true" left="339" top="785" right="361" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#;" in_pixel="true" left="996" top="685" right="1023" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#?" in_pixel="true" left="361" top="785" right="404" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#@" in_pixel="true" left="404" top="785" right="449" bottom="885" />
+	<sprite name="font1_tex.bmp#Kidpixies#A" in_pixel="true" left="0" top="485" right="59" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#B" in_pixel="true" left="59" top="485" right="114" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#C" in_pixel="true" left="114" top="485" right="170" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#D" in_pixel="true" left="170" top="485" right="225" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#E" in_pixel="true" left="225" top="485" right="269" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#F" in_pixel="true" left="269" top="485" right="318" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#G" in_pixel="true" left="318" top="485" right="370" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#H" in_pixel="true" left="370" top="485" right="419" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#I" in_pixel="true" left="419" top="485" right="470" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#J" in_pixel="true" left="470" top="485" right="526" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#K" in_pixel="true" left="526" top="485" right="581" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#L" in_pixel="true" left="581" top="485" right="627" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#M" in_pixel="true" left="627" top="485" right="676" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#N" in_pixel="true" left="676" top="485" right="728" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#O" in_pixel="true" left="728" top="485" right="790" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#P" in_pixel="true" left="790" top="485" right="844" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#Q" in_pixel="true" left="844" top="485" right="906" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#R" in_pixel="true" left="906" top="485" right="958" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#S" in_pixel="true" left="0" top="585" right="49" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#T" in_pixel="true" left="958" top="485" right="1020" bottom="585" />
+	<sprite name="font1_tex.bmp#Kidpixies#U" in_pixel="true" left="49" top="585" right="106" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#V" in_pixel="true" left="106" top="585" right="164" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#W" in_pixel="true" left="164" top="585" right="224" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#X" in_pixel="true" left="224" top="585" right="285" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#Y" in_pixel="true" left="285" top="585" right="341" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#Z" in_pixel="true" left="341" top="585" right="393" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#[" in_pixel="true" left="0" top="885" right="43" bottom="985" />
+	<sprite name="font1_tex.bmp#Kidpixies#\" in_pixel="true" left="43" top="885" right="79" bottom="985" />
+	<sprite name="font1_tex.bmp#Kidpixies#]" in_pixel="true" left="79" top="885" right="121" bottom="985" />
+	<sprite name="font1_tex.bmp#Kidpixies#a" in_pixel="true" left="393" top="585" right="454" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#b" in_pixel="true" left="454" top="585" right="503" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#c" in_pixel="true" left="503" top="585" right="554" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#d" in_pixel="true" left="554" top="585" right="617" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#e" in_pixel="true" left="617" top="585" right="661" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#f" in_pixel="true" left="661" top="585" right="716" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#g" in_pixel="true" left="716" top="585" right="768" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#h" in_pixel="true" left="768" top="585" right="816" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#i" in_pixel="true" left="816" top="585" right="866" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#j" in_pixel="true" left="866" top="585" right="922" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#k" in_pixel="true" left="922" top="585" right="977" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#l" in_pixel="true" left="977" top="585" right="1023" bottom="685" />
+	<sprite name="font1_tex.bmp#Kidpixies#m" in_pixel="true" left="0" top="685" right="49" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#n" in_pixel="true" left="49" top="685" right="101" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#o" in_pixel="true" left="101" top="685" right="163" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#p" in_pixel="true" left="163" top="685" right="217" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#q" in_pixel="true" left="217" top="685" right="279" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#r" in_pixel="true" left="279" top="685" right="331" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#s" in_pixel="true" left="331" top="685" right="380" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#t" in_pixel="true" left="380" top="685" right="441" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#u" in_pixel="true" left="441" top="685" right="497" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#v" in_pixel="true" left="497" top="685" right="555" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#w" in_pixel="true" left="555" top="685" right="615" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#x" in_pixel="true" left="615" top="685" right="676" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#y" in_pixel="true" left="676" top="685" right="731" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#z" in_pixel="true" left="731" top="685" right="783" bottom="785" />
+	<sprite name="font1_tex.bmp#Kidpixies#§" in_pixel="true" left="121" top="885" right="166" bottom="985" />
+	<sprite name="font1_tex.bmp#Kidpixies#«" in_pixel="true" left="166" top="885" right="223" bottom="985" />
+	<sprite name="font1_tex.bmp#Kidpixies#»" in_pixel="true" left="223" top="885" right="280" bottom="985" />
+	<sprite name="font1_tex.bmp#Kidpixies#…" in_pixel="true" left="280" top="885" right="343" bottom="985" />
+
 
 </sprites>
 

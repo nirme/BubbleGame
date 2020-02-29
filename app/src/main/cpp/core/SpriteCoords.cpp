@@ -23,13 +23,18 @@ namespace core
 	{};
 
 
-	SpriteCoords::SpriteCoords(const Vector2 &_v0, const Vector2 &_v1, const Vector2 &_v2, const Vector2 &_v3) :
-		uvPoints{
-			_v0,
-			_v1,
-			_v2,
-			_v3
+	SpriteCoords::SpriteCoords(const Vector2 &_minV, const Vector2 &_maxV) :
+		uvArray{
+			_minV.x, _maxV.y,
+			_maxV.x, _maxV.y,
+			_minV.x, _minV.y,
+			_maxV.x, _minV.y
 		}
+	{};
+
+
+	SpriteCoords::SpriteCoords(const Vector2 &_v0, const Vector2 &_v1, const Vector2 &_v2, const Vector2 &_v3) :
+		uvPoints{_v0, _v1, _v2, _v3}
 	{};
 
 
@@ -118,7 +123,6 @@ namespace core
 		{ -0.5f, -0.5f },
 		{ 0.5f, -0.5f }
 	);
-
 
 	SpriteCoords operator*(const Matrix3& _m, const SpriteCoords& _v)
 	{

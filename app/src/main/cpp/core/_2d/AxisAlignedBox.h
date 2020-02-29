@@ -177,6 +177,16 @@ namespace core
 			};
 
 
+			AxisAlignedBox& move(const Vector2& _v)
+			{
+				if (!isEmpty())
+				{
+					vMin + _v;
+					vMax + _v;
+				}
+				return *this;
+			};
+
 
 			AxisAlignedBox& transform(const Matrix3& _m)
 			{

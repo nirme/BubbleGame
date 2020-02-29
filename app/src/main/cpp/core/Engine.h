@@ -150,9 +150,11 @@ namespace core
 
 
 			// initialize systems required for resource loading
+			renderer->setBackgroundColor(0.5f, 0.5f, 0.5f);
             renderer->enableMultisampling(true);
 			renderer->initialize(androidApp);
 
+			//soundSystem->setSoundConfig(44100, 16, 2);
             soundSystem->initialize();
 
 {
@@ -384,7 +386,14 @@ particleTest->setScale(1.0f);
 
 SoundPtr testSound = SoundManager::getSingleton().getByName("test.mp3");
 testSound->load();
-soundSystem->runTest(testSound);
+SoundSystem::getSingleton().playSound(0, testSound);
+
+//SoundManager::getSingleton().getByName("test.ogg")->load();
+//SoundManager::getSingleton().getByName("test.flac")->load();
+//SoundManager::getSingleton().getByName("test.aac")->load();
+//SoundManager::getSingleton().getByName("test.ac3")->load();
+
+//soundSystem->runTest(testSound);
 
 		};
 

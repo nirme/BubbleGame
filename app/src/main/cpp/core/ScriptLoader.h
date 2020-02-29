@@ -77,9 +77,12 @@ namespace core
 
 		// sprited font
 
+		std::string parseFontName(ScriptNodePtr _node);
 		std::string parseCodePoint(ScriptNodePtr _node);
+		float parseCharWidth(ScriptNodePtr _node);
+		bool parseCharVisibility(ScriptNodePtr _node);
 		KerningPair parseKerningPair(ScriptNodePtr _node);
-		FONT_SPACING parseFontSpacing(ScriptNodePtr _node);
+		SpritedFont::FONT_SPACING parseFontSpacing(ScriptNodePtr _node);
 		std::string parseFontTexture(ScriptNodePtr _node);
 		float parseSizeMultiplier(ScriptNodePtr _node);
 		float parseLineHeight(ScriptNodePtr _node);

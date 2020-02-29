@@ -52,32 +52,113 @@ namespace core
 		}
 	};
 
-	SpritedFont::Character SpritedFont::Utf8ToCodepoint(const char *_in)
+	bool SpritedFont::Utf8ToCodepoint(const char *_in, Character &_cp)
 	{
-        const unsigned char *character = reinterpret_cast<const unsigned char *>(_in);
+		assert(_in && "char string cannot be null");
+        //const unsigned char *character = reinterpret_cast<const unsigned char *>(_in);
 
-		if (character[0] < 0x80) // 0xxxxxxx
+		if ((_in[0] & 0b10000000) == 0) // 0xxxxxxx
 		{
-			return (Character)character[0];
+			_cp = _in[0];
+			return true;
 		}
-		else if (character[0] < 0xE0) // 110xxxxx 10xxxxxx
+
+		if ((_in[0] & 0b11100000) == 0b11000000) // 110xxxxx 10xxxxxx
 		{
-			return (((Character)(0b00011111 & character[0])) << 6) |
-				(0b00111111 & character[1]);
+			if ((_in[1] & 0b11000000) == 0b10000000)
+			{
+				_cp = (((Character)(_in[0] & 0b00011111)) << 6) | (_in[1] & 0b00111111);
+				return true;
+			}
+			return false;
 		}
-		else if (character[0] < 0xF0) // 1110xxxx 10xxxxxx 10xxxxxx
+
+		if ((_in[0] & 0b11110000) == 0b11100000) // 1110xxxx 10xxxxxx 10xxxxxx
 		{
-			return (((Character)(0b00001111 & character[0])) << 12) |
-				(((Character)(0b00111111 & character[1])) << 6) |
-				(0b00111111 & character[2]);
+			if ((_in[1] & 0b11000000) == 0b10000000 && (_in[2] & 0b11000000) == 0b10000000)
+			{
+				_cp = (((Character)(_in[0] & 0b00001111)) << 12) |
+					(((Character)(_in[1] & 0b00111111)) << 6) |
+					(_in[2] & 0b00111111);
+				return true;
+			}
+			return false;
 		}
-		else // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+
+		if ((_in[0] & 0b11111000) == 0b11110000) // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
 		{
-			return (((Character)(0b00000111 & character[0])) << 18) |
-				(((Character)(0b00111111 & character[1])) << 12) |
-				(((Character)(0b00111111 & character[2])) << 6) |
-				(0b00111111 & character[3]);
+			if ((_in[1] & 0b11000000) == 0b10000000 && (_in[2] & 0b11000000) == 0b10000000 && (_in[3] & 0b11000000) == 0b10000000)
+			{
+				_cp = (((Character)(_in[0] & 0b00000111)) << 18) |
+					(((Character)(_in[1] & 0b00111111)) << 12) |
+					(((Character)(_in[2] & 0b00111111)) << 6) |
+					(_in[3] & 0b00111111);
+				return true;
+			}
+			return false;
 		}
+
+		return false;
+	};
+
+	bool SpritedFont::Utf8ToCodepoint(const std::string &_in, std::wstring &_out)
+	{
+		assert(sizeof(wchar_t) == 4 && "wchar_t must be 4 bytes");
+		const char *ptr ,*text = _in.c_str();
+		unsigned int c(0), len(_in.length());
+		std::wstring out;
+
+		while (c < len)
+		{
+			ptr = text + c;
+
+			if ((ptr[0] & 0b10000000) == 0) // 0b0#######
+			{
+				_out.push_back(ptr[0]);
+				c += 1;
+				continue;
+			}
+			else if ((ptr[0] & 0b11100000) == 0b11000000) // 0b110#####
+			{
+				if (len - c >= 2 && ((ptr[1] & 0b11000000) == 0b10000000)) // 0b10######
+				{
+					_out.push_back(
+						( ( (wchar_t) ( ptr[0] | 0b00011111 ) ) << 6 ) |
+						( ptr[1] | 0b00111111 ) );
+					c += 2;
+					continue;
+				}
+			}
+			else if ((ptr[0] & 0b11110000) == 0b11100000) // 0b1110####
+			{
+				if (len - c >= 3 && ((ptr[1] & 0b11000000) == 0b10000000) && ((ptr[2] & 0b11000000) == 0b10000000)) // 0b10###### 0b10######
+				{
+					_out.push_back(
+							( ( (wchar_t) ( ptr[0] | 0b00001111 ) ) << 12 ) |
+							( ( (wchar_t) ( ptr[1] | 0b00111111 ) ) << 6  ) |
+							( ptr[2] | 0b00111111 ) );
+					c += 3;
+					continue;
+				}
+			}
+			else if ((ptr[0] & 0b11111000) == 0b11110000) // 0b11110###
+			{
+				if (len - c >= 4 && ((ptr[1] & 0b11000000) == 0b10000000) && ((ptr[2] & 0b11000000) == 0b10000000) && ((ptr[3] & 0b11000000) == 0b10000000)) // 0b10###### 0b10###### 0b10######
+				{
+					_out.push_back(
+							( ( (wchar_t) ( ptr[0] | 0b00000111 ) ) << 18 ) |
+							( ( (wchar_t) ( ptr[1] | 0b00111111 ) ) << 12 ) |
+							( ( (wchar_t) ( ptr[2] | 0b00111111 ) ) << 6  ) |
+							( ptr[3] | 0b00111111 ) );
+					c += 3;
+					continue;
+				}
+			}
+			return false;
+		}
+
+		out.swap(_out);
+		return true;
 	};
 
 
@@ -110,72 +191,111 @@ namespace core
 
 		ScriptNodeListPtr fontData = sloader.parse(data);
 
-		Character defaultCharacter;
+		std::wstring defaultCharacter;
+		std::string spriteNamePrefix;
+
+		ScriptNodePtr configNode, charMapNode, kerningNode;
 
 		for (auto it = fontData->begin(); it != fontData->end(); ++it)
 		{
 			if ((*it)->getName().compare(config) == 0)
-			{
-				spacing = sloader.parseFontSpacing(*it);
-
-				spriteAtlas = TextureManager::getSingleton().getByName(sloader.parseFontTexture(*it), getGroup());
-
-				sizeMultiplier = sloader.parseSizeMultiplier(*it);
-				lineHeight = sloader.parseLineHeight(*it);
-
-				defaultCharacter = SpritedFont::Utf8ToCodepoint(sloader.parseDefaultChar(*it).c_str());
-			}
+				configNode = (*it);
 			else if ((*it)->getName().compare(charMap) == 0)
-			{
-				std::string codePoint, spriteName;
-				ScriptNodeListPtr chars = (*it)->getChildList();
-				for (auto charIt = chars->begin(); charIt != chars->end(); ++charIt)
-				{
-					//get and parse codepoint value
-					codePoint = sloader.parseCodePoint(*charIt);
-
-                    ImageSpritePtr sprite = spriteManager.getByName(spriteAtlas->getName() + "#" + codePoint, getGroup());
-                    sprite->load();
-
-					// need to make sure to load spriteAtlas beforehand
-					characters.emplace(Utf8ToCodepoint(codePoint.c_str()), sprite);
-				}
-			}
+				charMapNode = (*it);
 			else if ((*it)->getName().compare(kerning) == 0)
+				kerningNode = (*it);
+		}
+
+
+		assert(configNode && "config node not present");
+		assert(charMapNode && "character map node not present");
+
+		{
+			spriteAtlas = TextureManager::getSingleton().getByName(sloader.parseFontTexture(configNode), getGroup());
+			std::string fontName = sloader.parseFontName(configNode);
+			spriteNamePrefix = spriteAtlas->getName() + "#" + fontName + "#";
+
+			spacing = sloader.parseFontSpacing(configNode);
+			sizeMultiplier = sloader.parseSizeMultiplier(configNode);
+			lineHeight = sloader.parseLineHeight(configNode);
+
+			//get default char
+			Utf8ToCodepoint(sloader.parseDefaultChar(configNode), defaultCharacter);
+			defaultChar.clear();
+		}
+
+		{
+			std::string codePointUTF8;
+			std::wstring codePoint;
+			float charWidth, charHeight;
+			bool visibility;
+			ScriptNodeListPtr chars = charMapNode->getChildList();
+			for (auto charIt = chars->begin(); charIt != chars->end(); ++charIt)
 			{
-				ScriptNodeListPtr chars = (*it)->getChildList();
-				for (auto charIt = chars->begin(); charIt != chars->end(); ++charIt)
-				{
-					KerningPair kp = sloader.parseKerningPair(*charIt);
-					kerningTable.emplace(CharacterPair(Utf8ToCodepoint(kp.cp1), Utf8ToCodepoint(kp.cp2)), kp.kerning);
-				}
+				//get and parse codepoint value
+				codePointUTF8 = sloader.parseCodePoint(*charIt);
+				Utf8ToCodepoint(codePointUTF8, codePoint);
+
+				ImageSpritePtr sprite = spriteManager.getByName(spriteNamePrefix + codePointUTF8, getGroup());
+				sprite->load();
+
+				charWidth = sloader.parseCharWidth(*charIt);
+				Vector2 size = sprite->getCoords().uvPoints[3] - sprite->getCoords().uvPoints[0];
+				charHeight = (charWidth / size.x) * size.y;
+
+				visibility = sloader.parseCharVisibility(*charIt);
+
+				if (codePoint.compare(defaultCharacter) == 0)
+					defaultChar = CharSprite(-1, sprite, charWidth, charHeight, visibility);
+
+				if (codePoint.length() == 1)
+					characters.emplace(codePoint[0], CharSprite(codePoint[0], sprite, charWidth, charHeight, visibility) );
+			}
+		}
+
+		{
+			ScriptNodeListPtr chars = kerningNode->getChildList();
+			Character cp1, cp2;
+
+			for (auto charIt = chars->begin(); charIt != chars->end(); ++charIt)
+			{
+				KerningPair kp = sloader.parseKerningPair(*charIt);
+				Utf8ToCodepoint(kp.cp1, cp1);
+				Utf8ToCodepoint(kp.cp2, cp2);
+				kerningTable.emplace(CharacterPair(cp1, cp2), kp.kerning);
 			}
 		}
 
 
-
-		CharacterSpritesMap::iterator it = characters.find(defaultCharacter);
-
-		if (it == characters.end())
+		if (defaultChar.cp == 0)
 		{
-			it = characters.find((Character)('?'));
-
-			if (it == characters.end())
+			auto it = characters.find(L'?');
+			if (it != characters.end())
+			{
+				defaultChar = (*it).second;
+				defaultChar.cp = -1;
+			}
+			else
+			{
 				it = characters.begin();
+				if (it != characters.end())
+				{
+					defaultChar = (*it).second;
+					defaultChar.cp = -1;
+				}
+			}
 		}
-
-		if (it != characters.end())
-			defaultChar = (*it).second;
 	};
 
 
 	void SpritedFont::unloadImp()
 	{
 		spriteAtlas.reset();
-		defaultChar.reset();
-
 		characters.clear();
+		defaultChar.clear();
 		kerningTable.clear();
+		sizeMultiplier = 0.0f;
+		lineHeight = 0.0f;
 	};
 
 
@@ -196,80 +316,101 @@ namespace core
 	};
 
 
-	SpritedText SpritedFont::generateSpritedVector(const std::string &_text, float *_vectorWidth, float *_vectorHeight, float _width)
+	SpritedTextVertices SpritedFont::generateSpritedVector(const std::string &_text, Vector2 *_textSize, float _maxWidth)
+	{
+		std::wstring wText;
+		bool test = Utf8ToCodepoint(_text, wText);
+		assert(test && "incorrect UTF8 encoding, cannot convert text");
+		return generateSpritedVector(wText, _textSize, _maxWidth);
+	};
+
+
+	SpritedTextVertices SpritedFont::generateSpritedVector(const std::wstring &_text, Vector2 *_textSize, float _maxWidth)
 	{
 		unsigned int len = _text.length();
 		if (!len)
-			return SpritedText();
+			return SpritedTextVertices();
 
-		const char* textArr = _text.c_str();
+		const Character *textArr = _text.c_str();
 
 		Vector2 nextLetterPosition;
 		Vector2 spriteSize;
 		Vector2 textSize;
+		float kerning(0.0f);
 
-		CharacterSpritesMap::iterator charSprite;
+		CharacterSpritesMap::iterator charSpriteIt;
 		KerningMap::iterator kern;
-		ImageSpritePtr sprite;
+		//CharSprite sprite;
 
-		SpritedText out(len);
+		SpritedTextVertices out(len);
 
 		for (unsigned int i = 0; i < len; ++i)
 		{
-			charSprite = characters.find((Character)textArr[i]);
-			sprite = charSprite != characters.end() ? (*charSprite).second : defaultChar;
+			charSpriteIt = characters.find((Character)textArr[i]);
+			CharSprite &charSprite = (charSpriteIt != characters.end()) ? (*charSpriteIt).second : defaultChar;
 
-			const TextureSpriteCoords &texCoords = sprite->getCoords();
-			//fill in texels
-			out[i].tex1 = texCoords.uvPoints[0];
-			out[i].tex2 = texCoords.uvPoints[1];
-			out[i].tex3 = texCoords.uvPoints[2];
-			out[i].tex4 = texCoords.uvPoints[3];
 
-           spriteSize = Vector2(
-				sizeMultiplier * (texCoords.uvPoints[1].x - texCoords.uvPoints[0].x),
-				sizeMultiplier * (texCoords.uvPoints[2].y - texCoords.uvPoints[0].y)
-			);
-
-			if (nextLetterPosition.x + spriteSize.x > _width)
+			// move due to kerning
+			if (spacing == FS_PROPORTIONAL && i > 0)
 			{
+				auto kernIt = kerningTable.find({_text[i-1], _text[i]});
+				if (kernIt != kerningTable.end())
+					nextLetterPosition.x += (*kernIt).second;
+			}
+
+			//spriteSize = Vector2(sizeMultiplier * charSprite.width, sizeMultiplier * charSprite.height);
+			spriteSize = Vector2(sizeMultiplier * charSprite.width, -sizeMultiplier * charSprite.height);
+
+			// check char visibility
+			if (!charSprite.visible)
+			{
+				nextLetterPosition.x += spriteSize.x;
+				continue;
+			}
+
+
+			// move to next line if needed
+			if (nextLetterPosition.x + spriteSize.x > _maxWidth)
+			{
+				if (textSize.x < nextLetterPosition.x)
+					textSize.x = nextLetterPosition.x;
+
 				nextLetterPosition.x = 0.0f;
 				nextLetterPosition.y -= lineHeight;
             }
 
 
             //fill in vertices
-			out[i].vert1 = nextLetterPosition;
+			out[i].vertex0 = nextLetterPosition;
 
-			out[i].vert2.x = nextLetterPosition.x + spriteSize.x;
-            out[i].vert2.y = nextLetterPosition.y;
+			out[i].vertex1.x = nextLetterPosition.x + spriteSize.x;
+            out[i].vertex1.y = nextLetterPosition.y;
 
-			out[i].vert3.x = nextLetterPosition.x;
-			out[i].vert3.y = nextLetterPosition.y + spriteSize.y;
+			out[i].vertex2.x = nextLetterPosition.x;
+			out[i].vertex2.y = nextLetterPosition.y + spriteSize.y;
 
-			out[i].vert4 = nextLetterPosition + spriteSize;
+			out[i].vertex3 = nextLetterPosition + spriteSize;
+
+
+			//fill in texels
+			const TextureSpriteCoords &texCoords = charSprite.sprite->getCoords();
+			out[i].texel0 = texCoords.uvPoints[0];
+			out[i].texel1 = texCoords.uvPoints[1];
+			out[i].texel2 = texCoords.uvPoints[2];
+			out[i].texel3 = texCoords.uvPoints[3];
 
 
 			nextLetterPosition.x += spriteSize.x;
-			if (spacing == FONT_SPACING::FS_PROPORTIONAL && i + 1 < len)
-			{
-				kern = kerningTable.find(CharacterPair((Character)textArr[i], (Character)textArr[i + 1]));
-				if (kern != kerningTable.end())
-					nextLetterPosition.x += (*kern).second;
-			}
 		}
 
 
-		if (out.back().vert4.x > textSize.x)
-			textSize.x = out.back().vert4.x;
+		if (out.back().vertex3.x > textSize.x)
+			textSize.x = out.back().vertex3.x;
+		textSize.y = out.back().vertex3.y;
 
-		textSize.y = out.back().vert4.y;
 
-		if (_vectorWidth)
-			*_vectorWidth = textSize.x;
-
-		if (_vectorHeight)
-			*_vectorHeight = textSize.y;
+		if (_textSize)
+			*_textSize = textSize;
 
 		return out;
 	};

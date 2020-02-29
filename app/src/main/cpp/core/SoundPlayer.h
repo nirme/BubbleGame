@@ -9,19 +9,26 @@
 #include <SLES/OpenSLES_Android.h>
 
 #include "Exceptions.h"
-#include "SoundSystem.h"
+#include "Sound.h"
 
 
 namespace core
 {
-    //class SoundSystem;
-/*
+    class SoundSystem;
+
     class SoundPlayer
     {
     protected:
-        static constexpr int BufferQueueSize = 3;
-        static std::array<SLInterfaceID> Interfaces;
-        static std::array<int8_t, 32> EmptyBuffer;
+
+		enum PLAYBACK_STATE
+		{
+			PS_STOPPED = 0x00,
+			PS_PLAYING = 0x01,
+			PS_PAUSED = 0x02,
+		};
+
+
+		static constexpr int BufferQueueSize = 3; // 3 buffers, 1 playing, 1 ready to play next part, 1 empty to load nex buffer
 
         // shared input struct
         static constexpr SLDataLocator_BufferQueue InputLocatorStruct = {
@@ -29,125 +36,105 @@ namespace core
             BufferQueueSize
         };
 
-        static constexpr SLDataFormat_PCM InputFormatStruct = {
-            SL_DATAFORMAT_PCM,
-            2,
-            SL_SAMPLINGRATE_44_1,
-            SL_PCMSAMPLEFORMAT_FIXED_16,
-            16,  // packing of samples, best same as BPS
-            SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT,
-            SL_BYTEORDER_LITTLEENDIAN
-        };
-
         // cannot be const due to api restriction
-        static SLDataSource InputSourceStruct = {
-            (void *) &SoundPlayer::InputLocatorStruct,
-            (void *) &SoundPlayer::InputFormatStruct
-        };
+        static SLDataSource InputSourceStruct;
+        static std::array<SLInterfaceID, 4> PlayersInterfaces;
+        static std::array<std::pair<const SLchar *, SLint32>, 1> AndroidInputConfiguration;
 
-        static constexpr std::array<std::pair<const SLchar *, SLint32>> AndroidInputConfiguration = {
-            {
-                SL_ANDROID_KEY_STREAM_TYPE,
-                SL_ANDROID_STREAM_MEDIA
-            },
-            {
-                SL_ANDROID_KEY_PERFORMANCE_MODE,
-                //SL_ANDROID_PERFORMANCE_LATENCY
-                SL_ANDROID_PERFORMANCE_LATENCY_EFFECTS
-            }
-        };
 
 
         SoundSystem *soundSystem;
 
         SLObjectItf slPlayerObject;
+
+        SLAndroidConfigurationItf slAndroidConfig;
+
         SLPlayItf slPlay;
-        //SLBufferQueueItf slBufferQueue;
         SLAndroidSimpleBufferQueueItf slBufferQueue;
         SLMuteSoloItf slMuteSolo;
-        SLPrefetchStatusItf slPrefetchStatus;
         SLVolumeItf slVolume;
 
-        typedef std::list<SoundPtr> SoundQueue;
-        SoundQueue soundQueue;
-        struct PlayedSong
-        {
-            bool buffered;
-            SoundPtr sound;
-        };
+
+        Sound::SoundBufferIteratorUPtr soundIterator;
+
+        typedef Sound::SoundBufferIterator::SampleBuffer SoundSampleBuffer;
+        std::list<SoundSampleBuffer> bufferList;
+
+		PLAYBACK_STATE playerState;
 
 
-    public:
 
-        void initialize()
-        {
-            assert(soundSystem && "Sound system cannot be NULL");
+		void queuedBufferCallback(SLAndroidSimpleBufferQueueItf _caller)
+		{
+			Logger::getSingleton().write("queuedBufferCallback called");
+			SLAndroidSimpleBufferQueueState queueState;
+			(*slBufferQueue)->GetState(slBufferQueue, &queueState);
 
-            std::vector<SLboolean> interfacesRequired(Interfaces.size(), SL_BOOLEAN_TRUE);
+			Logger::getSingleton().write(std::string("Queue state, count: ") + std::to_string(queueState.count) + std::string(", index: ") + std::to_string(queueState.index));
 
-            SL_ERROR_CHECK((*soundSystem->slEngine)->CreateAudioPlayer(
-                    soundSystem->slEngine,
-                    &slPlayerObject,
-                    &InputSourceStruct,
-                    &soundSystem->outputSinkStruct,
-                    Interfaces.size(),
-                    Interfaces.data(),
-                    interfacesRequired.data()
-            ));
+			SLuint32 playState;
+			(*slPlay)->GetPlayState(slPlay, &playState);
 
+			Logger::getSingleton().write(std::string("Play state: ") +
+				(playState == SL_PLAYSTATE_STOPPED ? "SL_PLAYSTATE_STOPPED" : (playState == SL_PLAYSTATE_PAUSED ? "SL_PLAYSTATE_PAUSED" : "SL_PLAYSTATE_PLAYING")));
 
-            SLAndroidConfigurationItf slAndroidConfigurationItf;
-
-            SL_ERROR_CHECK((*slPlayerObject)->GetInterface(
-                    slPlayerObject,
-                    SL_IID_ANDROIDCONFIGURATION,
-                    &slAndroidConfigurationItf
-            );
-
-            for (unsigned int i = 0; i < AndroidInputConfiguration.size(); ++i)
-            {
-                SL_ERROR_CHECK((*slAndroidConfigurationItf)->SetConfiguration(
-                        slAndroidConfigurationItf,
-                        AndroidInputConfiguration[i].first,
-                        &AndroidInputConfiguration[i].second,
-                        sizeof(SLint32)
-                ));
-            }
-
-            SL_ERROR_CHECK((*slPlayerObject)->Realize(
-                    slPlayerObject,
-                    SL_BOOLEAN_FALSE
-            ));
+		};
 
 
-            SL_ERROR_CHECK((*slPlayerObject)->GetInterface(
-                    slPlayerObject,
-                    SL_IID_ANDROIDSIMPLEBUFFERQUEUE,
-                    (void *) &slBufferQueue
-            ));
+		static void QueuedBufferCallback(SLAndroidSimpleBufferQueueItf _caller, void *_pContext)
+		{
+			//reinterpret_cast<SoundPlayer*>(_pContext)
+			reinterpret_cast<SoundPlayer*>(_pContext)->queuedBufferCallback(_caller);
+		};
 
-            SL_ERROR_CHECK((*slPlayerObject)->GetInterface(
-                    slPlayerObject,
-                    SL_IID_PLAY,
-                    (void *) &slPlay
-            ));
 
-            SL_ERROR_CHECK((*slPlayerObject)->GetInterface(
-                    slPlayerObject,
-                    SL_IID_MUTESOLO,
-                    (void *) &slMuteSolo
-            ));
+	public:
 
-        };
+		SoundPlayer(SoundSystem *_soundSystem = nullptr);
+		SoundPlayer(const SoundPlayer &_rhs);
+		~SoundPlayer();
 
-        std::array<SLInterfaceID, 4> SoundPlayer::PlayersInterfaces = {
-                //SL_IID_BUFFERQUEUE,
-                SL_IID_ANDROIDSIMPLEBUFFERQUEUE,
-                SL_IID_MUTESOLO,
-                SL_IID_VOLUME,
-                SL_IID_ANDROIDCONFIGURATION,
-        };
+        bool initialize(SoundSystem *_soundSystem = nullptr);
+        void release();
 
-    }
-*/
+		PLAYBACK_STATE getPlayerState()
+		{
+			return playerState;
+		};
+
+		void playSound(SoundPtr _sound)
+		{
+			soundIterator = _sound->getDataIterator();
+
+			if (playerState == PS_PLAYING)
+			{
+				(*slPlay)->SetPlayState(slPlay, SL_PLAYSTATE_STOPPED);
+				//(*slPlayerObject)->Realize(slPlayerObject, SL_BOOLEAN_FALSE);
+				(*slBufferQueue)->Clear(slBufferQueue);
+				soundIterator = nullptr;
+				bufferList.clear();
+			}
+
+			// enqueue first buffer and start playback
+			SoundSampleBuffer buff = **soundIterator;
+			bufferList.push_front(buff);
+
+			(*slBufferQueue)->Enqueue(slBufferQueue, buff.data, buff.size);
+			(*slPlay)->SetPlayState(slPlay, SL_PLAYSTATE_PLAYING);
+
+			// enqueue next part if it exist
+			if (soundIterator->next())
+			{
+				buff = **soundIterator;
+				bufferList.push_front(buff);
+				(*slBufferQueue)->Enqueue(slBufferQueue, buff.data, buff.size);
+
+				// get the next iterator ready
+				soundIterator->next();
+			}
+
+		};
+
+    };
+
 }

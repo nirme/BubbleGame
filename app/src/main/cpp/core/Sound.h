@@ -23,205 +23,102 @@ namespace core
     class Sound : public Resource
     {
     protected:
+
+        static void free_media_extractor(AMediaExtractor *_ptr);
+        static void free_media_codec(AMediaCodec *_ptr);
+        static void free_media_format(AMediaFormat *_ptr);
+
         typedef std::unique_ptr<AMediaExtractor,void(*)(AMediaExtractor*)> AMediaExtractorUPtr;
         typedef std::unique_ptr<AMediaCodec,void(*)(AMediaCodec*)> AMediaCodecUPtr;
         typedef std::unique_ptr<AMediaFormat,void(*)(AMediaFormat*)> AMediaFormatUPtr;
 
-    public:
 
-        class SoundBuffer
+    public:
+        class SoundBufferIterator
+        {
+        public:
+        	struct SampleBuffer
+			{
+				uint8_t *data;
+				int32_t size;
+			};
+
+            virtual ~SoundBufferIterator() {};
+            virtual SampleBuffer operator*() = 0; // data, size
+            virtual bool next() = 0; // false on end
+            virtual void reset() = 0;
+            virtual bool isEnd() = 0;
+            virtual SoundBufferIterator *clone() = 0;
+        };
+        typedef std::unique_ptr<SoundBufferIterator> SoundBufferIteratorUPtr;
+
+        class StaticSoundBufferIterator : public SoundBufferIterator
         {
         protected:
-            constexpr int ExtractorRetryCount = 3;
-            constexpr int MaxConcurrentBuffers = 3;
-
-            AMediaExtractorUPtr mediaExtractor;
-            AMediaCodecUPtr mediaCodec;
-
-            bool extractorEOS, codecEOS;
-
-            struct BufferDefinition
-            {
-                ssize_t id;
-                uint8_t *data;
-                int32_t dataSize;
-            };
-            typedef std::list<BufferDefinition> BufferList;
-            BufferList buffers;
-
-
-
-            void extractNextBuffer()
-            {
-                if (!extractorEOS)
-                {
-                    ssize_t bufferIndex(-1), sampleSize(0);
-                    size_t bufferSize(0);
-                    media_status_t mediaStatus = AMEDIA_OK;
-                    uint8_t *bufferPtr(nullptr);
-
-                    int retryCountLeft = ExtractorRetryCount;
-                    do
-                    {
-                        --retryCountLeft;
-                        bufferIndex = AMediaCodec_dequeueInputBuffer(mediaCodec.get(),
-                                                                     DequeTimeout);
-                        if (bufferIndex >= 0)
-                        {
-                            bufferPtr = AMediaCodec_getInputBuffer(mediaCodec.get(),
-                                                                   bufferIndex,
-                                                                   &bufferSize);
-
-                            sampleSize = AMediaExtractor_readSampleData(mediaExtractor.get(),
-                                                                        bufferPtr,
-                                                                        bufferSize);
-
-                            if (sampleSize < 0)
-                            {
-                                sampleSize = 0;
-                                extractorEOS = true;
-                            }
-
-                            if ((mediaStatus = AMediaCodec_queueInputBuffer(mediaCodec.get(),
-                                                                            bufferIndex,
-                                                                            0,
-                                                                            sampleSize,
-                                                                            0, // sampleTime,
-                                                                            extractorEOS ? AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM : 0))
-                                != AMEDIA_OK)
-                            {
-                                throw std::runtime_error(std::string(
-                                        "AMediaCodec_queueInputBuffer() failed with error code ") +
-                                         std::to_string(mediaStatus));
-                            }
-
-                            AMediaExtractor_advance(mediaExtractor.get());
-                        }
-                    }
-                    while (bufferIndex < 0 && retryCountLeft >= 0);
-                }
-            };
-
-            bool pushNextBuffer()
-            {
-                if (!codecEOS)
-                {
-                    ssize_t bufferIndex(-1);
-                    size_t bufferSize(0);
-                    uint8_t *bufferPtr(nullptr);
-                    AMediaCodecBufferInfo bufferInfo;
-
-                    int retryCountLeft = ExtractorRetryCount;
-
-                    do
-                    {
-                        --retryCountLeft;
-                        bufferIndex = AMediaCodec_dequeueOutputBuffer(mediaCodec.get(), &bufferInfo, DequeTimeout);
-                    }
-                    while(retryCountLeft >= 0 && (
-                            bufferIndex == AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED ||
-                            bufferIndex == AMEDIACODEC_INFO_OUTPUT_BUFFERS_CHANGED ||
-                            bufferIndex == AMEDIACODEC_INFO_TRY_AGAIN_LATER));
-
-                    if (bufferIndex >= 0)
-                    {
-                        if (bufferInfo.flags & AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM)
-                            codecEOS = true;
-
-                        if (bufferInfo.size > 0)
-                        {
-                            bufferPtr = AMediaCodec_getOutputBuffer(mediaCodec.get(), bufferIndex, &bufferSize);
-                            buffers.push_front({bufferIndex, bufferPtr, bufferInfo.size});
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            };
+            typedef std::shared_ptr<std::vector<uint8_t>> VectorPtr;
+            VectorPtr soundData;
+            bool isBegin;
 
         public:
 
-            SoundBuffer(AMediaExtractorUPtr _mediaExtractor, AMediaCodecUPtr _mediaCodec) :
-                mediaExtractor(_mediaExtractor.get(),
-                    [](AMediaExtractor *_res) { if (_res) AMediaExtractor_delete(_res); }),
-                mediaCodec(_mediaCodec.get(),
-                    [](AMediaCodec *_res) { if (_res) AMediaCodec_delete(_res); })
-            {
-                _mediaExtractor.release();
-                _mediaCodec.release();
+            StaticSoundBufferIterator(VectorPtr _soundData);
+            ~StaticSoundBufferIterator();
 
-                reset();
-            };
-
-            std::pair<void*,int32_t> getNextBuffer()
-            {
-                if (pushNextBuffer())
-                {
-                    std::pair<void*,int32_t> val = std::make_pair(buffers.front().data, buffers.front().dataSize);
-
-                    if (buffers.size() >= MaxConcurrentBuffers)
-                    {
-                        releaseLastBuffer();
-                    }
-
-                    extractNextBuffer();
-
-                }
-
-                bufferIndex = AMediaCodec_dequeueOutputBuffer(mCodec.get(), &bufferInfo, DequeTimeout);
-
-
-                BufferDefinition &buff = buffers.front();
-                return std::make_pair(buff.data, buff.dataSize);
-
-            };
-
-            void releaseBuffer(void *_buffPtr)
-            {
-                for (BufferList::reverse_iterator it = buffers.rbegin(); it != buffers.rend(); ++it)
-                {
-                    if (_buffPtr == (*it).data)
-                    {
-                        AMediaCodec_releaseOutputBuffer(mediaCodec.get(), (*it).id, false);
-                        buffers.erase(it);
-                        return;
-                    }
-                }
-            };
-
-            void releaseLastBuffer()
-            {
-                AMediaCodec_releaseOutputBuffer(mediaCodec.get(), buffers.back().id, false);
-                buffers.pop_back();
-            };
-
-
-
-            void reset()
-            {
-                while (buffers.size())
-                {
-                    AMediaCodec_releaseOutputBuffer(mediaCodec.get(), buffers.front().id, false);
-                    buffers.pop_front();
-                }
-
-                AMediaExtractor_seekTo(mediaExtractor.get(), 0, AMEDIAEXTRACTOR_SEEK_NEXT_SYNC);
-                AMediaCodec_flush(mediaCodec.get());
-
-                // push one buffer ahed of time
-                extractNextBuffer();
-            };
+			SoundBufferIterator::SampleBuffer operator*();
+            bool next();
+            void reset();
+			bool isEnd();
+            SoundBufferIterator *clone();
         };
 
+        class EncodedSoundBufferIterator : public SoundBufferIterator
+        {
+        protected:
+            static constexpr int MaxConcurrentBuffers = 3;
+
+			DataStreamPtr soundDataPtr;
+            AMediaExtractorUPtr mediaExtractor;
+            AMediaCodecUPtr mediaCodec;
+
+            typedef std::list<ssize_t> BufferedIdsList;
+            BufferedIdsList buffers;
+
+            uint8_t *dataPtr;
+			int32_t dataSize;
+
+			bool extractorEOF;
+			bool decoderEOF;
+
+			unsigned short coderBuffersUsed;
+
+
+			enum DECODING_RESULT
+			{
+				DR_DECODED = 0x00,
+				DR_EOF = 0x01,
+				DR_TRY_AGAIN_LATER = 0x02,
+			};
+
+            bool extract();
+            void popLastBuffer();
+			DECODING_RESULT decode();
+
+        public:
+			EncodedSoundBufferIterator(DataStreamPtr _soundDataPtr, AMediaExtractorUPtr &_mediaExtractor, AMediaCodecUPtr &_mediaCodec);
+			~EncodedSoundBufferIterator();
+
+			SoundBufferIterator::SampleBuffer operator*();
+            bool next();
+            void reset();
+			bool isEnd();
+            SoundBufferIterator *clone();
+        };
 
     protected:
 
 
-        constexpr static unsigned int MaxRawBufferSize = (2 << 20); // 2Mb
-        //constexpr static unsigned int MaxRawBufferSize = (2 << 30); // 2Mb
+		constexpr static unsigned int MaxStaticBufferLength = (8 * 1000000); // 8s
         constexpr static unsigned int DequeTimeout = 2000; // us
-        //constexpr static unsigned int DequeTimeout = -1; // us
 
         inline unsigned int getRawSampleSize(int64_t _usDuration, int32_t _sampleRate, int32_t _bitRate, int32_t _channels)
         {
@@ -234,22 +131,13 @@ namespace core
 
         SoundSystem *soundSystem;
 
-        DataStreamPtr soundDataPtr;
-        typedef std::vector<unsigned char> Data;
-        Data soundData;
+		SoundBufferIteratorUPtr soundBuffer;
+
         int32_t bufferSampleRate;
         int32_t bufferBitRate;
         int32_t bufferChannels;
 
-        AMediaExtractorUPtr mediaExtractor;
-        AMediaCodecUPtr mediaCodec;
 
-/*
-        int8_t *resample(int8_t *_buff, int32_t _dataSize, int32_t _buffSize)
-        {
-
-        };
-*/
     public:
 
         Sound(const std::string &_name, ResourceHandle _handle, const std::string &_group, SoundSystem *_soundSystem, ResourceManager *_manager = nullptr);
@@ -260,7 +148,7 @@ namespace core
 
         virtual unsigned int sizeCalcImpl();
 
-        const Data& getData();
+        SoundBufferIteratorUPtr getDataIterator();
     };
 
     typedef std::shared_ptr<Sound> SoundPtr;

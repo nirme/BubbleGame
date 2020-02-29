@@ -28,7 +28,7 @@ namespace core
 			SpriteCoords spriteCoords;
 
 			ImageSpritePtr sprite;
-			MaterialPtr material; //this contains shader and texture already
+			// MaterialPtr material; //this contains shader and texture already
 
 
 			virtual AxisAlignedBox _boundingBoxImpl() const;
