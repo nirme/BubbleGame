@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <sound name="bg_music_01.mp3" />
-  <sound name="bg_music_02.mp3" />
-  <sound name="bg_music_03.mp3" />
+  <sound name="Ant_Fire.ogg" />
+  <sound name="Ladybirds_Mate.ogg" />
+  <sound name="Mr_Tea.ogg" />
+
+  <sound name="bounce_1.ogg" />
+  <sound name="bounce_2.ogg" />
+  <sound name="bounce_3.ogg" />
 
 
-  <sound name="test.mp3" />
-  <sound name="test.flac" />
   <sound name="test.ogg" />
-  <sound name="test.aac" />
-  <sound name="test.ac3" />
 </resources>

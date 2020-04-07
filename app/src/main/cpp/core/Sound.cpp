@@ -248,8 +248,16 @@ namespace core
 
 
         // fill decoder with data, func returns false if extractor is done or buffers filled are equal to MaxConcurrentBuffers
-        while (extract());
-        decode();
+		DECODING_RESULT res;
+		while ((res = decode()) == DR_TRY_AGAIN_LATER)
+		{
+			extract();
+		}
+
+		if (res == DR_DECODED)
+		{
+			extract();
+		}
     };
 
 

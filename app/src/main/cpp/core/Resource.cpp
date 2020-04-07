@@ -76,7 +76,7 @@ namespace core
 
 		if (state.load() == RS_UNLOADED) return;
 
-		while (state.load() == RS_LOADED);
+		while (state.load() == RS_LOADING);
 
 		state = RS_UNLOADING;
 

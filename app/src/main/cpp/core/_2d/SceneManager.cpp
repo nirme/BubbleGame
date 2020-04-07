@@ -18,7 +18,9 @@ namespace core
 		void SceneManager::removeNode(SceneNode* _node)
 		{
 			SceneNodeList::iterator it = std::find(allNodesList.begin(), allNodesList.end(), _node);
-			std::swap(*it, allNodesList.back());
+
+			if (it != allNodesList.end())
+				std::swap(*it, allNodesList.back());
 			allNodesList.pop_back();
 
 			namedNodes.erase(_node->getName());
@@ -69,9 +71,27 @@ namespace core
 		};
 
 
-		SceneManager::SceneManager() :
+		SceneManager::SceneManager(std::string _sceneName) :
+			sceneName(_sceneName),
 			renderSystem(nullptr)
 		{};
+
+
+		SceneManager::~SceneManager()
+		{
+			clearScene();
+			//currentViewport.reset();
+			//currentCamera.reset();
+			sceneRoot.reset();
+		};
+
+
+		void SceneManager::clearScene()
+		{
+			destroyObject(currentCamera.release());
+			currentViewport.reset();
+			sceneRoot->destroyAllChildren();
+		};
 
 
 		void SceneManager::setupManager(RenderSystem *_renderSystem, unsigned int _renderTargetWidth, unsigned int _renderTargetHeight, float _sceneScale)
@@ -131,8 +151,26 @@ namespace core
 		void SceneManager::destroyNode(SceneNode *_node)
 		{
 			removeNode(_node);
-			_node->getParent()->removeChild(_node);
+
+			if (_node->getParent())
+				_node->getParent()->removeChild(_node);
+
+			_node->destroyAllChildren();
+			_node->destroyAllObjects();
+
 			delete _node;
+		};
+
+		void SceneManager::destroyObject(MovableObject *_object)
+		{
+			removeObject(_object);
+
+			if (_object->getParent())
+			{
+				_object->getParent()->removeObject(_object);
+			}
+
+			delete _object;
 		};
 
 

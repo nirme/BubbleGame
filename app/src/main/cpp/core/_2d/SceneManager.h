@@ -25,6 +25,9 @@ namespace core
 		class SceneManager
 		{
 		protected:
+		public:
+
+			std::string sceneName;
 
 			std::unique_ptr<RenderQueue> renderQueue;
 			RenderSystem *renderSystem;
@@ -32,8 +35,6 @@ namespace core
 
 			std::unique_ptr<ObjectFactory> objectFactory;
 
-
-			
 			std::unique_ptr<Camera> currentCamera;
 			std::unique_ptr<ViewPort> currentViewport;
 
@@ -56,16 +57,19 @@ namespace core
 			void addNode(SceneNode* _node);
 			void removeNode(SceneNode* _node);
 
+
 			void addObject(MovableObject* _obj);
 			void removeObject(MovableObject* _obj);
-
 
 
 			void findVisibleRenderables();
 
 		public:
 
-			SceneManager();
+			SceneManager(std::string _sceneName);
+			~SceneManager();
+
+			void clearScene();
 
 			void setupManager(RenderSystem *_renderSystem, unsigned int _renderTargetWidth, unsigned int _renderTargetHeight, float _sceneScale = 1.0f);
 
@@ -74,7 +78,10 @@ namespace core
 
 			SceneNode *createNode(const std::string &_nodeName, ScriptNodePtr _nodeValues);
 			void destroyNode(SceneNode *_node);
+			void destroyObject(MovableObject *_object);
 
+			Camera *createCamera(const std::string &_name, ScriptNodePtr _nodeValues);
+			MovableObject *createObject(const std::string &_name, ScriptNodePtr _nodeValues);
 			SingleSprite *createSingleSprite(const std::string &_name, ScriptNodePtr _nodeValues);
 			ParticleSystem *createParticleSystem(const std::string &_name, ScriptNodePtr _nodeValues);
 

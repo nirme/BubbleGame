@@ -44,9 +44,6 @@ namespace core
 
 		ScriptNodeListPtr parse(DataStreamPtr _stream);
 
-
-
-
 		//  generic script value parsing
 
 

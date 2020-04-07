@@ -7,15 +7,21 @@ core::SoundSystem* Singleton<core::SoundSystem>::impl = nullptr;
 namespace core
 {
 
+	SLDataFormat_PCM SoundSystem::InputFormatStruct = {
+			SL_DATAFORMAT_PCM, // format, PCM needed fo buffer queue
+			0, // number of channels
+			0, // 44.1 kHz sampling
+			0, // 16bit sample depth
+			16,  // packing of samples, best same as BPS
+			SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT, // channels used
+			SL_BYTEORDER_LITTLEENDIAN // little endian by default
+	};
+
+
 	std::array<SLInterfaceID,1> SoundSystem::EngineInterfacesArray = {
 			SL_IID_ENGINE
 	};
-/*
-	std::array<SLInterfaceID,2> SoundSystem::OutputInterfacesArray = {
-			SL_IID_VOLUME,
-			SL_IID_OUTPUTMIX
-	};
-*/
+
 	std::array<SLInterfaceID,1> SoundSystem::OutputInterfacesArray = {
 			SL_IID_OUTPUTMIX
 	};
@@ -91,8 +97,16 @@ namespace core
 	{};
 
 
-	void SoundSystem::initialize(unsigned int _activePlayersCount)
+	void SoundSystem::initialize(SLuint32 _samplingRate, SLuint16 _samplingDepth, SLuint32 _channels, unsigned int _activePlayersCount)
 	{
+		assert(!initialized && "sound system is already initialized");
+
+		InputFormatStruct.numChannels = _channels;
+		InputFormatStruct.samplesPerSec = _samplingRate * 1000;
+		InputFormatStruct.bitsPerSample = _samplingDepth;
+
+		SoundPlayer::setInputFormatStruct(&InputFormatStruct);
+
 		try
 		{
 			std::vector<SLboolean> interfaceRequired(SL_BOOLEAN_TRUE, EngineInterfacesArray.size());
@@ -158,6 +172,7 @@ namespace core
 			}
 
 			initialized = true;
+			globalState = PS_PLAYING;
 		}
 		catch (const std::exception &e)
 		{
@@ -216,13 +231,20 @@ namespace core
 	};
 
 
-	void SoundSystem::playSound(SoundPriority _priority, SoundPtr _sound)
+	SoundPlayer *SoundSystem::playSound(SoundPriority _priority, SoundPtr _sound, SoundPlayer::Listener *_listener)
 	{
-		SoundPlayer *player = getPlayer(_priority);
-		if (player)
+		if (globalState == PS_PLAYING)
 		{
-			player->playSound(_sound);
+			SoundPlayer *player = getPlayer(_priority);
+			if (player)
+			{
+				player->playSound(_sound, _listener);
+			}
+
+			return player;
 		}
+
+		return nullptr;
 	};
 
 
@@ -238,5 +260,68 @@ namespace core
 			}
 		}
 	};
+
+
+	int32_t SoundSystem::getSystemSampleRate()
+	{
+		return InputFormatStruct.samplesPerSec / 1000;
+	};
+
+
+	int32_t SoundSystem::getSystemBitRate()
+	{
+		return InputFormatStruct.bitsPerSample;
+	};
+
+
+	int32_t SoundSystem::getSystemChannels()
+	{
+		return InputFormatStruct.numChannels;
+	};
+
+
+	void SoundSystem::pause()
+	{
+		if (globalState == PS_PLAYING)
+		{
+			for (UsedSoundPlayersList::iterator it = usedPlayers.begin(), itEnd = usedPlayers.end(); it != itEnd; ++it)
+				(*it).second->pause();
+
+			globalState = PS_PAUSED;
+		}
+	};
+
+
+	void SoundSystem::resume()
+	{
+		if (globalState == PS_PAUSED)
+		{
+			for (UsedSoundPlayersList::iterator it = usedPlayers.begin(), itEnd = usedPlayers.end(); it != itEnd; ++it)
+				(*it).second->resume();
+
+			globalState = PS_PLAYING;
+		}
+		else if (globalState == PS_STOPPED)
+		{
+			globalState = PS_PLAYING;
+		}
+	};
+
+
+	void SoundSystem::stop()
+	{
+		if (globalState != PS_STOPPED)
+		{
+			globalState = PS_STOPPED;
+
+			for (UsedSoundPlayersList::iterator it = usedPlayers.begin(), itEnd = usedPlayers.end(); it != itEnd; ++it)
+			{
+				(*it).second->stop();
+				freePlayers.push_back((*it).second);
+			}
+			usedPlayers.clear();
+		}
+	};
+
 
 }

@@ -22,7 +22,7 @@ namespace core
 
 
 	Logger::Logger() :
-		logLevel(LL_INFO)
+		logLevel(LL_ALL)
 	{};
 
 	Logger::~Logger()
@@ -34,8 +34,33 @@ namespace core
 		if (_logLevel <= logLevel)
 		{
 			//log
+			android_LogPriority priority;
 
-			__android_log_write(ANDROID_LOG_DEBUG, "debug", _text);
+			switch (_logLevel)
+			{
+				case LL_INFO:
+					priority = ANDROID_LOG_INFO;
+					break;
+
+				case LL_WARNING:
+					priority = ANDROID_LOG_WARN;
+					break;
+
+				case LL_ERROR:
+					priority = ANDROID_LOG_ERROR;
+					break;
+
+				case LL_CRITICAL:
+					priority = ANDROID_LOG_FATAL;
+					break;
+
+				case LL_DEBUG:
+				default:
+					priority = ANDROID_LOG_DEBUG;
+					break;
+			};
+
+			__android_log_write(priority, "BubbleGame", _text);
 		}
 
 		return *this;

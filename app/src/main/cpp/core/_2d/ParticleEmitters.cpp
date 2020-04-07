@@ -28,11 +28,7 @@ namespace core
 
             _prt->alpha = 1.0f;
 
-            _prt->direction = rotateVector(
-                    Vector2(
-                            minDirectionSpeed + (maxDirectionSpeed - minDirectionSpeed) * (((seed >> 5) & Mask ) * Div),
-                            0.0f
-                    ),
+            _prt->direction = rotateVector({minDirectionSpeed + (maxDirectionSpeed - minDirectionSpeed) * (((seed >> 5) & Mask) * Div), 0.0f},
                     minDirection + (maxDirection - minDirection) * (((seed >> 6) & Mask ) * Div)
             );
 

@@ -32,6 +32,8 @@ add_library(
 
     # relative paths to main files
 
+    src/main/cpp/core/Debug.cpp
+
     src/main/cpp/core/Matrix3.cpp
     src/main/cpp/core/Math2D.cpp
     src/main/cpp/core/SpriteCoords.cpp
@@ -87,6 +89,9 @@ add_library(
 
     src/main/cpp/core/_2d/MovableObject.cpp
 
+    src/main/cpp/core/_2d/RigidObject.cpp
+    src/main/cpp/core/_2d/PhysicsSystem.cpp
+
     src/main/cpp/core/_2d/SceneManager.cpp
 
     src/main/cpp/core/RenderStateCashe.cpp
@@ -108,6 +113,28 @@ add_library(
     src/main/cpp/core/InputManager.cpp
 
     src/main/cpp/core/_2d/ObjectFactory.cpp
+
+
+    src/main/cpp/core/_2d/shapes/Circle.cpp
+    src/main/cpp/core/_2d/shapes/Rectangle.cpp
+    src/main/cpp/core/_2d/shapes/LineArea.cpp
+    src/main/cpp/core/_2d/shapes/ShapeMath.cpp
+
+    src/main/cpp/core/_2d/PhysicsAffectors.cpp
+
+
+    src/main/cpp/core/Animator.cpp
+    src/main/cpp/core/AnimatorInstances.cpp
+
+
+    src/main/cpp/MusicController.cpp
+
+
+src/main/cpp/core/_2d/test_objects/SpritedBall.cpp
+src/main/cpp/core/_2d/test_objects/SpritedWall.cpp
+
+
+    src/main/cpp/core/Engine.cpp
 
 
     src/main/cpp/bubble_fighter-c.cpp

@@ -550,7 +550,6 @@ glClear(GL_COLOR_BUFFER_BIT);
         // set buffers and apply cashed state
         try
         {
-
             state->setShadingProgram(_program->getId());
 
             state->setVertexBuffer(batchingVertexBuffer.getId());

@@ -24,6 +24,12 @@ namespace core
     };
 
 
+	Vector2 normalize(const Vector2& _v)
+	{
+		return _v / _v.length();
+	};
+
+
     //  default transformation goes scaling -> rotation -> translation
     Matrix3 affine2DMatrix(const Vector2 &_scale, const _2d::Quaternion &_rotation, const Vector2 &_translation)
     {
@@ -49,6 +55,7 @@ namespace core
 
     };
 
+
     float determinant(const Matrix3 &_mx)
     {
         return (
@@ -63,9 +70,9 @@ namespace core
     };
 
 
-
     Matrix3 inverse(const Matrix3 &_mx)
     {
+        /*
         float det = 1.0f / determinant(_mx);
         return Matrix3(	det * (_mx.m22 * _mx.m33 - _mx.m23 * _mx.m32),
                            det * (_mx.m13 * _mx.m32 - _mx.m12 * _mx.m33),
@@ -77,7 +84,73 @@ namespace core
                            det * (_mx.m12 * _mx.m31 - _mx.m11 * _mx.m32),
                            det * (_mx.m11 * _mx.m22 - _mx.m12 * _mx.m21)
         );
+        */
+        // https://en.wikipedia.org/wiki/Invertible_matrix#Inversion_of_3_%C3%97_3_matrices
+
+        float A = _mx.m22 * _mx.m33 - _mx.m23 * _mx.m32;
+        float B = _mx.m23 * _mx.m31 - _mx.m21 * _mx.m33;
+        float C = _mx.m21 * _mx.m32 - _mx.m22 * _mx.m31;
+        float detDiv = 1.0f / ( _mx.m11 * A + _mx.m12 * B + _mx.m13 * C);
+
+        return Matrix3(detDiv * A,
+                       detDiv * (_mx.m13 * _mx.m32 - _mx.m12 * _mx.m33),
+                       detDiv * (_mx.m12 * _mx.m23 - _mx.m13 * _mx.m22),
+                       detDiv * B,
+                       detDiv * (_mx.m11 * _mx.m33 - _mx.m13 * _mx.m31),
+                       detDiv * (_mx.m13 * _mx.m21 - _mx.m11 * _mx.m23),
+                       detDiv * C,
+                       detDiv * (_mx.m12 * _mx.m31 - _mx.m11 * _mx.m32),
+                       detDiv * (_mx.m11 * _mx.m22 - _mx.m12 * _mx.m21)
+        );
+
     };
+
+
+    float dotProduct(Vector2 _v0, Vector2 _v1)
+    {
+        return _v0.x * _v1.x + _v0.y * _v1.y;
+    };
+
+
+    float dotProduct(_2d::Quaternion _q0, _2d::Quaternion _q1)
+    {
+        return _q0.w * _q1.w + _q0.z * _q1.z;
+    };
+
+
+    Vector2 normalVectorCCW(const Vector2 & _v)
+    {
+        return {-_v.y, _v.x};
+    };
+
+
+    Vector2 normalVectorCW(const Vector2 & _v)
+    {
+        return {_v.y, -_v.x};
+    };
+
+
+    Vector2 rotateVector(const Vector2 &_v, float _r)
+    {
+        float rc = std::cos(_r);
+        float rs = std::sin(_r);
+        return Vector2(rc * _v.x + rs * _v.y,
+                       -rs * _v.x + rc * _v.y
+        );
+    };
+
+
+    Vector2 reflectAcrossNormal(const Vector2 &_v, const Vector2 &_normal)
+    {
+        return (_normal * (2.0f * (dotProduct(_normal, _v)))) - _v;
+    };
+
+
+    Vector2 reflectAcrossLine(const Vector2 &_v, const Vector2 &_line)
+    {
+        return (_line * (2.0f * (dotProduct(_line, _v) / dotProduct(_line, _line)))) - _v;
+    };
+
 
 }
 

@@ -29,8 +29,8 @@ namespace core
 			{};
 
 			inline Quaternion(float _t) :
-				w(std::cos(_t * 0.5f)), 
-				z(-std::sin(_t * 0.5f))
+				w(std::cos(_t * -0.5f)),
+				z(-std::sin(_t * -0.5f))
 			{};
 
 			inline Quaternion(const Quaternion& _q) :

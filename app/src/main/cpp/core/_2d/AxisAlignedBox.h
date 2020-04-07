@@ -1,5 +1,6 @@
 #pragma once
 
+#include <limits>
 #include "../Vector2.h"
 #include "../Matrix3.h"
 #include "../Math2D.h"
@@ -19,7 +20,7 @@ namespace core
 			{
 				R_NONE = 0x00,
 				R_BOX = 0x01,
-				//R_INFINITE = 0x02,
+				R_INFINITE = 0x02,
 			};
 
 			enum Corner
@@ -46,7 +47,9 @@ namespace core
 
 
 			inline AxisAlignedBox(Range _range = R_NONE) :
-				vMin(_range == R_BOX ? -0.5f : 0.0f), vMax(_range == R_BOX ? 0.5f : 0.0f), boxRange(_range)
+				vMin(_range == R_BOX ? -0.5f : (_range == R_INFINITE ? -std::numeric_limits<float>::infinity() : 0.0f)),
+				vMax(_range == R_BOX ? 0.5f : (_range == R_INFINITE ? std::numeric_limits<float>::infinity() : 0.0f)),
+				boxRange(_range)
 			{};
 
 			inline AxisAlignedBox(float _minX, float _minY, float _maxX, float _maxY) :
@@ -85,19 +88,31 @@ namespace core
 				return boxRange;
 			};
 
-			bool isEmpty() const
+			inline bool isEmpty() const
 			{
 				return boxRange == R_NONE;
+			};
+
+			inline bool isInfinite() const
+			{
+				return boxRange == R_INFINITE;
+			};
+
+			inline bool isBox() const
+			{
+				return boxRange == R_BOX;
 			};
 
 
 			inline void setMinimum(const Vector2& _min)
 			{
+				boxRange = R_BOX;
 				vMin = _min;
 			};
 
 			inline void setMaximum(const Vector2& _max)
 			{
+				boxRange = R_BOX;
 				vMax = _max;
 			};
 
@@ -123,6 +138,9 @@ namespace core
 					return *this;
 				}
 
+				if (isInfinite())
+					return *this;
+
 				if (vMin.x > _point.x)
 					vMin.x = _point.x;
 				else if (vMax.x < _point.x)
@@ -139,14 +157,15 @@ namespace core
 
 			inline AxisAlignedBox& merge(const AxisAlignedBox &_box)
 			{
-				if (_box.isEmpty())
+				if (_box.isEmpty() || isInfinite())
 					return *this;
 
-				if (isEmpty())
+				if (isEmpty() || _box.isInfinite())
 				{
 					*this = _box;
 					return *this;
 				}
+
 
 				if (vMin.x > _box.getMinimum().x)	vMin.x = _box.getMinimum().x;
 				if (vMin.y > _box.getMinimum().y)	vMin.y = _box.getMinimum().y;
@@ -159,13 +178,13 @@ namespace core
 
 			static AxisAlignedBox merge(const AxisAlignedBox& _box1, const AxisAlignedBox& _box2)
 			{
-				if (!_box1.isEmpty() && !_box2.isEmpty())
+				if (_box1.isEmpty() && _box2.isEmpty())
 					return AxisAlignedBox();
 
-				if (_box1.isEmpty())
+				if (_box1.isEmpty() || _box2.isInfinite())
 					return _box2;
 
-				if (_box2.isEmpty())
+				if (_box2.isEmpty() || _box1.isInfinite())
 					return _box1;
 
 				return AxisAlignedBox(
@@ -179,7 +198,7 @@ namespace core
 
 			AxisAlignedBox& move(const Vector2& _v)
 			{
-				if (!isEmpty())
+				if (isBox())
 				{
 					vMin + _v;
 					vMax + _v;
@@ -190,7 +209,7 @@ namespace core
 
 			AxisAlignedBox& transform(const Matrix3& _m)
 			{
-				if (!isEmpty())
+				if (isBox())
 				{
 					Vector2 points[3] = {
 
@@ -243,21 +262,27 @@ namespace core
 				return *this;
 			};
 
-			bool isOverlapping(const AxisAlignedBox& _box) const
+			inline static bool isOverlapping(const AxisAlignedBox& _box1, const AxisAlignedBox& _box2)
 			{
-				if (isEmpty() || _box.isEmpty())
+				if (_box1.isBox() && _box2.isBox())
+				{
+					return _box1.vMin.x < _box2.vMax.x &&
+							_box1.vMin.y < _box2.vMax.y &&
+							_box2.vMin.x < _box1.vMax.x &&
+							_box2.vMin.y < _box1.vMax.y;
+				}
+
+				if (_box1.isEmpty() || _box2.isEmpty())
 					return false;
 
-				const Vector2 &vMin2 = _box.getMinimum();
-				const Vector2 &vMax2 = _box.getMaximum();
-
-				return vMin.x < vMax2.x &&
-					vMax.x > vMin2.x &&
-					vMin.y < vMax2.y &&
-					vMax.y > vMin2.y;
+				//if (_box1.isInfinite() || _box2.isInfinite())
+					return true;
 			};
 
-
+			inline bool isOverlapping(const AxisAlignedBox& _box) const
+			{
+				return isOverlapping(*this, _box);
+			};
 
 		};
 

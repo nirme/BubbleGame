@@ -1,5 +1,4 @@
 #include "MovableObject.h"
-#include "SceneNode.h"
 
 
 
@@ -16,13 +15,19 @@ namespace core
 			position(0.0f),
 			boundingBoxNeedUpdate(true),
 			cashedTransformNeedUpdate(true)
-		{};
+		{
+			debugLog("MovableObject \'", _name, "\' created");
+		};
 
 
 		MovableObject::~MovableObject()
 		{
+			debugLog("MovableObject \'", this->name, "\' d-tor started");
+
 			if (parent)
 				parent->removeObject(this);
+
+			debugLog("MovableObject \'", this->name, "\' d-tor ended");
 		};
 
 

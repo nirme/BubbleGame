@@ -11,7 +11,7 @@
 #include "../Texture.h"
 #include "../ImageSprite.h"
 #include "../Vector2.h"
-#include "../math.h"
+#include "../Math2D.h"
 
 
 namespace core

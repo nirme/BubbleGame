@@ -8,5 +8,7 @@
   <texture type="texture2d" group="animation" name="anim_4.bmp" filter="nearest" />
 
   <texture type="texture2d" group="animation" name="explosion.bmp" filter="nearest" />
+  
+  <texture type="texture2d" group="objects" name="objects.bmp" filter="nearest" />
 
 </resources>

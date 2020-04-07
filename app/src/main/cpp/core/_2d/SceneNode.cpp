@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "Camera.h"
 #include "RenderQueue.h"
+#include "MovableObject.h"
 
 
 namespace core
@@ -42,17 +43,29 @@ namespace core
 			position(0.0f),
 			cashedTransformNeedUpdate(true),
 			boundingBoxNeedUpdate(true)
-		{};
+		{
+			debugLog("SceneNode \'", _name, "\' created");
+		};
 
 
 
         SceneNode::~SceneNode()
         {
-            for (auto it = children.begin(); it != children.end(); ++it)
-            {
-                delete (*it);
-                (*it) = nullptr;
-            }
+			debugLog("SceneNode \'", this->name, "\' d-tor started");
+
+			for (auto it = children.begin(); it != children.end(); ++it)
+			{
+				delete (*it);
+				(*it) = nullptr;
+			}
+
+			for (auto it = objects.begin(); it != objects.end(); ++it)
+			{
+				delete (*it);
+				(*it) = nullptr;
+			}
+
+			debugLog("SceneNode \'", this->name, "\' d-tor ended");
         };
 
 
@@ -217,11 +230,9 @@ namespace core
 		{
 			while (children.size())
 			{
-				SceneNode* child = children.back();
-				child->destroyAllChildren();
+				SceneNode* child = children.front();
 				child->getOwner()->destroyNode(child);
 			}
-			children.clear();
 
             invalidateBoundingBox();
 		};
@@ -245,6 +256,29 @@ namespace core
 
 			std::swap(*it, objects.back());
 			objects.pop_back();
+
+			invalidateBoundingBox();
+		};
+
+
+		void SceneNode::destroyObject(MovableObject* _object)
+		{
+			auto it = std::find(objects.begin(), objects.end(), _object);
+			assert(it != objects.end() && "cannot remove unattached child");
+
+			owner->destroyObject(_object);
+
+			invalidateBoundingBox();
+		};
+
+
+		void SceneNode::destroyAllObjects()
+		{
+			while (objects.size())
+			{
+				MovableObject* object = objects.front();
+				owner->destroyObject(object);
+			}
 
 			invalidateBoundingBox();
 		};

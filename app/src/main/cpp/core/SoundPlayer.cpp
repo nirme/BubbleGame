@@ -7,7 +7,8 @@ namespace core
 
 	SLDataSource SoundPlayer::InputSourceStruct = {
 			(void *) &SoundPlayer::InputLocatorStruct,
-			(void *) &SoundSystem::InputFormatStruct
+			nullptr
+			//(void *) &SoundSystem::InputFormatStruct
 	};
 
 
@@ -19,6 +20,8 @@ namespace core
 	};
 
 /*
+	performance not available on older platforms
+
 	std::array<std::pair<const SLchar *, SLint32>, 2> SoundPlayer::AndroidInputConfiguration = {
 			std::pair<const SLchar *, SLint32>({
 					SL_ANDROID_KEY_STREAM_TYPE,
@@ -30,12 +33,56 @@ namespace core
 			})
 	};
 */
-
 	std::array<std::pair<const SLchar *, SLint32>, 1> SoundPlayer::AndroidInputConfiguration = {
 			std::pair<const SLchar *, SLint32>({
-													   SL_ANDROID_KEY_STREAM_TYPE,
-													   SL_ANDROID_STREAM_MEDIA
-											   })
+					SL_ANDROID_KEY_STREAM_TYPE,
+					SL_ANDROID_STREAM_MEDIA
+			})
+	};
+
+
+	void SoundPlayer::queuedBufferCallback(SLAndroidSimpleBufferQueueItf _caller)
+	{
+		bufferList.pop_back();
+
+		if (soundIterator->next())
+		{
+			SoundSampleBuffer buff = **soundIterator;
+
+			SL_ERROR_CHECK((*slBufferQueue)->Enqueue(slBufferQueue, buff.data, buff.size));
+			bufferList.push_front(buff);
+		}
+		else if (!bufferList.size())
+		{
+			reset();
+			if (listener)
+			{
+				listener->onSoundEnd();
+				listener = nullptr;
+			}
+		}
+	};
+
+
+	void SoundPlayer::QueuedBufferCallback(SLAndroidSimpleBufferQueueItf _caller, void *_pContext)
+	{
+		reinterpret_cast<SoundPlayer*>(_pContext)->queuedBufferCallback(_caller);
+	};
+
+
+	void SoundPlayer::reset()
+	{
+		assert(soundSystem && "sound player must be initialized");
+
+		if (playerState != PS_STOPPED)
+		{
+			playerState = PS_STOPPED;
+			SL_ERROR_CHECK((*slPlay)->SetPlayState(slPlay, SL_PLAYSTATE_STOPPED));
+			SL_ERROR_CHECK((*slBufferQueue)->Clear(slBufferQueue));
+			bufferList.clear();
+
+			soundSystem->freePlayer(this);
+		}
 	};
 
 
@@ -135,6 +182,12 @@ namespace core
 
 			SL_ERROR_CHECK((*slBufferQueue)->RegisterCallback(slBufferQueue, QueuedBufferCallback, this));
 
+
+			SL_ERROR_CHECK((*slVolume)->GetMaxVolumeLevel(slVolume, &maxVolume));
+			SL_ERROR_CHECK((*slVolume)->SetVolumeLevel(slVolume, maxVolume));
+			currentVolume = 1.0f;
+
+
 			soundIterator = nullptr;
 			bufferList.clear();
 
@@ -158,6 +211,7 @@ namespace core
 		return slPlayerObject ? true : false;
 	};
 
+
 	void SoundPlayer::release()
 	{
 		if (slPlayerObject)
@@ -169,6 +223,82 @@ namespace core
 		slBufferQueue = nullptr;
 		slMuteSolo = nullptr;
 		slVolume = nullptr;
+	};
+
+
+	PLAYBACK_STATE SoundPlayer::getPlayerState()
+	{
+		return playerState;
+	};
+
+
+	void SoundPlayer::playSound(SoundPtr _sound, Listener *_listener)
+	{
+		soundIterator = _sound->getDataIterator();
+
+		if (playerState == PS_PLAYING)
+		{
+			SL_ERROR_CHECK((*slPlay)->SetPlayState(slPlay, SL_PLAYSTATE_STOPPED));
+			SL_ERROR_CHECK((*slBufferQueue)->Clear(slBufferQueue));
+			soundIterator = nullptr;
+			bufferList.clear();
+			playerState = PS_STOPPED;
+		}
+
+		// register listener
+		listener = _listener;
+
+		// enqueue first buffer and start playback
+		SoundSampleBuffer buff = **soundIterator;
+		SL_ERROR_CHECK((*slBufferQueue)->Enqueue(slBufferQueue, buff.data, buff.size));
+		SL_ERROR_CHECK((*slPlay)->SetPlayState(slPlay, SL_PLAYSTATE_PLAYING));
+		playerState = PS_PLAYING;
+		bufferList.push_front(buff);
+
+		// enqueue next part if it exist
+		if (soundIterator->next())
+		{
+			buff = **soundIterator;
+			SL_ERROR_CHECK((*slBufferQueue)->Enqueue(slBufferQueue, buff.data, buff.size));
+			bufferList.push_front(buff);
+		}
+
+	};
+
+
+	void SoundPlayer::pause()
+	{
+		if (playerState == PS_PLAYING)
+		{
+			SL_ERROR_CHECK((*slPlay)->SetPlayState(slPlay, SL_PLAYSTATE_PAUSED));
+			playerState = PS_PAUSED;
+		}
+	};
+
+
+	void SoundPlayer::resume()
+	{
+		if (playerState == PS_PAUSED)
+		{
+			SL_ERROR_CHECK((*slPlay)->SetPlayState(slPlay, SL_PLAYSTATE_PLAYING));
+			playerState = PS_PLAYING;
+		}
+	};
+
+
+	void SoundPlayer::stop()
+	{
+		if (playerState != PS_STOPPED)
+		{
+			SL_ERROR_CHECK((*slPlay)->SetPlayState(slPlay, SL_PLAYSTATE_STOPPED));
+			SL_ERROR_CHECK((*slBufferQueue)->Clear(slBufferQueue));
+
+
+			soundIterator.reset();
+			bufferList.clear();
+
+			playerState = PS_STOPPED;
+		}
 	};
 
 }

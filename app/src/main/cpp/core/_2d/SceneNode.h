@@ -5,15 +5,14 @@
 #include <unordered_map>
 #include <algorithm>
 
+#include "../Debug.h"
+
 #include "../Vector2.h"
 #include "Quaternion.h"
 #include "../Matrix3.h"
 
 #include "../Math2D.h"
 #include "AxisAlignedBox.h"
-
-//#include "SceneManager.h"
-#include "MovableObject.h"
 
 
 namespace core
@@ -24,6 +23,7 @@ namespace core
 		class Camera;
 		class RenderQueue;
 		class SceneManager;
+		class MovableObject;
 
 
 		class SceneNode
@@ -102,6 +102,9 @@ namespace core
 
 			void appendObject(MovableObject* _object);
 			void removeObject(MovableObject* _object);
+			void destroyObject(MovableObject* _object);
+
+			void destroyAllObjects();
 
 			void invalidateTransform() const;
 			void invalidateBoundingBox() const;

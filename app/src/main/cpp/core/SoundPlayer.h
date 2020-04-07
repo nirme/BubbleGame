@@ -5,7 +5,7 @@
 #include <list>
 #include <array>
 #include <vector>
-#include <SLES/OpenSLES.h>
+//#include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_Android.h>
 
 #include "Exceptions.h"
@@ -16,17 +16,27 @@ namespace core
 {
     class SoundSystem;
 
-    class SoundPlayer
-    {
-    protected:
+    static float vol = 0.0f;
 
-		enum PLAYBACK_STATE
+	enum PLAYBACK_STATE
+	{
+		PS_STOPPED = 0x00,
+		PS_PLAYING = 0x01,
+		PS_PAUSED = 0x02,
+	};
+
+	class SoundPlayer
+    {
+    public:
+		class Listener
 		{
-			PS_STOPPED = 0x00,
-			PS_PLAYING = 0x01,
-			PS_PAUSED = 0x02,
+		public:
+			virtual void onSoundEnd() = 0;
+			virtual ~Listener() {};
 		};
 
+
+	protected:
 
 		static constexpr int BufferQueueSize = 3; // 3 buffers, 1 playing, 1 ready to play next part, 1 empty to load nex buffer
 
@@ -39,6 +49,7 @@ namespace core
         // cannot be const due to api restriction
         static SLDataSource InputSourceStruct;
         static std::array<SLInterfaceID, 4> PlayersInterfaces;
+        //static std::array<std::pair<const SLchar *, SLint32>, 2> AndroidInputConfiguration;
         static std::array<std::pair<const SLchar *, SLint32>, 1> AndroidInputConfiguration;
 
 
@@ -55,7 +66,13 @@ namespace core
         SLVolumeItf slVolume;
 
 
-        Sound::SoundBufferIteratorUPtr soundIterator;
+		SLmillibel maxVolume;
+		float currentVolume;
+
+
+
+		Sound::SoundBufferIteratorUPtr soundIterator;
+		Listener *listener;
 
         typedef Sound::SoundBufferIterator::SampleBuffer SoundSampleBuffer;
         std::list<SoundSampleBuffer> bufferList;
@@ -63,32 +80,18 @@ namespace core
 		PLAYBACK_STATE playerState;
 
 
+		void queuedBufferCallback(SLAndroidSimpleBufferQueueItf _caller);
+		static void QueuedBufferCallback(SLAndroidSimpleBufferQueueItf _caller, void *_pContext);
 
-		void queuedBufferCallback(SLAndroidSimpleBufferQueueItf _caller)
-		{
-			Logger::getSingleton().write("queuedBufferCallback called");
-			SLAndroidSimpleBufferQueueState queueState;
-			(*slBufferQueue)->GetState(slBufferQueue, &queueState);
-
-			Logger::getSingleton().write(std::string("Queue state, count: ") + std::to_string(queueState.count) + std::string(", index: ") + std::to_string(queueState.index));
-
-			SLuint32 playState;
-			(*slPlay)->GetPlayState(slPlay, &playState);
-
-			Logger::getSingleton().write(std::string("Play state: ") +
-				(playState == SL_PLAYSTATE_STOPPED ? "SL_PLAYSTATE_STOPPED" : (playState == SL_PLAYSTATE_PAUSED ? "SL_PLAYSTATE_PAUSED" : "SL_PLAYSTATE_PLAYING")));
-
-		};
-
-
-		static void QueuedBufferCallback(SLAndroidSimpleBufferQueueItf _caller, void *_pContext)
-		{
-			//reinterpret_cast<SoundPlayer*>(_pContext)
-			reinterpret_cast<SoundPlayer*>(_pContext)->queuedBufferCallback(_caller);
-		};
-
+		void reset();
 
 	public:
+
+    	static void setInputFormatStruct(SLDataFormat_PCM *_format)
+		{
+			InputSourceStruct.pFormat = (void*) _format;
+		};
+
 
 		SoundPlayer(SoundSystem *_soundSystem = nullptr);
 		SoundPlayer(const SoundPlayer &_rhs);
@@ -97,44 +100,21 @@ namespace core
         bool initialize(SoundSystem *_soundSystem = nullptr);
         void release();
 
-		PLAYBACK_STATE getPlayerState()
+		PLAYBACK_STATE getPlayerState();
+		void playSound(SoundPtr _sound, Listener *_listener);
+
+		void pause();
+		void resume();
+		void stop();
+
+		void setVolume(float _volume)
 		{
-			return playerState;
+			_volume = std::clamp(_volume, 0.0f, 1.0f);
+
+			SLmillibel newVolume = SL_MILLIBEL_MIN + (SLmillibel)((maxVolume - SL_MILLIBEL_MIN) * _volume);
+			SL_ERROR_CHECK((*slVolume)->SetVolumeLevel(slVolume, newVolume));
+			currentVolume = _volume;
 		};
-
-		void playSound(SoundPtr _sound)
-		{
-			soundIterator = _sound->getDataIterator();
-
-			if (playerState == PS_PLAYING)
-			{
-				(*slPlay)->SetPlayState(slPlay, SL_PLAYSTATE_STOPPED);
-				//(*slPlayerObject)->Realize(slPlayerObject, SL_BOOLEAN_FALSE);
-				(*slBufferQueue)->Clear(slBufferQueue);
-				soundIterator = nullptr;
-				bufferList.clear();
-			}
-
-			// enqueue first buffer and start playback
-			SoundSampleBuffer buff = **soundIterator;
-			bufferList.push_front(buff);
-
-			(*slBufferQueue)->Enqueue(slBufferQueue, buff.data, buff.size);
-			(*slPlay)->SetPlayState(slPlay, SL_PLAYSTATE_PLAYING);
-
-			// enqueue next part if it exist
-			if (soundIterator->next())
-			{
-				buff = **soundIterator;
-				bufferList.push_front(buff);
-				(*slBufferQueue)->Enqueue(slBufferQueue, buff.data, buff.size);
-
-				// get the next iterator ready
-				soundIterator->next();
-			}
-
-		};
-
-    };
+	};
 
 }

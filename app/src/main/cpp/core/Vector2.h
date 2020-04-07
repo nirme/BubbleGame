@@ -116,18 +116,23 @@ namespace core
 			return Vector2(*this) /= _s;
 		};
 
+		inline Vector2 operator- () const
+		{
+			return Vector2(-this->x, -this->y);
+		};
+
 
 		inline float length() const
 		{
-			return std::sqrtf(x * x + y * y);
+			return std::sqrt(x * x + y * y);
 		};
 
 		inline void normalize()
 		{
 			float lenSq = x * x + y * y;
-			if (fabsf(lenSq - 1.0f) > EPSILON)
+			if (std::fabs(lenSq - 1.0f) > EPSILON)
 			{
-				*this /= std::sqrtf(lenSq);
+				*this /= std::sqrt(lenSq);
 			}
 
 		};
@@ -135,7 +140,12 @@ namespace core
 
 		inline bool operator== (const Vector2& _v) const
 		{
-			return (fabsf(x - _v.x) <= EPSILON && fabsf(y - _v.y) <= EPSILON);
+			return (std::fabs(x - _v.x) <= EPSILON && std::fabs(y - _v.y) <= EPSILON);
+		};
+
+		inline bool operator!= (const Vector2& _v) const
+		{
+			return !(*this == _v);
 		};
 
 	};

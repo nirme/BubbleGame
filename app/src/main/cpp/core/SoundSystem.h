@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <array>
 #include <vector>
-#include <SLES/OpenSLES.h>
+//#include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_Android.h>
 #include <media/NdkMediaCodec.h>
 
@@ -31,21 +31,11 @@ namespace core
 
     	typedef uint8_t SoundPriority;
 
-
-		static constexpr SLDataFormat_PCM InputFormatStruct = {
-            SL_DATAFORMAT_PCM, // format, PCM needed fo buffer queue
-            2, // number of channels
-            SL_SAMPLINGRATE_44_1, // 44.1 kHz sampling
-            SL_PCMSAMPLEFORMAT_FIXED_16, // 16bit sample depth
-            16,  // packing of samples, best same as BPS
-            SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT, // channels used
-            SL_BYTEORDER_LITTLEENDIAN // little endian by default
-        };
-
-
     protected:
 
-        bool initialized;
+		static SLDataFormat_PCM InputFormatStruct;
+
+		bool initialized;
 
         SLObjectItf slEngineObject;
         SLEngineItf slEngine;
@@ -91,6 +81,7 @@ namespace core
 		SoundPlayer* getPlayer(SoundPriority _priority);
 
 
+		PLAYBACK_STATE globalState;
 
 	public:
 
@@ -98,26 +89,21 @@ namespace core
 
 		SoundSystem();
 
-        void initialize(unsigned int _activePlayersCount = 2);
+        void initialize(SLuint32 _samplingRate = SL_SAMPLINGRATE_44_1,
+						SLuint16 _samplingDepth = SL_PCMSAMPLEFORMAT_FIXED_16,
+						SLuint32 _channels = 2,
+						unsigned int _activePlayersCount = 2);
         void uninitialize();
-        void playSound(SoundPriority _priority, SoundPtr _sound);
+		SoundPlayer *playSound(SoundPriority _priority, SoundPtr _sound, SoundPlayer::Listener *_listener = nullptr);
 		void freePlayer(SoundPlayer *_player);
 
+		int32_t getSystemSampleRate();
+		int32_t getSystemBitRate();
+		int32_t getSystemChannels();
 
-		int32_t getSystemSampleRate()
-		{
-			return InputFormatStruct.samplesPerSec / 1000;
-		};
-
-		int32_t getSystemBitRate()
-		{
-			return InputFormatStruct.bitsPerSample;
-		};
-
-		int32_t getSystemChannels()
-		{
-			return InputFormatStruct.numChannels;
-		};
+		void pause();
+		void resume();
+		void stop();
 
 	};
 

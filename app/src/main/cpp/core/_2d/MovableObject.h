@@ -1,17 +1,17 @@
 #pragma once
 
 #include <vector>
+#include "../Debug.h"
 #include "AxisAlignedBox.h"
-//#include "SceneNode.h"
 #include "RenderQueue.h"
-
+#include "SceneNode.h"
 
 
 namespace core
 {
 	namespace _2d
 	{
-		class SceneNode;
+		//class SceneNode;
 		class Camera;
 		class RenderQueue;
 

@@ -21,7 +21,7 @@ namespace core
 {
 	namespace _2d
 	{
-		class SingleSprite : public MovableObject, public Renderable
+		class SingleSprite : virtual public MovableObject, public Renderable
 		{
 		protected:
 
