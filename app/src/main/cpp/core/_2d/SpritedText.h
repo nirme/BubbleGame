@@ -15,9 +15,8 @@ namespace core
 	{
 		class SpritedText : public MovableObject, public Renderable
 		{
-		protected:
-
-			enum ANCHOR_POSITION
+		public:
+			enum ANCHOR_POSITION : unsigned char
 			{
 				AP_CENTER = 0x00,
 				AP_LEFT = 0x01,
@@ -30,6 +29,7 @@ namespace core
 				AP_BOTTOM_RIGHT = 0x22,
 			};
 
+		protected:
 			SpritedFontPtr textFont;
 
 
@@ -43,13 +43,14 @@ namespace core
 
 			ANCHOR_POSITION textAnchor;
 			Vector2 textSize;
+			mutable Vector2 textAnchorCorrection;
 
 			mutable bool textCoordsNeedUpdate;
 			mutable SpriteCoords textCoords;
 
 
 			void _updateTextCoords() const;
-			void updatePosition();
+			void updatePosition() const;
 
 			virtual void _invalidateWorldTransformImpl() const;
 
@@ -73,12 +74,12 @@ namespace core
 			unsigned int getVisibleCharsFrom() const;
 			unsigned int getVisibleCharsCount() const;
 			void setVisibleChars(unsigned int _visibleFrom, unsigned int _visibleCount);
-			void setText(std::string _text);
+			void setText(std::string _text, float _maxWidth = std::numeric_limits<float>::max());
 
 		};
 
 
-		typedef std::shared_ptr<SpritedText> SingleSpritePtr;
-		typedef std::unique_ptr<SpritedText> SingleSpriteUPtr;
+		typedef std::shared_ptr<SpritedText> SpritedTextPtr;
+		typedef std::unique_ptr<SpritedText> SpritedTextUPtr;
 	}
 }

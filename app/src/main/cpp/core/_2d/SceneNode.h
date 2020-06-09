@@ -14,6 +14,8 @@
 #include "../Math2D.h"
 #include "AxisAlignedBox.h"
 
+#include "../IteratorTemplate.h"
+
 
 namespace core
 {
@@ -35,9 +37,7 @@ namespace core
 			typedef std::vector<SceneNode*>::const_iterator ChildNodeConstIterator;
 
 			typedef std::vector<MovableObject*> ObjectList;
-			typedef std::vector<MovableObject*>::iterator ObjectIterator;
-			typedef std::vector<MovableObject*>::const_iterator ObjectConstIterator;
-
+			typedef Iterator<ObjectList> ObjectIterator;
 
 
 		protected:
@@ -103,6 +103,9 @@ namespace core
 			void appendObject(MovableObject* _object);
 			void removeObject(MovableObject* _object);
 			void destroyObject(MovableObject* _object);
+			MovableObject* getObjectByName(std::string _name);
+			ObjectIterator getObjectIterator();
+
 
 			void destroyAllObjects();
 

@@ -29,8 +29,8 @@ namespace core
 			{};
 
 			inline Quaternion(float _t) :
-				w(std::cos(_t * -0.5f)),
-				z(-std::sin(_t * -0.5f))
+				w(std::cos(_t * 0.5f)),
+				z(std::sin(_t * 0.5f))
 			{};
 
 			inline Quaternion(const Quaternion& _q) :
@@ -44,7 +44,7 @@ namespace core
 				//  w = (w1w2 - z1z2)
 				//  z = (w1z2 + z1w2)
 				w = w * _q.w - z * _q.z;
-				z = w * _q.z - z * _q.w;
+				z = w * _q.z + z * _q.w;
 				return *this;
 			};
 
@@ -64,13 +64,13 @@ namespace core
 			};
 
 
-			inline void rotate(float _t)
+			inline Quaternion &rotate(float _t)
 			{
-				*this *= Quaternion(_t);
+				return *this *= Quaternion(_t);
 			};
 
 
-			void normalize()
+			inline void normalize()
 			{
 				float len = w * w + z * z;
 				if (std::fabs(len - 1.0f) > EPSILON)

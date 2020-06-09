@@ -228,6 +228,13 @@ namespace core
 	};
 
 
+	// nodes
+
+	std::string ScriptLoader::parseNodeName(ScriptNodePtr _node)
+	{
+		return _node->getValue("node_name");
+	};
+
 
 	Vector2 ScriptLoader::parseNodeScale(ScriptNodePtr _node)
 	{
@@ -243,6 +250,7 @@ namespace core
 		return Vector2(1.0f);
 	};
 
+
 	_2d::Quaternion ScriptLoader::parseNodeRotation(ScriptNodePtr _node)
 	{
 		std::string value = _node->getValue("scale");
@@ -251,6 +259,7 @@ namespace core
 			return _2d::Quaternion(std::stof(value));
 		return _2d::Quaternion(0.0f);
 	};
+
 
 	Vector2 ScriptLoader::parseNodePosition(ScriptNodePtr _node)
 	{
@@ -299,6 +308,16 @@ namespace core
 	};
 
 
+	std::string ScriptLoader::parseObjectFont(ScriptNodePtr _node)
+	{
+		std::string firstSprite = _node->getValue("sprite_font");
+		std::string::size_type pos = firstSprite.find_first_of(';');
+		if (pos != firstSprite.npos)
+			return firstSprite.substr(0, pos);
+		return firstSprite;
+	};
+
+
 	Vector2 ScriptLoader::parseObjectScale(ScriptNodePtr _node)
 	{
 		std::string value = _node->getValue("scale");
@@ -328,6 +347,31 @@ namespace core
 		if (!value.size() || pos == value.npos)
 			return Vector2(0.0f);
 		return Vector2(std::stof(value), std::stof(value.substr(pos + 1)));
+	};
+
+
+	_2d::SpritedText::ANCHOR_POSITION ScriptLoader::parseTextAnchorPosition(ScriptNodePtr _node)
+	{
+		std::string value = _node->getValue("anchor_position");
+		unsigned char out = _2d::SpritedText::AP_CENTER;
+
+		if (value.find("left") != std::string::npos)
+			out |= _2d::SpritedText::AP_LEFT;
+		else if (value.find("right") != std::string::npos)
+			out |= _2d::SpritedText::AP_RIGHT;
+
+		if (value.find("top") != std::string::npos)
+			out |= _2d::SpritedText::AP_TOP;
+		else if (value.find("bottom") != std::string::npos)
+			out |= _2d::SpritedText::AP_BOTTOM;
+
+		return (_2d::SpritedText::ANCHOR_POSITION) out;
+	};
+
+
+	std::string ScriptLoader::parseObjectText(ScriptNodePtr _node)
+	{
+		return _node->getValue("text");
 	};
 
 
@@ -422,6 +466,85 @@ namespace core
 		}
 
 		return spriteNamesList;
+	};
 
-	}
+
+
+	//shapes
+
+
+	_2d::SHAPE_TYPE ScriptLoader::parseShapeType(ScriptNodePtr _node)
+	{
+		std::string shape = _node->getValue("shape_type");
+
+		if (shape.compare("circle") == 0)
+			return _2d::ST_CIRCLE;
+
+		if (shape.compare("rectangle") == 0)
+			return _2d::ST_RECTANGLE;
+
+		if (shape.compare("line area") == 0)
+			return _2d::ST_LINE_AREA;
+
+		return _2d::ST_UNDEFINED;
+	};
+
+
+	Vector2 ScriptLoader::parseShapePosition(ScriptNodePtr _node)
+	{
+		std::string data = _node->getValue("position");
+		std::string::size_type pos = data.find_first_of(',');
+
+		if (pos == std::string::npos)
+			return Vector2(std::stof(data));
+
+		return Vector2(std::stof(data), std::stof(data.substr(pos+1)));
+	};
+
+
+	float ScriptLoader::parseCircleRadius(ScriptNodePtr _node)
+	{
+		return std::stof(_node->getValue("radius"));
+	};
+
+
+	Vector2 ScriptLoader::parseRectangleSize(ScriptNodePtr _node)
+	{
+		std::string data = _node->getValue("size");
+		std::string::size_type numPos = data.find_first_of("-+0123456789.");
+		std::string::size_type pos = data.find_first_of(',');
+
+		if (numPos == std::string::npos)
+			return Vector2(1.0f);
+
+		if (pos == std::string::npos)
+			return Vector2(std::stof(data.substr(numPos)));
+
+		return Vector2(std::stof(data.substr(numPos)), std::stof(data.substr(pos+1)));
+	};
+
+
+	float ScriptLoader::parseRectangleRotation(ScriptNodePtr _node)
+	{
+		std::string data = _node->getValue("rotation");
+		float rotation = std::stof(data);
+
+		std::string::size_type afterNumPos = data.find_first_not_of("-+0123456789.");
+
+		if (afterNumPos != std::string::npos && (data[afterNumPos] == 'r' || data[afterNumPos] == 'R'))
+			return rotation;
+
+		// deg to rad
+		return rotation * (M_PI / 180.f);
+	};
+
+
+	Vector3 ScriptLoader::parse2DLineParams(ScriptNodePtr _node)
+	{
+		return Vector3(std::stof(_node->getValue("param_a")),
+					   std::stof(_node->getValue("param_b")),
+					   std::stof(_node->getValue("param_c")));
+
+	};
+
 }

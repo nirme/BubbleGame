@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <set>
+#include <unordered_set>
 
 #include "SingletonTemplate.h"
 #include "Controller.h"
@@ -15,11 +15,12 @@ namespace core
 	class ControllerManager : public Singleton<ControllerManager>
 	{
 	protected:
-		typedef std::set<ControllerPtr> ControllerList;
+		typedef std::unordered_set<ControllerPtr> ControllerList;
 		//typedef std::unordered_set<ControllerPtr> ControllerList;
 		//typedef std::vector<ControllerPtr> ControllerList;
 
 		ControllerList activeControllerList;
+		ControllerList controllersToRemove;
 		SharedFrameTimeControllerValuePtr frameTimeValue;
 
 
@@ -33,7 +34,7 @@ namespace core
 		ControllerPtr createController(SharedControllerValuePtr _source, SharedControllerValuePtr _destination, SharedControllerFuncPtr _function = nullptr);
 		ControllerPtr createFrameTimeController(SharedControllerValuePtr _destination, SharedControllerFuncPtr _function = nullptr);
 
-		void removeController(ControllerPtr _controller);
+		void removeController(ControllerPtr _controller, bool async = false);
 
 		void addFrameTime(float _time);
 		float getFrameTime();

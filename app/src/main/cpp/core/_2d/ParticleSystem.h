@@ -106,11 +106,13 @@ namespace core
 
             void setSpeedFactor(float _speedFactor);
             void addSprite(ImageSpritePtr _sprite);
+
             void addEmiter(ParticleEmitter *_emiter);
+
             void addAffector(ParticleAffector *_affector);
             void initSystem(unsigned int _particleCount = 500);
 
-			void update(float _timeElapsed);
+			void progress(float _timeElapsed);
 
 
 			void setMaterial(ShadingProgramPtr _program, TexturePtr _tex);

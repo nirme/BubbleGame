@@ -31,6 +31,9 @@ namespace core
 
     	typedef uint8_t SoundPriority;
 
+    	static constexpr SoundPriority MinSoundPriority = 0;
+    	static constexpr SoundPriority MaxSoundPriority = 255;
+
     protected:
 
 		static SLDataFormat_PCM InputFormatStruct;
@@ -78,13 +81,13 @@ namespace core
 		UsedSoundPlayersList usedPlayers;
 
 
-		SoundPlayer* getPlayer(SoundPriority _priority);
 
 
 		PLAYBACK_STATE globalState;
 
 	public:
 
+		SoundPlayer* getPlayer(SoundPriority _priority, bool _freePlayerOnSoundEnd = true);
 		void createSoundPlayerObject(SLObjectItf *_slPlayerObject, SLDataSource *_sInputSourceStructure, SLuint32 _interfacesNumber, const SLInterfaceID *_interfaces);
 
 		SoundSystem();

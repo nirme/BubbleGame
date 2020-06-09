@@ -20,8 +20,10 @@ namespace core
 	{
 		class ParticleSystem;
 
-		struct Particle
+		class Particle
 		{
+		public:
+
 			Vector2 position;
 			float rotation;
 			float size;
@@ -208,7 +210,7 @@ namespace core
 			};
 
 
-			unsigned int getEmissionCount(float _timeElapsed)
+			virtual unsigned int getEmissionCount(float _timeElapsed)
 			{
 				return _timeElapsed * emissionRate + emissionTimeRemains;
 			};

@@ -37,5 +37,10 @@ namespace core
 
 		Logger& write(const char* _text, LOG_LEVEL _logLevel = LL_INFO);
 		Logger& write(std::string _text, LOG_LEVEL _logLevel = LL_INFO);
+
+		void debug(const char* _text);
+		void debug(std::string _text);
+
+
 	};
 }

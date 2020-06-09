@@ -63,27 +63,43 @@ namespace core
         void ParticleSystem::expireParticles(float _timeElapsed)
         {
             Particle *prt = nullptr;
-            ParticleList::iterator itTmp;
+			ParticleList::iterator itTmp,
+					it(aliveParticles.begin()),
+					itEnd(aliveParticles.end());
+
             unsigned int particlesRemoved = 0;
-            for (ParticleList::iterator it = aliveParticles.begin(), itEnd = aliveParticles.end(); it != itEnd; ++it)
+            while (it != itEnd)
             {
                 prt = (*it);
                 if (prt->ageLeft < _timeElapsed)
                 {
-                    ++particlesRemoved;
+					++particlesRemoved;
+
+					itTmp = it;
+					++itTmp;
+
                     prt->alive = false;
                     if (prt->type == Particle::PT_NORMAL)
                     {
-                        itTmp = it;
-                        --itTmp;
                         deadParticles.splice(deadParticles.end(),aliveParticles,it);
-                        it = itTmp;
                     }
                     else
                     {
-                        throw std::logic_error("unimplemented");
+                        //auto emitterIt = std::find(activeEmitters.begin(), activeEmitters.end(), static_cast<ParticleEmitter*>(prt));
+                        //assert(emitterIt != activeEmitters.end() && "emitter not found");
+                        //activeEmitters.erase(emitterIt);
+
+                        activeEmitters.remove(static_cast<ParticleEmitter*>(prt));
+						aliveParticles.erase(it);
+
+						// dont have container to retain dead emiters
+						delete (static_cast<ParticleEmitter*>(prt));
                     }
+
+                    it = itTmp;
                 }
+				else
+					++it;
             }
 
             if (particlesRemoved)
@@ -220,6 +236,7 @@ namespace core
         void ParticleSystem::addEmiter(ParticleEmitter *_emiter)
         {
             activeEmitters.push_back(_emiter);
+            aliveParticles.push_back(_emiter);
         };
 
 
@@ -240,7 +257,7 @@ namespace core
         };
 
 
-        void ParticleSystem::update(float _timeElapsed)
+        void ParticleSystem::progress(float _timeElapsed)
         {
             _timeElapsed *= speedFactor;
 

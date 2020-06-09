@@ -5,7 +5,7 @@
 #include "SingletonTemplate.h"
 #include "ResourceManager.h"
 #include "Resource.h"
-#include "ScriptLoader.h"
+#include "SpritedFont.h"
 
 
 namespace core

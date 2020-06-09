@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include "../Debug.h"
 #include "AxisAlignedBox.h"
 #include "RenderQueue.h"
 #include "SceneNode.h"

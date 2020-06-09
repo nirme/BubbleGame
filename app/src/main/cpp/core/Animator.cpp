@@ -11,7 +11,7 @@ namespace core
 	};
 
 
-	virtual Animator::~Animator()
+	Animator::~Animator()
 	{};
 
 
@@ -44,7 +44,7 @@ namespace core
 
 		for (unsigned int i = 0, iEnd = listeners.size(); i < iEnd; ++i)
 		{
-			listeners[i]->update(interpolatedValue);
+			listeners[i]->progress(interpolatedValue);
 		};
 	};
 

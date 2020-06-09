@@ -41,6 +41,7 @@ namespace core
 		return output;
 	};
 
+
 	void Engine::destroyScene(const std::string &_name)
 	{
 		NamedScenesMap::iterator itScene = namedScenes.find(_name);
@@ -66,14 +67,13 @@ namespace core
 
 	void Engine::onActivate()
 	{
-		Logger::getSingleton().write("onActivate event called");
-		frameTime.reset();
+		Logger::getSingleton().write("onActivate event called", LL_WARNING);
 	};
 
 
 	void Engine::onDeactivate()
 	{
-		Logger::getSingleton().write("onDeactivate event called");
+		Logger::getSingleton().write("onDeactivate event called", LL_WARNING);
 	};
 
 
@@ -106,7 +106,7 @@ namespace core
 
 	void Engine::onInitWindow()
 	{
-		Logger::getSingleton().write("onInitWindow event called");
+		Logger::getSingleton().write("onInitWindow event called", LL_WARNING);
 
 		loader = std::unique_ptr<ScriptLoader>(new ScriptLoader());
 		loader->registerParser(std::make_shared<XmlScriptParser>());
@@ -159,7 +159,7 @@ namespace core
 
 	void Engine::onTermWindow()
 	{
-		Logger::getSingleton().write("onTermWindow event called");
+		Logger::getSingleton().write("onTermWindow event called", LL_WARNING);
 
 		if (renderer)
 			renderer->uninitialize();
@@ -167,55 +167,71 @@ namespace core
 		initialized = false;
 	};
 
+
 	void Engine::onGainedFocus()
 	{
-		Logger::getSingleton().write("onGainedFocus event called");
+
+		//Logger::getSingleton().write("onGainedFocus event called", LL_WARNING);
 	};
+
 
 	void Engine::onLostFocus()
 	{
-		Logger::getSingleton().write("onLostFocus event called");
+		//Logger::getSingleton().write("onLostFocus event called", LL_WARNING);
 	};
 
 
 	void Engine::onConfigChanged()
-	{};
+	{
+		Logger::getSingleton().write("onConfigChanged event called", LL_WARNING);
+	};
 
 
 	void Engine::onLowMemory()
-	{};
+	{
+		Logger::getSingleton().write("onLowMemory event called", LL_WARNING);
+	};
 
 
 	void Engine::onStart()
 	{
-		Logger::getSingleton().write("onStart event called");
+		Logger::getSingleton().write("onStart event called", LL_WARNING);
 	};
 
 
 	void Engine::onResume(void* pData, size_t pSize)
 	{
-		Logger::getSingleton().write("onResume event called");
+		Logger::getSingleton().write("onResume event called", LL_WARNING);
+
 		if (initialized)
 		{
-			soundSystem->resume();
+			if (soundSystem)
+				soundSystem->resume();
 		}
 	};
 
+
 	void Engine::onSaveState(void** pData, size_t* pSize)
 	{
-		Logger::getSingleton().write("onSaveState event called");
+		Logger::getSingleton().write("onSaveState event called", LL_WARNING);
 	};
+
 
 	void Engine::onPause()
 	{
-		Logger::getSingleton().write("onPause event called");
+		Logger::getSingleton().write("onPause event called", LL_WARNING);
 
-		soundSystem->pause();
+		if (initialized)
+		{
+			if (soundSystem)
+				soundSystem->pause();
+		}
 	};
+
 
 	void Engine::onStop()
 	{
-		Logger::getSingleton().write("onStop event called");
+		Logger::getSingleton().write("onStop event called", LL_WARNING);
 
 		// destroy physics system
 		physicsSystem.reset();
@@ -247,7 +263,7 @@ namespace core
 
 	void Engine::onDestroy()
 	{
-		Logger::getSingleton().write("onDestroy event called");
+		Logger::getSingleton().write("onDestroy event called", LL_WARNING);
 	};
 
 }

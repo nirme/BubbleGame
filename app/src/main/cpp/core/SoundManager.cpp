@@ -1,5 +1,6 @@
 #include "SoundManager.h"
 #include "SoundSystem.h"
+#include "ScriptLoader.h"
 
 
 template<>

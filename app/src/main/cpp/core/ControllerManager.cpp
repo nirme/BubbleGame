@@ -35,9 +35,12 @@ namespace core
 	};
 
 
-	void ControllerManager::removeController(ControllerPtr _controller)
+	void ControllerManager::removeController(ControllerPtr _controller, bool async)
 	{
-		activeControllerList.erase(_controller);
+		if (async)
+			controllersToRemove.insert(_controller);
+		else
+			activeControllerList.erase(_controller);
 	};
 
 
@@ -71,6 +74,14 @@ namespace core
 
 	void ControllerManager::updateControllers()
 	{
+		if (controllersToRemove.size())
+		{
+			for (auto it = controllersToRemove.begin(), itEnd = controllersToRemove.end(); it != itEnd; ++it)
+				activeControllerList.erase((*it));
+
+			controllersToRemove.clear();
+		}
+
 		for (auto it = activeControllerList.begin(), itEnd = activeControllerList.end(); it != itEnd; ++it)
 		{
 			(*it)->update();

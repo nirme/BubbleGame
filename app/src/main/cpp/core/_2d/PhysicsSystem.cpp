@@ -129,7 +129,7 @@ namespace core
 				// update all shapes by requesting current aabb
 				if (registeredObjects[i]->isEnabled())
 				{
-					registeredObjects[i]->update(_frameTime);
+					registeredObjects[i]->progress(_frameTime);
 				}
 			}
 
@@ -332,6 +332,9 @@ namespace core
 
 								if ((*it).second.listener)
 									(*it).second.listener->onCollisionDetected(objList1[i], objList2[j]);
+
+								objList1[i]->collisionDetected(objList2[j]);
+								objList2[j]->collisionDetected(objList1[i]);
 							}
 							else // not reflected
 							{
@@ -340,8 +343,14 @@ namespace core
 										CollidableObjectPair((*it).first.typeId1, (*it).first.typeId2)
 										).first;
 
-								if (!overlappingObjects.erase(OverlappingObjectPair(objList1[i], objList2[j])) && (*it).second.listener)
-									(*it).second.listener->onCollisionDetected(objList1[i], objList2[j]);
+								if (!overlappingObjects.erase(OverlappingObjectPair(objList1[i], objList2[j])))
+								{
+									if ((*it).second.listener)
+										(*it).second.listener->onCollisionDetected(objList1[i], objList2[j]);
+
+									objList1[i]->collisionDetected(objList2[j]);
+									objList2[j]->collisionDetected(objList1[i]);
+								}
 							}
 						}
 					}
@@ -354,8 +363,14 @@ namespace core
 				for (OverlappingObjectsList::iterator it = overlappingObjects.begin(), itEnd = overlappingObjects.end(); it != itEnd; ++it)
 				{
 					auto pairIt = collidablePairs.find((*it).second);
-					if (pairIt != collidablePairs.end() && (*pairIt).second.listener)
-						(*pairIt).second.listener->onCollisionEnded((*it).first.object1, (*it).first.object2);
+					if (pairIt != collidablePairs.end())
+					{
+						if ((*pairIt).second.listener)
+							(*pairIt).second.listener->onCollisionEnded((*it).first.object1, (*it).first.object2);
+
+						(*it).first.object1->collisionEnded((*it).first.object2);
+						(*it).first.object2->collisionEnded((*it).first.object1);
+					}
 				}
 			}
 

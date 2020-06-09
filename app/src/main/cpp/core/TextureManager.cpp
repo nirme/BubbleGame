@@ -1,5 +1,6 @@
 #include "TextureManager.h"
 #include "RenderSystem.h"
+#include "ScriptLoader.h"
 
 
 template<>

@@ -1,14 +1,60 @@
 #pragma once
 
 #include "core/Engine.h"
+#include "core/TouchControls.h"
+#include "MusicController.h"
+
+#include "core/_2d/shapes/Circle.h"
+#include "core/_2d/shapes/LineArea.h"
+
 
 
 class Game : public core::Engine
 {
+protected:
+
+	std::unique_ptr<MusicController> musicController;
+	core::_2d::SpritedText* fpsText;
+
+	float fps;
+	float fpsTime;
+	long int cc;
+
+
 public:
 
 	Game(android_app* _androidApp) : Engine(_androidApp)
 	{};
+
+	void onStep()
+	{
+
+		if (!initialized)
+			return;
+
+		Engine::onStep();
+
+
+		fpsTime += frameTime.getLastUpdateTime<float>();
+		++cc;
+
+		if (fpsTime >= 1.0f)
+		{
+			fps = static_cast<int>(100.0f * cc / fpsTime) * 0.01f;
+			cc = 0;
+			fpsTime = 0.0f;
+
+			fpsText->setText(std::string("FPS: ") + std::to_string(fps).substr(0, 5));
+
+			core::_2d::Quaternion q = fpsText->getRotation();
+			//q *= core::_2d::Quaternion(0.2f);
+			//q.normalize();
+			//q.rotate(core::degreeToRad(10.0f));
+			//fpsText->setRotation(q);
+		}
+
+	};
+
 
 
 
@@ -31,29 +77,29 @@ public:
 			core::_2d::SceneNode *node = mainScene->createNode("TestNode", nullptr);
 			mainScene->getRootNode()->appendChild(node);
 
-			/*
+
 			node->setPosition({ 0.0f, 0.0f });
 			node->setRotation(0.0f);
 			node->setScale({ 1.0f });
 
-			_2d::SingleSprite *spriteTest = nullptr;
+			core::_2d::SingleSprite *spriteTest = nullptr;
 			spriteTest = mainScene->createSingleSprite("TestSprite", nullptr);
-			spriteTest->setEnabled(true);
-			*/
+			spriteTest->setEnabled(false);
+
 			core::ShadingProgramManager::getSingleton().getByName("baseShader")->load();
-			/*
-			ImageSpriteManager::getSingleton().getByName("anim_1.bmp")->load();
-			spriteTest->setMaterial(ShadingProgramManager::getSingleton().getByName("baseShader"), ImageSpriteManager::getSingleton().getByName("anim_1.bmp"));
+
+			core::ImageSpriteManager::getSingleton().getByName("font1_tex.bmp#Kidpixies#F")->load();
+			spriteTest->setMaterial(core::ShadingProgramManager::getSingleton().getByName("baseShader"), core::ImageSpriteManager::getSingleton().getByName("font1_tex.bmp#Kidpixies#F"));
 
 			spriteTest->setPosition({0.0f});
 
-			spriteTest->setPriority(127);
+			spriteTest->setPriority(250);
 			spriteTest->setRotation(0.0f);
-			spriteTest->setScale({1.0f});
-			spriteTest->setSpriteCoords(SpriteCoords::SPRITE_SQUARE);
+			spriteTest->setScale({2.0f});
+			spriteTest->setSpriteCoords(core::SpriteCoords::SPRITE_SQUARE);
 
 			node->appendObject(spriteTest);
-			*/
+
 			/*
 			class MoveListener : public TouchArea::Listener
 			{
@@ -96,6 +142,32 @@ public:
 			inputManager->activateControlSet("base_control");
 
 			*/
+
+
+
+			core::_2d::SceneNode *node4 = mainScene->createNode("Text", nullptr);
+			mainScene->getRootNode()->appendChild(node4);
+
+			node4->setPosition({ 14.0f, 8.0f });
+			node4->setRotation(0.0f);
+			node4->setScale({ 1.0f });
+
+			fpsText = mainScene->createSpritedText("TestText", nullptr);
+			fpsText->setMaterial(
+				core::ShadingProgramManager::getSingleton().getByName("baseShader"),
+				//core::SpritedFontManager::getSingleton().getByName("Kidpixies.xml")
+				core::SpritedFontManager::getSingleton().getByName("Connection_II.xml")
+				//core::SpritedFontManager::getSingleton().getByName("Lucida.xml")
+			);
+
+			fpsText->setPriority(255);
+			fpsText->setAnchorPosition(core::_2d::SpritedText::AP_TOP_RIGHT);
+			fpsText->setText("qwertyuiopasdfghjklzxcvbnm\n\nQWERTYUIOPASDFGHJKLZXCVBNM\n\n1234567890`[]\\;',./~!@#$%^\n\n&*()_+{}|:\"<>?", 24.0f);
+			fpsText->setScale(1.0f);
+
+			fpsText->setEnabled(true);
+			node4->appendObject(fpsText);
+
 
 
 
@@ -222,6 +294,54 @@ public:
 
 		}
 
+
+
+
+
+
+
+
+
+		musicController = std::make_unique<MusicController>(soundSystem.get());
+
+
+
+		musicController->registerSound("menu", core::SoundManager::getSingleton().getByName("Mr_Tea.ogg"));
+		musicController->registerSound("game", core::SoundManager::getSingleton().getByName("Ant_Fire.ogg"));
+		musicController->registerSound("game", core::SoundManager::getSingleton().getByName("Ladybirds_Mate.ogg"));
+
+		class TestListener : public core::TouchArea::Listener
+		{
+		public:
+			MusicController *musicController;
+			std::string set;
+
+			void onPointerOnArea(){};
+			void onPointerOffArea()
+			{
+				if (set.compare("menu") == 0)
+					set = "game";
+				else
+					set = "menu";
+
+				musicController->playSet(set);
+			};
+		};
+
+		// btn1
+		TestListener *mListT = new TestListener();
+		mListT->musicController = musicController.get();
+		mListT->set = "menu";
+		musicController->playSet("menu");
+
+		core::_2d::Shape *btn1Shape = new core::_2d::Rectangle(1.1f, 2.2f, {0.0f}, 0.0f);
+		core::TouchArea *buttonCenter = new core::TouchArea(btn1Shape);
+		buttonCenter->registerListener(mListT);
+		inputManager->registerControl("base_control", buttonCenter);
+
+
+
+		/*
 		class SoundRepeater : public core::SoundPlayer::Listener
 		{
 			core::SoundSystem *system;
@@ -255,6 +375,14 @@ public:
 
 
 
+		*/
+
+
+
+
+
+
+
 
 
 		// physics test
@@ -264,12 +392,12 @@ public:
 			public:
 				virtual void onCollisionDetected(core::_2d::RigidObject *_object1, core::_2d::RigidObject *_object2)
 				{
-					core::Logger::getSingleton().write(std::string("two balls overlapped: ") + _object1->getName() + " and " + _object2->getName());
+					//core::Logger::getSingleton().write(std::string("two balls overlapped: ") + _object1->getName() + " and " + _object2->getName());
 				};
 
 				virtual void onCollisionEnded(core::_2d::RigidObject *_object1, core::_2d::RigidObject *_object2)
 				{
-					core::Logger::getSingleton().write(std::string("two balls stopped overlapping: ") + _object1->getName() + " and " + _object2->getName());
+					//core::Logger::getSingleton().write(std::string("two balls stopped overlapping: ") + _object1->getName() + " and " + _object2->getName());
 				};
 
 				virtual ~BallCollision()
@@ -285,10 +413,12 @@ public:
 				{
 					core::SoundSystem::getSingleton().playSound(0, sound);
 
+					/*
 					if (dynamic_cast<core::_2d::SpritedBall*>(_object1))
 						core::Logger::getSingleton().write(std::string("ball hit the wall: ") + _object1->getName());
 					else
 						core::Logger::getSingleton().write(std::string("ball hit the wall: ") + _object2->getName());
+					*/
 				};
 
 				virtual void onCollisionEnded(core::_2d::RigidObject *_object1, core::_2d::RigidObject *_object2)
@@ -321,6 +451,10 @@ public:
 
 
 
+
+
+
+
 			//float rotation = 0;
 			//Matrix3 mx = affine2DMatrix({1.0f}, {(float) (rotation/180.0f * M_PI)}, {0.0f});
 			/*
@@ -343,18 +477,30 @@ public:
 
 
 			std::srand(std::time(nullptr));
-			for (unsigned int i = 0; i < 5; ++i)
+			for (unsigned int i = 0; i < 15; ++i)
 			{
-
-				core::_2d::SpritedBall *spritedBall = new core::_2d::SpritedBall(std::string("ball") + std::to_string(i), "ball", physicsSystem.get());
+				core::_2d::SingleSprite *spritedBall = new core::_2d::SingleSprite(std::string("ball") + std::to_string(i), 255, nullptr, nullptr);
 				spritedBall->setScale({1.6f});
-				spritedBall->setPosition({-10.0f + i*4, 6.0f-(i/2.0f)});
-				float direction = ((std::rand() % 1000) / 1000.0f) * (std::rand() % 2 ? -1 : 1);
-				spritedBall->setDirectionVector({5.0f * direction, 0.0f});
-				spritedBall->addAffector("gravity");
+				spritedBall->setPosition({-10.0f + i*4, 5.0f - (2.0f * (i/5))});
+
+				core::ImageSpriteManager::getSingleton().getByName("objects.bmp#ball")->load();
+				spritedBall->setMaterial(core::ShadingProgramManager::getSingleton().getByName("baseShader"), core::ImageSpriteManager::getSingleton().getByName("objects.bmp#ball"));
+
 				mainScene->addObject(spritedBall);
 				node3->appendObject(spritedBall);
 				spritedBall->setEnabled(true);
+
+
+				core::_2d::RigidObject *rigidObject = new core::_2d::RigidObject("ball", physicsSystem.get());
+				rigidObject->setEntity(spritedBall);
+
+				core::_2d::ShapePtr bb(new core::_2d::Circle({0.0f}, 0.5f));
+				rigidObject->addShape(bb);
+				rigidObject->setBounceFactor(1.0f);
+
+				float direction = ((std::rand() % 1000) / 1000.0f) * (std::rand() % 2 ? -1 : 1);
+				rigidObject->setDirectionVector({5.0f * direction, 0.0f});
+				rigidObject->addAffector("gravity");
 			}
 
 
@@ -395,29 +541,87 @@ public:
 
 
 
-			core::_2d::SpritedWall* spritedWall1 = new core::_2d::SpritedWall("wall", "wall", physicsSystem.get());
-			//spritedWall->setPosition({0.0f, -0.4f});
-			spritedWall1->setPosition({-12.0f, 0.0f});
-			spritedWall1->setRotation({(90.0f/180.0f) * M_PI});
-			mainScene->addObject(spritedWall1);
-			node3->appendObject(spritedWall1);
-			spritedWall1->setEnabled(true);
 
-			core::_2d::SpritedWall* spritedWall2 = new core::_2d::SpritedWall("wall", "wall", physicsSystem.get());
-			//spritedWall->setPosition({0.0f, -0.4f});
-			spritedWall2->setPosition({0.0f, -6.0f});
-			//spritedWall2->setRotation({(-45.0f/180.0f) * M_PI});
-			mainScene->addObject(spritedWall2);
-			node3->appendObject(spritedWall2);
-			spritedWall2->setEnabled(true);
+			core::_2d::SingleSprite *spritedWall = new core::_2d::SingleSprite("wall1", 255, nullptr, nullptr);
+			spritedWall->setSpriteCoords({-6.0f, 6.0f, 0.0f, -0.5f});
+			spritedWall->setPosition({-12.0f, 0.0f});
+			spritedWall->setRotation({(90.0f/180.0f) * M_PI});
+			spritedWall->setScale(2.0f);
 
-			core::_2d::SpritedWall* spritedWall3 = new core::_2d::SpritedWall("wall", "wall", physicsSystem.get());
-			//spritedWall->setPosition({0.0f, -0.4f});
-			spritedWall3->setPosition({12.0f, 0.0f});
-			spritedWall3->setRotation({(-90.0f/180.0f) * M_PI});
-			mainScene->addObject(spritedWall3);
-			node3->appendObject(spritedWall3);
-			spritedWall3->setEnabled(true);
+
+			core::ImageSpriteManager::getSingleton().getByName("objects.bmp#wall")->load();
+			spritedWall->setMaterial(core::ShadingProgramManager::getSingleton().getByName("baseShader"), core::ImageSpriteManager::getSingleton().getByName("objects.bmp#wall"));
+
+			mainScene->addObject(spritedWall);
+			node3->appendObject(spritedWall);
+			spritedWall->setEnabled(true);
+
+
+			core::_2d::RigidObject *rigidObject = new core::_2d::RigidObject("wall", physicsSystem.get());
+			rigidObject->setEntity(spritedWall);
+
+			core::_2d::ShapePtr w1(new core::_2d::LineArea({-1.0f, 0.0f}, {1.0f, 0.0f}));
+			rigidObject->addShape(w1);
+			rigidObject->setBounceFactor(1.0f);
+			rigidObject->setStatic(true);
+
+
+
+
+
+
+			spritedWall = new core::_2d::SingleSprite("wall2", 255, nullptr, nullptr);
+			spritedWall->setSpriteCoords({-6.0f, 6.0f, 0.0f, -0.5f});
+			spritedWall->setPosition({0.0f, -6.0f});
+			spritedWall->setScale(2.0f);
+
+
+			core::ImageSpriteManager::getSingleton().getByName("objects.bmp#wall")->load();
+			spritedWall->setMaterial(core::ShadingProgramManager::getSingleton().getByName("baseShader"), core::ImageSpriteManager::getSingleton().getByName("objects.bmp#wall"));
+
+			mainScene->addObject(spritedWall);
+			node3->appendObject(spritedWall);
+			spritedWall->setEnabled(true);
+
+
+			rigidObject = new core::_2d::RigidObject("wall", physicsSystem.get());
+			rigidObject->setEntity(spritedWall);
+
+			core::_2d::ShapePtr w2(new core::_2d::LineArea({-1.0f, 0.0f}, {1.0f, 0.0f}));
+			rigidObject->addShape(w2);
+			rigidObject->setBounceFactor(1.0f);
+			rigidObject->setStatic(true);
+
+
+
+
+
+
+
+
+			spritedWall = new core::_2d::SingleSprite("wall3", 255, nullptr, nullptr);
+			spritedWall->setSpriteCoords({-6.0f, 6.0f, 0.0f, -0.5f});
+			spritedWall->setPosition({12.0f, 0.0f});
+			spritedWall->setScale(2.0f);
+			spritedWall->setRotation({(-90.0f/180.0f) * M_PI});
+
+
+			core::ImageSpriteManager::getSingleton().getByName("objects.bmp#wall")->load();
+			spritedWall->setMaterial(core::ShadingProgramManager::getSingleton().getByName("baseShader"), core::ImageSpriteManager::getSingleton().getByName("objects.bmp#wall"));
+
+			mainScene->addObject(spritedWall);
+			node3->appendObject(spritedWall);
+			spritedWall->setEnabled(true);
+
+
+			rigidObject = new core::_2d::RigidObject("wall", physicsSystem.get());
+			rigidObject->setEntity(spritedWall);
+
+			core::_2d::ShapePtr w3(new core::_2d::LineArea({-1.0f, 0.0f}, {1.0f, 0.0f}));
+			rigidObject->addShape(w3);
+			rigidObject->setBounceFactor(1.0f);
+			rigidObject->setStatic(true);
+
 		}
 
 

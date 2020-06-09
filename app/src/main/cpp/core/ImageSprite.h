@@ -47,7 +47,6 @@ namespace core
 	protected:
 
 		TexturePtr texture;
-
 		TextureSpriteCoords coords;
 
 

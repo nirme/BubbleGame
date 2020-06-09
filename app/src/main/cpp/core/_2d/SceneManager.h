@@ -9,6 +9,7 @@
 #include "../ShadingParamsPassthru.h"
 #include "../RenderSystem.h"
 #include "../GraphicBuffer.h"
+#include "../ControllerValues.h"
 
 #include "ObjectFactory.h"
 
@@ -54,6 +55,9 @@ namespace core
 			ObjectMap namedObjects;
 
 
+			SharedFrameTimeControllerValuePtr timeValue;
+
+
 			void addNode(SceneNode* _node);
 			void removeNode(SceneNode* _node);
 
@@ -76,20 +80,24 @@ namespace core
 			SceneNode *getNodeByName(const std::string &_name);
 			SceneNode *getRootNode();
 
-			SceneNode *createNode(const std::string &_nodeName, ScriptNodePtr _nodeValues);
+			SceneNode *createNode(const std::string &_nodeName);
+			SceneNode *createNode(ScriptNodePtr _nodeValues);
+
 			void destroyNode(SceneNode *_node);
 			void destroyObject(MovableObject *_object);
 
 			Camera *createCamera(const std::string &_name, ScriptNodePtr _nodeValues);
-			MovableObject *createObject(const std::string &_name, ScriptNodePtr _nodeValues);
+
+			MovableObject *createObject(ScriptNodePtr _nodeValues);
+
 			SingleSprite *createSingleSprite(const std::string &_name, ScriptNodePtr _nodeValues);
 			ParticleSystem *createParticleSystem(const std::string &_name, ScriptNodePtr _nodeValues);
-
-
-            ControllerPtr createFrameTimeController(SharedControllerValuePtr _destination, SharedControllerFuncPtr _function = nullptr);
-
+			SpritedText *createSpritedText(const std::string &_name, ScriptNodePtr _nodeValues);
 
 			void renderScene();
+
+			void setTimeControllerValue(SharedFrameTimeControllerValuePtr _timeValue);
+
 		};
 	}
 }

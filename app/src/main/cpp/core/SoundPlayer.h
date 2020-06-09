@@ -40,6 +40,8 @@ namespace core
 
 		static constexpr int BufferQueueSize = 3; // 3 buffers, 1 playing, 1 ready to play next part, 1 empty to load nex buffer
 
+		static constexpr SLmillibel MinimumVolume = SL_MILLIBEL_MIN * 0.2; //
+
         // shared input struct
         static constexpr SLDataLocator_BufferQueue InputLocatorStruct = {
             SL_DATALOCATOR_BUFFERQUEUE,
@@ -66,9 +68,10 @@ namespace core
         SLVolumeItf slVolume;
 
 
+        bool reserved;
+
 		SLmillibel maxVolume;
 		float currentVolume;
-
 
 
 		Sound::SoundBufferIteratorUPtr soundIterator;
@@ -83,9 +86,9 @@ namespace core
 		void queuedBufferCallback(SLAndroidSimpleBufferQueueItf _caller);
 		static void QueuedBufferCallback(SLAndroidSimpleBufferQueueItf _caller, void *_pContext);
 
-		void reset();
-
 	public:
+
+		void freePlayer();
 
     	static void setInputFormatStruct(SLDataFormat_PCM *_format)
 		{
@@ -111,9 +114,24 @@ namespace core
 		{
 			_volume = std::clamp(_volume, 0.0f, 1.0f);
 
-			SLmillibel newVolume = SL_MILLIBEL_MIN + (SLmillibel)((maxVolume - SL_MILLIBEL_MIN) * _volume);
+			SLmillibel newVolume = MinimumVolume + (SLmillibel)((maxVolume - MinimumVolume) * _volume);
 			SL_ERROR_CHECK((*slVolume)->SetVolumeLevel(slVolume, newVolume));
 			currentVolume = _volume;
+		};
+
+		void setListener(Listener *_listener)
+		{
+			listener = _listener;
+		};
+
+		bool isReserved()
+		{
+			return reserved;
+		};
+
+		void setReserved(bool _reserved)
+		{
+			reserved = _reserved;
 		};
 	};
 

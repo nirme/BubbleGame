@@ -6,6 +6,9 @@
 #include "_2d/MaterialManager.h"
 #include "_2d/Camera.h"
 #include "_2d/ViewPort.h"
+#include "ControllerManager.h"
+#include "ControllerValues.h"
+
 
 
 namespace core

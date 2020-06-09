@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font>
+	<configuration name="Connection_II" type="sprited" spacing="proportional" font_size="1.0" line_height="1.0" defaultChar="undefined" texture="font1_tex.bmp" />
+
+	<characters>
+		<letter cp="0" width="0.5" />
+		<letter cp="1" width="0.4" />
+		<letter cp="2" width="0.5" />
+		<letter cp="3" width="0.5" />
+		<letter cp="4" width="0.5" />
+		<letter cp="5" width="0.5" />
+		<letter cp="6" width="0.5" />
+		<letter cp="7" width="0.5" />
+		<letter cp="8" width="0.5" />
+		<letter cp="9" width="0.5" />
+		<letter cp="A" width="0.6" />
+		<letter cp="B" width="0.6" />
+		<letter cp="C" width="0.6" />
+		<letter cp="D" width="0.6" />
+		<letter cp="E" width="0.5" />
+		<letter cp="F" width="0.5" />
+		<letter cp="G" width="0.6" />
+		<letter cp="H" width="0.6" />
+		<letter cp="I" width="0.2" />
+		<letter cp="J" width="0.5" />
+		<letter cp="K" width="0.6" />
+		<letter cp="L" width="0.5" />
+		<letter cp="M" width="0.8" />
+		<letter cp="N" width="0.6" />
+		<letter cp="O" width="0.6" />
+		<letter cp="P" width="0.6" />
+		<letter cp="Q" width="0.7" />
+		<letter cp="R" width="0.6" />
+		<letter cp="S" width="0.6" />
+		<letter cp="T" width="0.6" />
+		<letter cp="U" width="0.6" />
+		<letter cp="V" width="0.6" />
+		<letter cp="W" width="1" />
+		<letter cp="X" width="0.6" />
+		<letter cp="Y" width="0.6" />
+		<letter cp="Z" width="0.6" />
+		<letter cp="a" width="0.6" />
+		<letter cp="b" width="0.6" />
+		<letter cp="c" width="0.6" />
+		<letter cp="d" width="0.6" />
+		<letter cp="e" width="0.6" />
+		<letter cp="f" width="0.5" />
+		<letter cp="g" width="0.6" />
+		<letter cp="h" width="0.6" />
+		<letter cp="i" width="0.2" />
+		<letter cp="j" width="0.3" />
+		<letter cp="k" width="0.5" />
+		<letter cp="l" width="0.2" />
+		<letter cp="m" width="0.9" />
+		<letter cp="n" width="0.6" />
+		<letter cp="o" width="0.6" />
+		<letter cp="p" width="0.6" />
+		<letter cp="q" width="0.6" />
+		<letter cp="r" width="0.5" />
+		<letter cp="s" width="0.6" />
+		<letter cp="t" width="0.41" />
+		<letter cp="u" width="0.6" />
+		<letter cp="v" width="0.6" />
+		<letter cp="w" width="1" />
+		<letter cp="x" width="0.6" />
+		<letter cp="y" width="0.6" />
+		<letter cp="z" width="0.6" />
+		<letter cp="'" width="0.3" />
+		<letter cp="-" width="0.6" />
+		<letter cp=" " width="0.5" visible="false" />
+		<letter cp="!" width="0.2" />
+		<letter cp="#" width="0.6" />
+		<letter cp="$" width="0.6" />
+		<letter cp="%" width="1" />
+		<letter cp="&amp;" width="0.7" />
+		<letter cp="&lt;" width="0.4" />
+		<letter cp="&quot;" width="0.5" />
+		<letter cp="(" width="0.3" />
+		<letter cp=")" width="0.3" />
+		<letter cp="*" width="0.4" />
+		<letter cp="," width="0.3" />
+		<letter cp="." width="0.2" />
+		<letter cp="/" width="0.8" />
+		<letter cp=":" width="0.2" />
+		<letter cp=";" width="0.3" />
+		<letter cp="?" width="0.5" />
+		<letter cp="@" width="0.8" />
+		<letter cp="[" width="0.3" />
+		<letter cp="\" width="0.8" />
+		<letter cp="]" width="0.3" />
+		<letter cp="^" width="0.6" />
+		<letter cp="_" width="0.6" />
+		<letter cp="`" width="0.3" />
+		<letter cp="{" width="0.4" />
+		<letter cp="|" width="0.2" />
+		<letter cp="}" width="0.4" />
+		<letter cp="~" width="0.5" />
+		<letter cp="+" width="0.6" />
+		<letter cp="=" width="0.5" />
+		<letter cp=">" width="0.4" />
+		<letter cp="undefined" width="0.5" />
+
+	</characters>
+
+	<kerning>
+		<pair cp1="a" cp2="T" kern="-0.2" />
+		<pair cp1="A" cp2="T" kern="-0.1" />
+		<pair cp1="A" cp2="V" kern="-0.1" />
+		<pair cp1="A" cp2="W" kern="-0.1" />
+		<pair cp1="a" cp2="Y" kern="-0.1" />
+		<pair cp1="A" cp2="Y" kern="-0.1" />
+		<pair cp1="A" cp2="t" kern="-0.1" />
+		<pair cp1="&amp;" cp2=" " kern="-0.05" />
+		<pair cp1="&amp;" cp2="&quot;" kern="-0.1" />
+		<pair cp1="&amp;" cp2="%" kern="-0.1" />
+		<pair cp1="&amp;" cp2="'" kern="-0.1" />
+		<pair cp1="&amp;" cp2=")" kern="-0.1" />
+		<pair cp1="&amp;" cp2="," kern="-0.1" />
+		<pair cp1="&amp;" cp2="." kern="-0.1" />
+		<pair cp1="&amp;" cp2="/" kern="-0.1" />
+		<pair cp1="&amp;" cp2="1" kern="-0.1" />
+		<pair cp1="&amp;" cp2="5" kern="-0.1" />
+		<pair cp1="&amp;" cp2="7" kern="-0.1" />
+		<pair cp1="&amp;" cp2="9" kern="-0.1" />
+		<pair cp1="&amp;" cp2=":" kern="-0.1" />
+		<pair cp1="&amp;" cp2=";" kern="-0.1" />
+		<pair cp1="&amp;" cp2="?" kern="-0.1" />
+		<pair cp1="&amp;" cp2="\" kern="-0.1" />
+		<pair cp1="&amp;" cp2="]" kern="-0.1" />
+		<pair cp1="&amp;" cp2="^" kern="-0.1" />
+		<pair cp1="&amp;" cp2="_" kern="-0.1" />
+		<pair cp1="&amp;" cp2="`" kern="-0.1" />
+		<pair cp1="&amp;" cp2="}" kern="-0.1" />
+		<pair cp1="&amp;" cp2="~" kern="-0.1" />
+		<pair cp1="^" cp2=" " kern="-0.05" />
+		<pair cp1="^" cp2="#" kern="-0.1" />
+		<pair cp1="^" cp2=")" kern="-0.1" />
+		<pair cp1="^" cp2="," kern="-0.1" />
+		<pair cp1="^" cp2="-" kern="-0.1" />
+		<pair cp1="^" cp2="." kern="-0.1" />
+		<pair cp1="^" cp2="/" kern="-0.3" />
+		<pair cp1="^" cp2="7" kern="-0.1" />
+		<pair cp1="^" cp2="\" kern="-0.1" />
+		<pair cp1="^" cp2="]" kern="-0.1" />
+		<pair cp1="^" cp2="_" kern="-0.1" />
+		<pair cp1="^" cp2="`" kern="-0.1" />
+		<pair cp1="^" cp2="}" kern="-0.1" />
+		<pair cp1="^" cp2="~" kern="-0.1" />
+		<pair cp1="~" cp2=" " kern="-0.05" />
+		<pair cp1="~" cp2="#" kern="-0.1" />
+		<pair cp1="~" cp2="*" kern="-0.1" />
+		<pair cp1="~" cp2="+" kern="-0.1" />
+		<pair cp1="~" cp2="," kern="-0.1" />
+		<pair cp1="~" cp2="-" kern="-0.1" />
+		<pair cp1="~" cp2="." kern="-0.1" />
+		<pair cp1="~" cp2="/" kern="-0.4" />
+		<pair cp1="~" cp2="4" kern="-0.1" />
+		<pair cp1="~" cp2=":" kern="-0.1" />
+		<pair cp1="~" cp2=";" kern="-0.1" />
+		<pair cp1="~" cp2="&lt;" kern="-0.1" />
+		<pair cp1="~" cp2="=" kern="-0.1" />
+		<pair cp1="~" cp2="_" kern="-0.1" />
+		<pair cp1="~" cp2="{" kern="-0.1" />
+		<pair cp1="*" cp2=" " kern="-0.05" />
+		<pair cp1="*" cp2="&quot;" kern="-0.1" />
+		<pair cp1="*" cp2="'" kern="-0.1" />
+		<pair cp1="*" cp2=")" kern="-0.2" />
+		<pair cp1="*" cp2="," kern="-0.1" />
+		<pair cp1="*" cp2="." kern="-0.1" />
+		<pair cp1="*" cp2="/" kern="-0.1" />
+		<pair cp1="*" cp2="7" kern="-0.2" />
+		<pair cp1="*" cp2="\" kern="-0.1" />
+		<pair cp1="*" cp2="]" kern="-0.2" />
+		<pair cp1="*" cp2="_" kern="-0.1" />
+		<pair cp1="*" cp2="`" kern="-0.1" />
+		<pair cp1="*" cp2="}" kern="-0.2" />
+		<pair cp1="*" cp2="~" kern="-0.1" />
+		<pair cp1="@" cp2=" " kern="-0.05" />
+		<pair cp1="@" cp2="," kern="-0.1" />
+		<pair cp1="@" cp2="." kern="-0.1" />
+		<pair cp1="@" cp2="/" kern="-0.1" />
+		<pair cp1="@" cp2="_" kern="-0.1" />
+		<pair cp1="b" cp2="T" kern="-0.2" />
+		<pair cp1="b" cp2="Y" kern="-0.1" />
+		<pair cp1="b" cp2="j" kern="-0.1" />
+		<pair cp1="B" cp2="j" kern="-0.1" />
+		<pair cp1="\" cp2=" " kern="-0.05" />
+		<pair cp1="\" cp2="&quot;" kern="-0.4" />
+		<pair cp1="\" cp2="%" kern="-0.2" />
+		<pair cp1="\" cp2="'" kern="-0.4" />
+		<pair cp1="\" cp2="*" kern="-0.1" />
+		<pair cp1="\" cp2="+" kern="-0.2" />
+		<pair cp1="\" cp2="-" kern="-0.2" />
+		<pair cp1="\" cp2="4" kern="-0.2" />
+		<pair cp1="\" cp2="7" kern="-0.1" />
+		<pair cp1="\" cp2="&lt;" kern="-0.2" />
+		<pair cp1="\" cp2="=" kern="-0.1" />
+		<pair cp1="\" cp2="?" kern="-0.2" />
+		<pair cp1="\" cp2="\" kern="-0.5" />
+		<pair cp1="\" cp2="^" kern="-0.3" />
+		<pair cp1="\" cp2="_" kern="-0.1" />
+		<pair cp1="\" cp2="`" kern="-0.5" />
+		<pair cp1="\" cp2="{" kern="-0.1" />
+		<pair cp1="\" cp2="~" kern="-0.5" />
+		<pair cp1="|" cp2=" " kern="-0.05" />
+		<pair cp1="{" cp2=" " kern="-0.05" />
+		<pair cp1="{" cp2="*" kern="-0.2" />
+		<pair cp1="{" cp2="+" kern="-0.2" />
+		<pair cp1="{" cp2="-" kern="-0.2" />
+		<pair cp1="{" cp2="4" kern="-0.2" />
+		<pair cp1="{" cp2="&lt;" kern="-0.2" />
+		<pair cp1="{" cp2="=" kern="-0.2" />
+		<pair cp1="{" cp2="^" kern="-0.1" />
+		<pair cp1="{" cp2="_" kern="-0.1" />
+		<pair cp1="{" cp2="{" kern="-0.1" />
+		<pair cp1="}" cp2=" " kern="-0.05" />
+		<pair cp1="}" cp2="&quot;" kern="-0.1" />
+		<pair cp1="}" cp2="'" kern="-0.1" />
+		<pair cp1="}" cp2=")" kern="-0.1" />
+		<pair cp1="}" cp2="," kern="-0.1" />
+		<pair cp1="}" cp2="." kern="-0.1" />
+		<pair cp1="}" cp2="/" kern="-0.1" />
+		<pair cp1="}" cp2="1" kern="-0.1" />
+		<pair cp1="}" cp2="2" kern="-0.1" />
+		<pair cp1="}" cp2="3" kern="-0.1" />
+		<pair cp1="}" cp2="7" kern="-0.1" />
+		<pair cp1="}" cp2=">" kern="-0.1" />
+		<pair cp1="}" cp2="?" kern="-0.1" />
+		<pair cp1="}" cp2="\" kern="-0.1" />
+		<pair cp1="}" cp2="]" kern="-0.1" />
+		<pair cp1="}" cp2="_" kern="-0.1" />
+		<pair cp1="}" cp2="`" kern="-0.1" />
+		<pair cp1="}" cp2="}" kern="-0.1" />
+		<pair cp1="}" cp2="~" kern="-0.1" />
+		<pair cp1="[" cp2=" " kern="-0.05" />
+		<pair cp1="[" cp2="*" kern="-0.2" />
+		<pair cp1="[" cp2="+" kern="-0.2" />
+		<pair cp1="[" cp2="-" kern="-0.2" />
+		<pair cp1="[" cp2="4" kern="-0.2" />
+		<pair cp1="[" cp2="&lt;" kern="-0.2" />
+		<pair cp1="[" cp2="=" kern="-0.2" />
+		<pair cp1="[" cp2="^" kern="-0.1" />
+		<pair cp1="[" cp2="_" kern="-0.1" />
+		<pair cp1="[" cp2="{" kern="-0.1" />
+		<pair cp1="]" cp2=" " kern="-0.05" />
+		<pair cp1="]" cp2="_" kern="-0.1" />
+		<pair cp1="c" cp2="T" kern="-0.2" />
+		<pair cp1="C" cp2="f" kern="-0.1" />
+		<pair cp1="C" cp2="t" kern="-0.1" />
+		<pair cp1="C" cp2="v" kern="-0.1" />
+		<pair cp1="C" cp2="w" kern="-0.1" />
+		<pair cp1=":" cp2=" " kern="-0.05" />
+		<pair cp1=":" cp2="&quot;" kern="-0.1" />
+		<pair cp1=":" cp2="'" kern="-0.1" />
+		<pair cp1=":" cp2="7" kern="-0.1" />
+		<pair cp1=":" cp2="\" kern="-0.1" />
+		<pair cp1=":" cp2="_" kern="-0.1" />
+		<pair cp1=":" cp2="`" kern="-0.1" />
+		<pair cp1=":" cp2="~" kern="-0.1" />
+		<pair cp1="," cp2=" " kern="0.05" />
+		<pair cp1="," cp2="&quot;" kern="0.1" />
+		<pair cp1="," cp2="%" kern="0.2" />
+		<pair cp1="," cp2="'" kern="0.1" />
+		<pair cp1="," cp2="*" kern="0.1" />
+		<pair cp1="," cp2="+" kern="0.1" />
+		<pair cp1="," cp2="-" kern="0.1" />
+		<pair cp1="," cp2="4" kern="0.3" />
+		<pair cp1="," cp2="7" kern="0.1" />
+		<pair cp1="," cp2="&lt;" kern="0.1" />
+		<pair cp1="," cp2="=" kern="0.1" />
+		<pair cp1="," cp2=">" kern="0.1" />
+		<pair cp1="," cp2="?" kern="0.2" />
+		<pair cp1="," cp2="\" kern="0.5" />
+		<pair cp1="," cp2="^" kern="0.1" />
+		<pair cp1="," cp2="`" kern="0.1" />
+		<pair cp1="," cp2="{" kern="0.1" />
+		<pair cp1="," cp2="~" kern="0.1" />
+		<pair cp1="d" cp2="j" kern="-0.1" />
+		<pair cp1="D" cp2="j" kern="-0.1" />
+		<pair cp1="$" cp2=" " kern="-0.05" />
+		<pair cp1="$" cp2="_" kern="-0.1" />
+		<pair cp1="e" cp2="T" kern="-0.2" />
+		<pair cp1="e" cp2="Y" kern="-0.1" />
+		<pair cp1="E" cp2="f" kern="-0.1" />
+		<pair cp1="e" cp2="j" kern="-0.1" />
+		<pair cp1="E" cp2="t" kern="-0.1" />
+		<pair cp1="E" cp2="v" kern="-0.1" />
+		<pair cp1="E" cp2="w" kern="-0.1" />
+		<pair cp1="8" cp2=" " kern="-0.05" />
+		<pair cp1="8" cp2="_" kern="-0.1" />
+		<pair cp1="=" cp2=" " kern="-0.05" />
+		<pair cp1="=" cp2="&quot;" kern="-0.1" />
+		<pair cp1="=" cp2="'" kern="-0.1" />
+		<pair cp1="=" cp2=")" kern="-0.2" />
+		<pair cp1="=" cp2="," kern="-0.1" />
+		<pair cp1="=" cp2="." kern="-0.1" />
+		<pair cp1="=" cp2="/" kern="-0.1" />
+		<pair cp1="=" cp2="7" kern="-0.2" />
+		<pair cp1="=" cp2="\" kern="-0.1" />
+		<pair cp1="=" cp2="]" kern="-0.2" />
+		<pair cp1="=" cp2="_" kern="-0.1" />
+		<pair cp1="=" cp2="`" kern="-0.1" />
+		<pair cp1="=" cp2="}" kern="-0.2" />
+		<pair cp1="=" cp2="~" kern="-0.1" />
+		<pair cp1="!" cp2=" " kern="-0.05" />
+		<pair cp1="!" cp2="_" kern="-0.1" />
+		<pair cp1="F" cp2="A" kern="-0.1" />
+		<pair cp1="F" cp2="J" kern="-0.4" />
+		<pair cp1="F" cp2="M" kern="-0.1" />
+		<pair cp1="F" cp2="N" kern="-0.1" />
+		<pair cp1="F" cp2="a" kern="-0.1" />
+		<pair cp1="F" cp2="c" kern="-0.1" />
+		<pair cp1="F" cp2="d" kern="-0.1" />
+		<pair cp1="F" cp2="e" kern="-0.1" />
+		<pair cp1="F" cp2="f" kern="-0.1" />
+		<pair cp1="F" cp2="g" kern="-0.1" />
+		<pair cp1="f" cp2="j" kern="-0.1" />
+		<pair cp1="F" cp2="j" kern="-0.1" />
+		<pair cp1="F" cp2="m" kern="-0.1" />
+		<pair cp1="F" cp2="n" kern="-0.1" />
+		<pair cp1="F" cp2="o" kern="-0.1" />
+		<pair cp1="F" cp2="p" kern="-0.1" />
+		<pair cp1="F" cp2="q" kern="-0.1" />
+		<pair cp1="F" cp2="r" kern="-0.1" />
+		<pair cp1="F" cp2="s" kern="-0.1" />
+		<pair cp1="F" cp2="t" kern="-0.1" />
+		<pair cp1="F" cp2="u" kern="-0.1" />
+		<pair cp1="F" cp2="v" kern="-0.1" />
+		<pair cp1="F" cp2="w" kern="-0.1" />
+		<pair cp1="F" cp2="x" kern="-0.1" />
+		<pair cp1="F" cp2="y" kern="-0.1" />
+		<pair cp1="F" cp2="z" kern="-0.1" />
+		<pair cp1="5" cp2=" " kern="-0.05" />
+		<pair cp1="5" cp2="^" kern="-0.1" />
+		<pair cp1="5" cp2="_" kern="-0.1" />
+		<pair cp1="4" cp2=" " kern="-0.05" />
+		<pair cp1="4" cp2="&quot;" kern="-0.1" />
+		<pair cp1="4" cp2="'" kern="-0.1" />
+		<pair cp1="4" cp2=")" kern="-0.1" />
+		<pair cp1="4" cp2="," kern="-0.1" />
+		<pair cp1="4" cp2="." kern="-0.1" />
+		<pair cp1="4" cp2="/" kern="-0.1" />
+		<pair cp1="4" cp2="1" kern="-0.1" />
+		<pair cp1="4" cp2="2" kern="-0.1" />
+		<pair cp1="4" cp2="3" kern="-0.1" />
+		<pair cp1="4" cp2="7" kern="-0.1" />
+		<pair cp1="4" cp2=">" kern="-0.1" />
+		<pair cp1="4" cp2="?" kern="-0.1" />
+		<pair cp1="4" cp2="\" kern="-0.1" />
+		<pair cp1="4" cp2="]" kern="-0.1" />
+		<pair cp1="4" cp2="_" kern="-0.1" />
+		<pair cp1="4" cp2="`" kern="-0.1" />
+		<pair cp1="4" cp2="}" kern="-0.1" />
+		<pair cp1="4" cp2="~" kern="-0.1" />
+		<pair cp1="g" cp2="T" kern="-0.2" />
+		<pair cp1="g" cp2="Y" kern="-0.1" />
+		<pair cp1="`" cp2=" " kern="-0.05" />
+		<pair cp1="`" cp2="#" kern="-0.1" />
+		<pair cp1="`" cp2="*" kern="-0.1" />
+		<pair cp1="`" cp2="+" kern="-0.1" />
+		<pair cp1="`" cp2="," kern="-0.1" />
+		<pair cp1="`" cp2="-" kern="-0.1" />
+		<pair cp1="`" cp2="." kern="-0.1" />
+		<pair cp1="`" cp2="/" kern="-0.4" />
+		<pair cp1="`" cp2="4" kern="-0.1" />
+		<pair cp1="`" cp2=":" kern="-0.1" />
+		<pair cp1="`" cp2=";" kern="-0.1" />
+		<pair cp1="`" cp2="&lt;" kern="-0.1" />
+		<pair cp1="`" cp2="=" kern="-0.1" />
+		<pair cp1="`" cp2="_" kern="-0.1" />
+		<pair cp1="`" cp2="{" kern="-0.1" />
+		<pair cp1=">" cp2=" " kern="-0.05" />
+		<pair cp1=">" cp2="&quot;" kern="-0.1" />
+		<pair cp1=">" cp2="'" kern="-0.1" />
+		<pair cp1=">" cp2=")" kern="-0.2" />
+		<pair cp1=">" cp2="," kern="-0.1" />
+		<pair cp1=">" cp2="." kern="-0.1" />
+		<pair cp1=">" cp2="/" kern="-0.2" />
+		<pair cp1=">" cp2="1" kern="-0.1" />
+		<pair cp1=">" cp2="2" kern="-0.1" />
+		<pair cp1=">" cp2="3" kern="-0.1" />
+		<pair cp1=">" cp2="7" kern="-0.2" />
+		<pair cp1=">" cp2=">" kern="-0.1" />
+		<pair cp1=">" cp2="?" kern="-0.1" />
+		<pair cp1=">" cp2="\" kern="-0.2" />
+		<pair cp1=">" cp2="]" kern="-0.2" />
+		<pair cp1=">" cp2="_" kern="-0.1" />
+		<pair cp1=">" cp2="`" kern="-0.2" />
+		<pair cp1=">" cp2="}" kern="-0.2" />
+		<pair cp1=">" cp2="~" kern="-0.2" />
+		<pair cp1="h" cp2="T" kern="-0.2" />
+		<pair cp1="h" cp2="Y" kern="-0.1" />
+		<pair cp1="-" cp2=" " kern="-0.05" />
+		<pair cp1="-" cp2="&quot;" kern="-0.1" />
+		<pair cp1="-" cp2="'" kern="-0.1" />
+		<pair cp1="-" cp2=")" kern="-0.2" />
+		<pair cp1="-" cp2="," kern="-0.1" />
+		<pair cp1="-" cp2="." kern="-0.1" />
+		<pair cp1="-" cp2="/" kern="-0.2" />
+		<pair cp1="-" cp2="1" kern="-0.1" />
+		<pair cp1="-" cp2="2" kern="-0.1" />
+		<pair cp1="-" cp2="3" kern="-0.1" />
+		<pair cp1="-" cp2="7" kern="-0.2" />
+		<pair cp1="-" cp2=">" kern="-0.1" />
+		<pair cp1="-" cp2="?" kern="-0.2" />
+		<pair cp1="-" cp2="\" kern="-0.2" />
+		<pair cp1="-" cp2="]" kern="-0.2" />
+		<pair cp1="-" cp2="^" kern="-0.1" />
+		<pair cp1="-" cp2="_" kern="-0.1" />
+		<pair cp1="-" cp2="`" kern="-0.1" />
+		<pair cp1="-" cp2="}" kern="-0.2" />
+		<pair cp1="-" cp2="~" kern="-0.1" />
+		<pair cp1="J" cp2="j" kern="-0.1" />
+		<pair cp1="k" cp2="T" kern="-0.2" />
+		<pair cp1="K" cp2="f" kern="-0.1" />
+		<pair cp1="K" cp2="t" kern="-0.1" />
+		<pair cp1="K" cp2="v" kern="-0.1" />
+		<pair cp1="K" cp2="w" kern="-0.1" />
+		<pair cp1="L" cp2="T" kern="-0.2" />
+		<pair cp1="L" cp2="V" kern="-0.2" />
+		<pair cp1="L" cp2="W" kern="-0.2" />
+		<pair cp1="L" cp2="Y" kern="-0.2" />
+		<pair cp1="L" cp2="f" kern="-0.1" />
+		<pair cp1="L" cp2="t" kern="-0.1" />
+		<pair cp1="L" cp2="v" kern="-0.1" />
+		<pair cp1="L" cp2="w" kern="-0.1" />
+		<pair cp1="&lt;" cp2=" " kern="-0.05" />
+		<pair cp1="&lt;" cp2="+" kern="-0.1" />
+		<pair cp1="&lt;" cp2="," kern="-0.1" />
+		<pair cp1="&lt;" cp2="-" kern="-0.1" />
+		<pair cp1="&lt;" cp2="." kern="-0.1" />
+		<pair cp1="&lt;" cp2="4" kern="-0.1" />
+		<pair cp1="&lt;" cp2="&lt;" kern="-0.1" />
+		<pair cp1="&lt;" cp2="_" kern="-0.1" />
+		<pair cp1="&lt;" cp2="{" kern="-0.1" />
+		<pair cp1="m" cp2="T" kern="-0.2" />
+		<pair cp1="M" cp2="T" kern="-0.1" />
+		<pair cp1="m" cp2="Y" kern="-0.1" />
+		<pair cp1="n" cp2="T" kern="-0.2" />
+		<pair cp1="n" cp2="Y" kern="-0.1" />
+		<pair cp1="9" cp2=" " kern="0.05" />
+		<pair cp1="9" cp2="_" kern="0.1" />
+		<pair cp1="#" cp2=" " kern="-0.05" />
+		<pair cp1="#" cp2="#" kern="-0.1" />
+		<pair cp1="#" cp2="," kern="-0.5" />
+		<pair cp1="#" cp2="." kern="-0.5" />
+		<pair cp1="#" cp2="/" kern="-0.2" />
+		<pair cp1="#" cp2="_" kern="-0.1" />
+		<pair cp1="o" cp2="T" kern="-0.2" />
+		<pair cp1="o" cp2="Y" kern="-0.1" />
+		<pair cp1="o" cp2="j" kern="-0.1" />
+		<pair cp1="O" cp2="j" kern="-0.1" />
+		<pair cp1="1" cp2=" " kern="-0.05" />
+		<pair cp1="1" cp2="&quot;" kern="-0.1" />
+		<pair cp1="1" cp2="%" kern="-0.1" />
+		<pair cp1="1" cp2="'" kern="-0.1" />
+		<pair cp1="1" cp2="*" kern="-0.1" />
+		<pair cp1="1" cp2="+" kern="-0.1" />
+		<pair cp1="1" cp2="-" kern="-0.1" />
+		<pair cp1="1" cp2="4" kern="-0.1" />
+		<pair cp1="1" cp2="7" kern="-0.1" />
+		<pair cp1="1" cp2="&lt;" kern="-0.1" />
+		<pair cp1="1" cp2="=" kern="-0.1" />
+		<pair cp1="1" cp2="?" kern="-0.1" />
+		<pair cp1="1" cp2="\" kern="-0.1" />
+		<pair cp1="1" cp2="^" kern="-0.1" />
+		<pair cp1="1" cp2="_" kern="-0.1" />
+		<pair cp1="1" cp2="`" kern="-0.1" />
+		<pair cp1="1" cp2="{" kern="-0.1" />
+		<pair cp1="1" cp2="~" kern="-0.1" />
+		<pair cp1="P" cp2="A" kern="-0.1" />
+		<pair cp1="P" cp2="J" kern="-0.4" />
+		<pair cp1="p" cp2="T" kern="-0.2" />
+		<pair cp1="p" cp2="Y" kern="-0.1" />
+		<pair cp1="p" cp2="j" kern="-0.1" />
+		<pair cp1="P" cp2="j" kern="-0.1" />
+		<pair cp1="(" cp2=" " kern="-0.05" />
+		<pair cp1="(" cp2="*" kern="-0.2" />
+		<pair cp1="(" cp2="+" kern="-0.2" />
+		<pair cp1="(" cp2="-" kern="-0.2" />
+		<pair cp1="(" cp2="4" kern="-0.2" />
+		<pair cp1="(" cp2="&lt;" kern="-0.2" />
+		<pair cp1="(" cp2="=" kern="-0.2" />
+		<pair cp1="(" cp2="^" kern="-0.1" />
+		<pair cp1="(" cp2="_" kern="-0.1" />
+		<pair cp1="(" cp2="{" kern="-0.1" />
+		<pair cp1=")" cp2=" " kern="-0.05" />
+		<pair cp1=")" cp2="_" kern="-0.1" />
+		<pair cp1="%" cp2=" " kern="-0.05" />
+		<pair cp1="%" cp2="&quot;" kern="-0.2" />
+		<pair cp1="%" cp2="%" kern="-0.1" />
+		<pair cp1="%" cp2="'" kern="-0.2" />
+		<pair cp1="%" cp2="7" kern="-0.1" />
+		<pair cp1="%" cp2="?" kern="-0.2" />
+		<pair cp1="%" cp2="\" kern="-0.2" />
+		<pair cp1="%" cp2="^" kern="-0.1" />
+		<pair cp1="%" cp2="_" kern="-0.1" />
+		<pair cp1="%" cp2="`" kern="-0.2" />
+		<pair cp1="%" cp2="~" kern="-0.2" />
+		<pair cp1="." cp2=" " kern="-0.05" />
+		<pair cp1="." cp2="&quot;" kern="-0.1" />
+		<pair cp1="." cp2="%" kern="-0.2" />
+		<pair cp1="." cp2="'" kern="-0.1" />
+		<pair cp1="." cp2="*" kern="-0.1" />
+		<pair cp1="." cp2="+" kern="-0.1" />
+		<pair cp1="." cp2="-" kern="-0.1" />
+		<pair cp1="." cp2="4" kern="-0.3" />
+		<pair cp1="." cp2="7" kern="-0.1" />
+		<pair cp1="." cp2="&lt;" kern="-0.1" />
+		<pair cp1="." cp2="=" kern="-0.1" />
+		<pair cp1="." cp2=">" kern="-0.1" />
+		<pair cp1="." cp2="?" kern="-0.2" />
+		<pair cp1="." cp2="\" kern="-0.5" />
+		<pair cp1="." cp2="^" kern="-0.1" />
+		<pair cp1="." cp2="_" kern="-0.1" />
+		<pair cp1="." cp2="`" kern="-0.1" />
+		<pair cp1="." cp2="{" kern="-0.1" />
+		<pair cp1="." cp2="~" kern="-0.1" />
+		<pair cp1="+" cp2=" " kern="-0.05" />
+		<pair cp1="+" cp2="&quot;" kern="-0.1" />
+		<pair cp1="+" cp2="'" kern="-0.1" />
+		<pair cp1="+" cp2=")" kern="-0.2" />
+		<pair cp1="+" cp2="," kern="-0.1" />
+		<pair cp1="+" cp2="." kern="-0.1" />
+		<pair cp1="+" cp2="/" kern="-0.2" />
+		<pair cp1="+" cp2="1" kern="-0.1" />
+		<pair cp1="+" cp2="2" kern="-0.1" />
+		<pair cp1="+" cp2="3" kern="-0.1" />
+		<pair cp1="+" cp2="7" kern="-0.2" />
+		<pair cp1="+" cp2=">" kern="-0.1" />
+		<pair cp1="+" cp2="?" kern="-0.1" />
+		<pair cp1="+" cp2="\" kern="-0.2" />
+		<pair cp1="+" cp2="]" kern="-0.2" />
+		<pair cp1="+" cp2="_" kern="-0.1" />
+		<pair cp1="+" cp2="`" kern="-0.1" />
+		<pair cp1="+" cp2="}" kern="-0.2" />
+		<pair cp1="+" cp2="~" kern="-0.1" />
+		<pair cp1="Q" cp2="C" kern="-0.1" />
+		<pair cp1="Q" cp2="G" kern="-0.1" />
+		<pair cp1="Q" cp2="J" kern="-0.1" />
+		<pair cp1="Q" cp2="O" kern="-0.1" />
+		<pair cp1="Q" cp2="Q" kern="-0.1" />
+		<pair cp1="Q" cp2="S" kern="-0.1" />
+		<pair cp1="q" cp2="T" kern="-0.2" />
+		<pair cp1="Q" cp2="T" kern="-0.1" />
+		<pair cp1="Q" cp2="U" kern="-0.1" />
+		<pair cp1="Q" cp2="V" kern="-0.1" />
+		<pair cp1="Q" cp2="W" kern="-0.1" />
+		<pair cp1="q" cp2="Y" kern="-0.1" />
+		<pair cp1="Q" cp2="Y" kern="-0.1" />
+		<pair cp1="Q" cp2="a" kern="-0.1" />
+		<pair cp1="Q" cp2="b" kern="-0.1" />
+		<pair cp1="Q" cp2="c" kern="-0.1" />
+		<pair cp1="Q" cp2="d" kern="-0.1" />
+		<pair cp1="Q" cp2="e" kern="-0.1" />
+		<pair cp1="Q" cp2="f" kern="-0.1" />
+		<pair cp1="Q" cp2="o" kern="-0.1" />
+		<pair cp1="Q" cp2="q" kern="-0.1" />
+		<pair cp1="Q" cp2="t" kern="-0.1" />
+		<pair cp1="Q" cp2="u" kern="-0.1" />
+		<pair cp1="Q" cp2="v" kern="-0.1" />
+		<pair cp1="Q" cp2="w" kern="-0.1" />
+		<pair cp1="?" cp2=" " kern="-0.05" />
+		<pair cp1="?" cp2="#" kern="-0.1" />
+		<pair cp1="?" cp2="," kern="-0.2" />
+		<pair cp1="?" cp2="." kern="-0.2" />
+		<pair cp1="?" cp2="/" kern="-0.2" />
+		<pair cp1="?" cp2="_" kern="-0.1" />
+		<pair cp1="&quot;" cp2=" " kern="-0.05" />
+		<pair cp1="&quot;" cp2="#" kern="-0.1" />
+		<pair cp1="&quot;" cp2="*" kern="-0.1" />
+		<pair cp1="&quot;" cp2="+" kern="-0.1" />
+		<pair cp1="&quot;" cp2="," kern="-0.1" />
+		<pair cp1="&quot;" cp2="-" kern="-0.1" />
+		<pair cp1="&quot;" cp2="." kern="-0.1" />
+		<pair cp1="&quot;" cp2="/" kern="-0.4" />
+		<pair cp1="&quot;" cp2="4" kern="-0.1" />
+		<pair cp1="&quot;" cp2=":" kern="-0.1" />
+		<pair cp1="&quot;" cp2=";" kern="-0.1" />
+		<pair cp1="&quot;" cp2="&lt;" kern="-0.1" />
+		<pair cp1="&quot;" cp2="=" kern="-0.1" />
+		<pair cp1="&quot;" cp2="_" kern="-0.1" />
+		<pair cp1="&quot;" cp2="{" kern="-0.1" />
+		<pair cp1="'" cp2=" " kern="-0.05" />
+		<pair cp1="'" cp2="#" kern="-0.1" />
+		<pair cp1="'" cp2="*" kern="-0.1" />
+		<pair cp1="'" cp2="+" kern="-0.1" />
+		<pair cp1="'" cp2="," kern="-0.1" />
+		<pair cp1="'" cp2="-" kern="-0.1" />
+		<pair cp1="'" cp2="." kern="-0.1" />
+		<pair cp1="'" cp2="/" kern="-0.4" />
+		<pair cp1="'" cp2="4" kern="-0.1" />
+		<pair cp1="'" cp2=":" kern="-0.1" />
+		<pair cp1="'" cp2=";" kern="-0.1" />
+		<pair cp1="'" cp2="&lt;" kern="-0.1" />
+		<pair cp1="'" cp2="=" kern="-0.1" />
+		<pair cp1="'" cp2="_" kern="-0.1" />
+		<pair cp1="'" cp2="{" kern="-0.1" />
+		<pair cp1="r" cp2="A" kern="-0.1" />
+		<pair cp1="r" cp2="J" kern="-0.3" />
+		<pair cp1="r" cp2="T" kern="-0.2" />
+		<pair cp1="r" cp2="Z" kern="-0.2" />
+		<pair cp1="r" cp2="j" kern="-0.1" />
+		<pair cp1="s" cp2="T" kern="-0.2" />
+		<pair cp1="s" cp2="j" kern="-0.1" />
+		<pair cp1="S" cp2="j" kern="-0.1" />
+		<pair cp1=";" cp2=" " kern="-0.05" />
+		<pair cp1=";" cp2="&quot;" kern="-0.1" />
+		<pair cp1=";" cp2="%" kern="-0.1" />
+		<pair cp1=";" cp2="'" kern="-0.1" />
+		<pair cp1=";" cp2="*" kern="-0.1" />
+		<pair cp1=";" cp2="+" kern="-0.1" />
+		<pair cp1=";" cp2="-" kern="-0.1" />
+		<pair cp1=";" cp2="4" kern="-0.1" />
+		<pair cp1=";" cp2="7" kern="-0.1" />
+		<pair cp1=";" cp2="&lt;" kern="-0.1" />
+		<pair cp1=";" cp2="=" kern="-0.1" />
+		<pair cp1=";" cp2="?" kern="-0.1" />
+		<pair cp1=";" cp2="\" kern="-0.2" />
+		<pair cp1=";" cp2="^" kern="-0.1" />
+		<pair cp1=";" cp2="`" kern="-0.1" />
+		<pair cp1=";" cp2="{" kern="-0.1" />
+		<pair cp1=";" cp2="~" kern="-0.1" />
+		<pair cp1="7" cp2=" " kern="-0.05" />
+		<pair cp1="7" cp2="#" kern="-0.1" />
+		<pair cp1="7" cp2="+" kern="-0.1" />
+		<pair cp1="7" cp2="," kern="-0.2" />
+		<pair cp1="7" cp2="-" kern="-0.1" />
+		<pair cp1="7" cp2="." kern="-0.2" />
+		<pair cp1="7" cp2="/" kern="-0.2" />
+		<pair cp1="7" cp2="4" kern="-0.1" />
+		<pair cp1="7" cp2="&lt;" kern="-0.1" />
+		<pair cp1="7" cp2="_" kern="-0.1" />
+		<pair cp1="7" cp2="{" kern="-0.1" />
+		<pair cp1="6" cp2=" " kern="-0.05" />
+		<pair cp1="6" cp2="^" kern="-0.1" />
+		<pair cp1="6" cp2="_" kern="-0.1" />
+		<pair cp1="/" cp2=" " kern="-0.05" />
+		<pair cp1="/" cp2="#" kern="-0.2" />
+		<pair cp1="/" cp2="*" kern="-0.1" />
+		<pair cp1="/" cp2="+" kern="-0.2" />
+		<pair cp1="/" cp2="," kern="-0.5" />
+		<pair cp1="/" cp2="-" kern="-0.2" />
+		<pair cp1="/" cp2="." kern="-0.5" />
+		<pair cp1="/" cp2="/" kern="-0.5" />
+		<pair cp1="/" cp2="4" kern="-0.2" />
+		<pair cp1="/" cp2=":" kern="-0.1" />
+		<pair cp1="/" cp2=";" kern="-0.1" />
+		<pair cp1="/" cp2="&lt;" kern="-0.2" />
+		<pair cp1="/" cp2="=" kern="-0.1" />
+		<pair cp1="/" cp2="^" kern="-0.1" />
+		<pair cp1="/" cp2="_" kern="-0.1" />
+		<pair cp1="/" cp2="{" kern="-0.1" />
+		<pair cp1=" " cp2=" " kern="-0.5" />
+		<pair cp1=" " cp2="!" kern="-0.55" />
+		<pair cp1=" " cp2="&quot;" kern="-0.45" />
+		<pair cp1=" " cp2="#" kern="-0.45" />
+		<pair cp1=" " cp2="$" kern="-0.45" />
+		<pair cp1=" " cp2="%" kern="-0.55" />
+		<pair cp1=" " cp2="&amp;" kern="-0.45" />
+		<pair cp1=" " cp2="'" kern="-0.45" />
+		<pair cp1=" " cp2="(" kern="-0.55" />
+		<pair cp1=" " cp2=")" kern="-0.55" />
+		<pair cp1=" " cp2="*" kern="-0.45" />
+		<pair cp1=" " cp2="+" kern="-0.55" />
+		<pair cp1=" " cp2="," kern="-0.45" />
+		<pair cp1=" " cp2="-" kern="-0.45" />
+		<pair cp1=" " cp2="." kern="-0.45" />
+		<pair cp1=" " cp2="/" kern="-0.45" />
+		<pair cp1=" " cp2="0" kern="-0.55" />
+		<pair cp1=" " cp2="1" kern="-0.45" />
+		<pair cp1=" " cp2="2" kern="-0.45" />
+		<pair cp1=" " cp2="3" kern="-0.55" />
+		<pair cp1=" " cp2="4" kern="-0.55" />
+		<pair cp1=" " cp2="5" kern="-0.45" />
+		<pair cp1=" " cp2="6" kern="-0.45" />
+		<pair cp1=" " cp2="7" kern="-0.55" />
+		<pair cp1=" " cp2="8" kern="-0.45" />
+		<pair cp1=" " cp2="9" kern="-0.55" />
+		<pair cp1=" " cp2=":" kern="-0.55" />
+		<pair cp1=" " cp2=";" kern="-0.55" />
+		<pair cp1=" " cp2="&lt;" kern="-0.55" />
+		<pair cp1=" " cp2="=" kern="-0.55" />
+		<pair cp1=" " cp2=">" kern="-0.55" />
+		<pair cp1=" " cp2="?" kern="-0.45" />
+		<pair cp1=" " cp2="@" kern="-0.45" />
+		<pair cp1=" " cp2="[" kern="-0.45" />
+		<pair cp1=" " cp2="\" kern="-0.45" />
+		<pair cp1=" " cp2="]" kern="-0.45" />
+		<pair cp1=" " cp2="^" kern="-0.45" />
+		<pair cp1=" " cp2="_" kern="-0.45" />
+		<pair cp1=" " cp2="`" kern="-0.45" />
+		<pair cp1=" " cp2="{" kern="-0.45" />
+		<pair cp1=" " cp2="|" kern="-0.45" />
+		<pair cp1=" " cp2="}" kern="-0.45" />
+		<pair cp1=" " cp2="~" kern="-0.45" />
+		<pair cp1="T" cp2="A" kern="-0.1" />
+		<pair cp1="T" cp2="J" kern="-0.2" />
+		<pair cp1="T" cp2="M" kern="-0.1" />
+		<pair cp1="T" cp2="N" kern="-0.1" />
+		<pair cp1="t" cp2="T" kern="-0.2" />
+		<pair cp1="T" cp2="a" kern="-0.2" />
+		<pair cp1="T" cp2="c" kern="-0.2" />
+		<pair cp1="T" cp2="d" kern="-0.2" />
+		<pair cp1="T" cp2="e" kern="-0.2" />
+		<pair cp1="T" cp2="f" kern="-0.1" />
+		<pair cp1="T" cp2="g" kern="-0.2" />
+		<pair cp1="T" cp2="j" kern="-0.1" />
+		<pair cp1="T" cp2="m" kern="-0.2" />
+		<pair cp1="T" cp2="n" kern="-0.2" />
+		<pair cp1="T" cp2="o" kern="-0.2" />
+		<pair cp1="T" cp2="p" kern="-0.2" />
+		<pair cp1="T" cp2="q" kern="-0.2" />
+		<pair cp1="T" cp2="r" kern="-0.2" />
+		<pair cp1="T" cp2="s" kern="-0.2" />
+		<pair cp1="T" cp2="t" kern="-0.1" />
+		<pair cp1="T" cp2="u" kern="-0.2" />
+		<pair cp1="T" cp2="v" kern="-0.2" />
+		<pair cp1="T" cp2="w" kern="-0.2" />
+		<pair cp1="T" cp2="x" kern="-0.2" />
+		<pair cp1="T" cp2="y" kern="-0.2" />
+		<pair cp1="T" cp2="z" kern="-0.2" />
+		<pair cp1="3" cp2=" " kern="-0.05" />
+		<pair cp1="3" cp2="_" kern="-0.1" />
+		<pair cp1="2" cp2=" " kern="-0.05" />
+		<pair cp1="2" cp2="_" kern="-0.1" />
+		<pair cp1="u" cp2="T" kern="-0.2" />
+		<pair cp1="U" cp2="j" kern="-0.1" />
+		<pair cp1="_" cp2=" " kern="-0.05" />
+		<pair cp1="_" cp2="!" kern="-0.1" />
+		<pair cp1="_" cp2="&quot;" kern="-0.1" />
+		<pair cp1="_" cp2="#" kern="-0.1" />
+		<pair cp1="_" cp2="$" kern="-0.1" />
+		<pair cp1="_" cp2="%" kern="-0.1" />
+		<pair cp1="_" cp2="&amp;" kern="-0.1" />
+		<pair cp1="_" cp2="'" kern="-0.1" />
+		<pair cp1="_" cp2="(" kern="-0.1" />
+		<pair cp1="_" cp2=")" kern="-0.1" />
+		<pair cp1="_" cp2="*" kern="-0.1" />
+		<pair cp1="_" cp2="+" kern="-0.1" />
+		<pair cp1="_" cp2="-" kern="-0.1" />
+		<pair cp1="_" cp2="." kern="-0.1" />
+		<pair cp1="_" cp2="/" kern="-0.1" />
+		<pair cp1="_" cp2="0" kern="-0.1" />
+		<pair cp1="_" cp2="1" kern="-0.1" />
+		<pair cp1="_" cp2="2" kern="-0.1" />
+		<pair cp1="_" cp2="3" kern="-0.1" />
+		<pair cp1="_" cp2="4" kern="-0.1" />
+		<pair cp1="_" cp2="5" kern="-0.1" />
+		<pair cp1="_" cp2="6" kern="-0.1" />
+		<pair cp1="_" cp2="7" kern="-0.1" />
+		<pair cp1="_" cp2="8" kern="-0.1" />
+		<pair cp1="_" cp2="9" kern="-0.1" />
+		<pair cp1="_" cp2=":" kern="-0.1" />
+		<pair cp1="_" cp2="&lt;" kern="-0.1" />
+		<pair cp1="_" cp2="=" kern="-0.1" />
+		<pair cp1="_" cp2=">" kern="-0.1" />
+		<pair cp1="_" cp2="?" kern="-0.1" />
+		<pair cp1="_" cp2="@" kern="-0.1" />
+		<pair cp1="_" cp2="[" kern="-0.1" />
+		<pair cp1="_" cp2="\" kern="-0.1" />
+		<pair cp1="_" cp2="]" kern="-0.1" />
+		<pair cp1="_" cp2="^" kern="-0.1" />
+		<pair cp1="_" cp2="`" kern="-0.1" />
+		<pair cp1="_" cp2="{" kern="-0.1" />
+		<pair cp1="_" cp2="}" kern="-0.1" />
+		<pair cp1="_" cp2="~" kern="-0.1" />
+		<pair cp1="V" cp2="A" kern="-0.1" />
+		<pair cp1="v" cp2="J" kern="-0.1" />
+		<pair cp1="V" cp2="J" kern="-0.1" />
+		<pair cp1="v" cp2="T" kern="-0.2" />
+		<pair cp1="v" cp2="Z" kern="-0.1" />
+		<pair cp1="v" cp2="j" kern="-0.1" />
+		<pair cp1="V" cp2="j" kern="-0.1" />
+		<pair cp1="W" cp2="A" kern="-0.1" />
+		<pair cp1="w" cp2="J" kern="-0.1" />
+		<pair cp1="W" cp2="J" kern="-0.1" />
+		<pair cp1="w" cp2="T" kern="-0.2" />
+		<pair cp1="w" cp2="Z" kern="-0.1" />
+		<pair cp1="w" cp2="j" kern="-0.1" />
+		<pair cp1="W" cp2="j" kern="-0.1" />
+		<pair cp1="x" cp2="T" kern="-0.2" />
+		<pair cp1="X" cp2="f" kern="-0.1" />
+		<pair cp1="Y" cp2="A" kern="-0.1" />
+		<pair cp1="Y" cp2="J" kern="-0.2" />
+		<pair cp1="y" cp2="T" kern="-0.2" />
+		<pair cp1="Y" cp2="a" kern="-0.1" />
+		<pair cp1="Y" cp2="c" kern="-0.1" />
+		<pair cp1="Y" cp2="d" kern="-0.1" />
+		<pair cp1="Y" cp2="e" kern="-0.1" />
+		<pair cp1="Y" cp2="f" kern="-0.1" />
+		<pair cp1="Y" cp2="g" kern="-0.1" />
+		<pair cp1="Y" cp2="j" kern="-0.1" />
+		<pair cp1="Y" cp2="o" kern="-0.1" />
+		<pair cp1="Y" cp2="p" kern="-0.1" />
+		<pair cp1="Y" cp2="q" kern="-0.1" />
+		<pair cp1="Y" cp2="s" kern="-0.1" />
+		<pair cp1="z" cp2="T" kern="-0.2" />
+		<pair cp1="Z" cp2="f" kern="-0.1" />
+		<pair cp1="0" cp2=" " kern="-0.05" />
+		<pair cp1="0" cp2="_" kern="-0.1" />
+
+	</kerning>
+</font>

@@ -68,6 +68,31 @@ namespace core
 	};
 
 
+	TouchControl *InputManager::getControlByName(const std::string &_controlName)
+	{
+		for (TouchControlSetsIterator it = controlSets.begin(), itEnd = controlSets.end(); it != itEnd; ++it)
+		{
+			TouchControlList &list = *((*it).second.get());
+			auto controlIt = std::find(list.begin(), list.end(), [_controlName] (TouchControl* _control) { return !_controlName.compare(_control->getName()); });
+			if (controlIt != list.end())
+				return *controlIt;
+		}
+		return nullptr;
+	};
+
+
+	TouchControl *InputManager::getControlByName(const std::string &_setName, const std::string &_controlName)
+	{
+		TouchControlSetsIterator it = controlSets.find(_setName);
+		assert(it != controlSets.end() && "specified set doesn't exist");
+
+		TouchControlList &list = *((*it).second.get()) ;
+		auto controlIt = std::find(list.begin(), list.end(), [_controlName] (TouchControl* _control) { return !_controlName.compare(_control->getName()); });
+
+		return controlIt != list.end() ? *controlIt : nullptr;
+	};
+
+
 	void InputManager::removeControl(const std::string &_setName, TouchControl *_control)
 	{
 		assert(_control && "cannot remove nullptr as touch control");

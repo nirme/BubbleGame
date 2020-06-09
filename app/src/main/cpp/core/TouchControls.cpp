@@ -3,8 +3,8 @@
 
 namespace core
 {
-
-	TouchButton::TouchButton(_2d::Shape *_controlShape) :
+	TouchButton::TouchButton(const std::string& _name, _2d::Shape *_controlShape) :
+		TouchControl(_name),
 		buttonShape(_controlShape)
 	{};
 
@@ -76,7 +76,8 @@ namespace core
 
 
 
-	TouchArea::TouchArea(_2d::Shape *_controlShape) :
+	TouchArea::TouchArea(const std::string& _name, _2d::Shape *_controlShape) :
+		TouchControl(_name),
 		areaShape(_controlShape)
 	{};
 

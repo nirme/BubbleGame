@@ -11,6 +11,7 @@
 #include "shapes/ShapeMath.h"
 
 #include "PhysicsAffector.h"
+#include "RigidObject.h"
 #include "../ControllerManager.h"
 #include "../Controller.h"
 

@@ -322,6 +322,8 @@ namespace core
     {
         assert(soundSystem && "No sound system to create sound resource" );
 
+Logger::getSingleton().write(std::string("loading sound '") + this->name + "'");
+
         SoundBufferIteratorUPtr openSoundBuffer(nullptr);
         int32_t openBufferSampleRate(0), openBufferBitRate(0), openBufferChannels(0);
 
@@ -435,7 +437,7 @@ namespace core
 							outputReadyFlag = true;
 						}
 						// not enough data provided
-						else if (AMEDIACODEC_INFO_TRY_AGAIN_LATER)
+						else if (bufferIndex == AMEDIACODEC_INFO_TRY_AGAIN_LATER)
 							break;
 
 						// doesn't care, get next buffer

@@ -25,10 +25,21 @@ namespace core
 
 	protected:
 		Listener *buttonListener;
+		std::string name;
 
 	public:
 
+		TouchControl(const std::string& _name) :
+			buttonListener(nullptr),
+			name(_name)
+		{};
+
 		virtual ~TouchControl() {};
+
+		inline const std::string &getName()
+		{
+			return name;
+		};
 
 		virtual bool containsPointer(int32_t _pointerId, const PointerPosition &_pointerPosition) const = 0;
 

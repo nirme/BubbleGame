@@ -56,8 +56,14 @@ namespace core
 
 				case LL_DEBUG:
 				default:
+				{
+#ifdef NDEBUG
+					return *this;
+#else
 					priority = ANDROID_LOG_DEBUG;
 					break;
+#endif
+				}
 			};
 
 			__android_log_write(priority, "BubbleGame", _text);
@@ -69,6 +75,21 @@ namespace core
 	Logger& Logger::write(std::string _text, LOG_LEVEL _logLevel)
 	{
 		return write(_text.c_str(),_logLevel);
+	};
+
+
+	void Logger::debug(const char* _text)
+	{
+#ifndef NDEBUG
+		write(_text, LL_DEBUG);
+#endif
+	};
+
+	void Logger::debug(std::string _text)
+	{
+#ifndef NDEBUG
+		write(_text, LL_DEBUG);
+#endif
 	};
 
 }

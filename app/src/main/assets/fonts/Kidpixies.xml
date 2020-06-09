@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font>
+	<configuration name="Kidpixies" type="sprited" spacing="proportional" font_size="1.0" line_height="1.0" defaultChar="undefined" texture="font1_tex.bmp" />
+
+	<characters>
+		<letter cp="undefined" width="0.62" />
+		<letter cp=" " width="0.25" visible="false" />
+		<letter cp="!" width="0.2" />
+		<letter cp="&quot;" width="0.36" />
+		<letter cp="#" width="0.53" />
+		<letter cp="$" width="0.75" />
+		<letter cp="&amp;" width="0.49" />
+		<letter cp="'" width="0.19" />
+		<letter cp="(" width="0.42" />
+		<letter cp=")" width="0.42" />
+		<letter cp="*" width="0.33" />
+		<letter cp="," width="0.29" />
+		<letter cp="-" width="0.21" />
+		<letter cp="." width="0.24" />
+		<letter cp="/" width="0.42" />
+		<letter cp="0" width="0.62" />
+		<letter cp="1" width="0.36" />
+		<letter cp="2" width="0.57" />
+		<letter cp="3" width="0.58" />
+		<letter cp="4" width="0.49" />
+		<letter cp="5" width="0.53" />
+		<letter cp="6" width="0.63" />
+		<letter cp="7" width="0.62" />
+		<letter cp="8" width="0.63" />
+		<letter cp="9" width="0.49" />
+		<letter cp=":" width="0.22" />
+		<letter cp=";" width="0.27" />
+		<letter cp="?" width="0.43" />
+		<letter cp="@" width="0.45" />
+		<letter cp="A" width="0.59" />
+		<letter cp="B" width="0.55" />
+		<letter cp="C" width="0.56" />
+		<letter cp="D" width="0.55" />
+		<letter cp="E" width="0.44" />
+		<letter cp="F" width="0.49" />
+		<letter cp="G" width="0.52" />
+		<letter cp="H" width="0.49" />
+		<letter cp="I" width="0.51" />
+		<letter cp="J" width="0.56" />
+		<letter cp="K" width="0.55" />
+		<letter cp="L" width="0.46" />
+		<letter cp="M" width="0.49" />
+		<letter cp="N" width="0.52" />
+		<letter cp="O" width="0.62" />
+		<letter cp="P" width="0.54" />
+		<letter cp="Q" width="0.62" />
+		<letter cp="R" width="0.52" />
+		<letter cp="S" width="0.49" />
+		<letter cp="T" width="0.62" />
+		<letter cp="U" width="0.57" />
+		<letter cp="V" width="0.58" />
+		<letter cp="W" width="0.6" />
+		<letter cp="X" width="0.61" />
+		<letter cp="Y" width="0.56" />
+		<letter cp="Z" width="0.52" />
+		<letter cp="[" width="0.43" />
+		<letter cp="\" width="0.36" />
+		<letter cp="]" width="0.42" />
+		<letter cp="a" width="0.61" />
+		<letter cp="b" width="0.49" />
+		<letter cp="c" width="0.51" />
+		<letter cp="d" width="0.63" />
+		<letter cp="e" width="0.44" />
+		<letter cp="f" width="0.55" />
+		<letter cp="g" width="0.52" />
+		<letter cp="h" width="0.48" />
+		<letter cp="i" width="0.5" />
+		<letter cp="j" width="0.56" />
+		<letter cp="k" width="0.55" />
+		<letter cp="l" width="0.46" />
+		<letter cp="m" width="0.49" />
+		<letter cp="n" width="0.52" />
+		<letter cp="o" width="0.62" />
+		<letter cp="p" width="0.54" />
+		<letter cp="q" width="0.62" />
+		<letter cp="r" width="0.52" />
+		<letter cp="s" width="0.49" />
+		<letter cp="t" width="0.61" />
+		<letter cp="u" width="0.56" />
+		<letter cp="v" width="0.58" />
+		<letter cp="w" width="0.6" />
+		<letter cp="x" width="0.61" />
+		<letter cp="y" width="0.55" />
+		<letter cp="z" width="0.52" />
+		<letter cp="§" width="0.45" />
+		<letter cp="«" width="0.57" />
+		<letter cp="»" width="0.57" />
+		<letter cp="…" width="0.63" />
+
+	</characters>
+
+	<kerning>
+	</kerning>
+</font>

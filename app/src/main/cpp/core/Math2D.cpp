@@ -48,11 +48,20 @@ namespace core
         float rs = 2.0f * _rotation.z * _rotation.w;
 
         return Matrix3(
-                _scale.x * rc,		_scale.y * rs,		_translation.x,
-                _scale.x * -rs,		_scale.y * rc,		_translation.y,
+                _scale.x * rc,		_scale.x * rs,		_translation.x,
+                _scale.y * -rs,		_scale.y * rc,		_translation.y,
                 0.0f,				0.0f,				1.0f
         );
+    };
 
+
+    Matrix3 &translateMatrix(Matrix3 &_mx, const Vector2 &_translation)
+    {
+        _mx.m13 += _mx.m11 * _translation.x + _mx.m12 * _translation.y;
+        _mx.m23 += _mx.m21 * _translation.x + _mx.m22 * _translation.y;
+        _mx.m33 += _mx.m31 * _translation.x + _mx.m32 * _translation.y;
+
+        return _mx;
     };
 
 
@@ -151,6 +160,11 @@ namespace core
         return (_line * (2.0f * (dotProduct(_line, _v) / dotProduct(_line, _line)))) - _v;
     };
 
+
+    float degreeToRad(float _r)
+    {
+        return _r * (M_PI / 180.0f);
+    };
 
 }
 

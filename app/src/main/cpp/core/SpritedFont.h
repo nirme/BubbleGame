@@ -150,8 +150,8 @@ namespace core
 		}
 
 
-		SpritedTextVertices generateSpritedVector(const std::string &_text, Vector2 *_textSize = nullptr, float _maxWidth = std::numeric_limits<double>::max());
-		SpritedTextVertices generateSpritedVector(const std::wstring &_text, Vector2 *_textSize = nullptr, float _maxWidth = std::numeric_limits<double>::max());
+		SpritedTextVertices generateSpritedVector(const std::string &_text, Vector2 *_textSize = nullptr, float _maxWidth = std::numeric_limits<float>::max());
+		SpritedTextVertices generateSpritedVector(const std::wstring &_text, Vector2 *_textSize = nullptr, float _maxWidth = std::numeric_limits<float>::max());
 	};
 
 

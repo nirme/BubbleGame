@@ -30,7 +30,7 @@ namespace core
 		};
 
 	public:
-		TouchButton(_2d::Shape *_controlShape);
+		TouchButton(const std::string& _name, _2d::Shape *_controlShape);
 		bool containsPointer(int32_t _pointerId, const PointerPosition &_pointerPosition) const;
 		void onPointerDown(int32_t _pointerId, const PointerPosition &_pointerPosition);
 		void onPointerUp(int32_t _pointerId, const PointerPosition &_pointerPosition);
@@ -63,7 +63,7 @@ namespace core
 		};
 
 	public:
-		TouchArea(_2d::Shape *_controlShape);
+		TouchArea(const std::string& _name, _2d::Shape *_controlShape);
 		bool containsPointer(int32_t _pointerId, const PointerPosition &_pointerPosition) const;
 		void onPointerDown(int32_t _pointerId, const PointerPosition &_pointerPosition);
 		void onPointerUp(int32_t _pointerId, const PointerPosition &_pointerPosition);

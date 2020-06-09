@@ -40,6 +40,7 @@ namespace core
 			~SingleSprite() {};
 
 			void setSpriteCoords(const SpriteCoords &_spriteCoords);
+			const SpriteCoords &getSpriteCoords();
 
 			void setMaterial(ShadingProgramPtr _program, ImageSpritePtr _sprite);
 

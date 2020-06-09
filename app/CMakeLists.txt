@@ -5,6 +5,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -O0 -std=c++17 -Wno-undefined-var-template -Wno-writable-strings -Wno-unsequenced -Wno-switch")
+# set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -O3 -std=c++17 -Wno-undefined-var-template -Wno-writable-strings -Wno-unsequenced -Wno-switch")
 
 # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--stack,10000000")
 
@@ -33,6 +34,7 @@ add_library(
     # relative paths to main files
 
     src/main/cpp/core/Debug.cpp
+    src/main/cpp/core/StringUtils.cpp
 
     src/main/cpp/core/Matrix3.cpp
     src/main/cpp/core/Math2D.cpp
@@ -80,7 +82,9 @@ add_library(
 
     src/main/cpp/core/_2d/Renderable.cpp
     src/main/cpp/core/_2d/SingleSprite.cpp
+    src/main/cpp/core/_2d/AnimatedSprite.cpp
     src/main/cpp/core/_2d/SpritedText.cpp
+    src/main/cpp/core/_2d/EmptyObject.cpp
 
     src/main/cpp/core/_2d/ParticleSystem.cpp
     src/main/cpp/core/_2d/ParticleEmitters.cpp
@@ -119,6 +123,7 @@ add_library(
     src/main/cpp/core/_2d/shapes/Rectangle.cpp
     src/main/cpp/core/_2d/shapes/LineArea.cpp
     src/main/cpp/core/_2d/shapes/ShapeMath.cpp
+    src/main/cpp/core/_2d/shapes/ShapeFactory.cpp
 
     src/main/cpp/core/_2d/PhysicsAffectors.cpp
 
@@ -129,12 +134,14 @@ add_library(
 
     src/main/cpp/MusicController.cpp
 
-
-src/main/cpp/core/_2d/test_objects/SpritedBall.cpp
-src/main/cpp/core/_2d/test_objects/SpritedWall.cpp
-
-
     src/main/cpp/core/Engine.cpp
+
+
+    src/main/cpp/InstanceParticleEmitters.cpp
+    src/main/cpp/Player.cpp
+    src/main/cpp/GameObjects.cpp
+
+
 
 
     src/main/cpp/bubble_fighter-c.cpp

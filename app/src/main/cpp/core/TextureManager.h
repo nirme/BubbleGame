@@ -6,7 +6,6 @@
 #include "ResourceManager.h"
 #include "Resource.h"
 #include "Texture.h"
-#include "ScriptLoader.h"
 
 
 namespace core

@@ -20,8 +20,10 @@ namespace core
 			SceneNodeList::iterator it = std::find(allNodesList.begin(), allNodesList.end(), _node);
 
 			if (it != allNodesList.end())
+			{
 				std::swap(*it, allNodesList.back());
-			allNodesList.pop_back();
+				allNodesList.pop_back();
+			}
 
 			namedNodes.erase(_node->getName());
 		};
@@ -45,23 +47,6 @@ namespace core
 			}
 
 			namedObjects.erase(_obj->getName());
-		};
-
-
-		SceneNode *SceneManager::getNodeByName(const std::string &_name)
-		{
-			assert(_name.size() && "node name string cannot be empty");
-
-			auto it = namedNodes.find(_name);
-			if (it != namedNodes.end())
-				return (*it).second;
-			return nullptr;
-		};
-
-
-		SceneNode *SceneManager::getRootNode()
-		{
-			return sceneRoot.get();
 		};
 
 
@@ -131,15 +116,39 @@ namespace core
 		};
 
 
-		SceneNode *SceneManager::createNode(const std::string &_nodeName, ScriptNodePtr _nodeValues)
+		SceneNode *SceneManager::getNodeByName(const std::string &_name)
+		{
+			assert(_name.size() && "node name string cannot be empty");
+
+			auto it = namedNodes.find(_name);
+			if (it != namedNodes.end())
+				return (*it).second;
+			return nullptr;
+		};
+
+
+		SceneNode *SceneManager::getRootNode()
+		{
+			return sceneRoot.get();
+		};
+
+
+		SceneNode *SceneManager::createNode(const std::string &_nodeName)
 		{
 			SceneNode *newNode = new SceneNode(this, _nodeName);
+			assert(newNode && "scene node not created!");
+			addNode(newNode);
+			return newNode;
+		};
+
+
+		SceneNode *SceneManager::createNode(ScriptNodePtr _nodeValues)
+		{
+			ScriptLoader &scriptLoader = ScriptLoader::getSingleton();
+
+			SceneNode *newNode = new SceneNode(this, scriptLoader.parseNodeName(_nodeValues));
 			addNode(newNode);
 
-			if (!_nodeValues)
-				return newNode;
-
-			ScriptLoader &scriptLoader = ScriptLoader::getSingleton();
 			newNode->setScale(scriptLoader.parseNodeScale(_nodeValues));
 			newNode->setRotation(scriptLoader.parseNodeRotation(_nodeValues));
 			newNode->setPosition(scriptLoader.parseNodePosition(_nodeValues));
@@ -161,6 +170,7 @@ namespace core
 			delete _node;
 		};
 
+
 		void SceneManager::destroyObject(MovableObject *_object)
 		{
 			removeObject(_object);
@@ -171,6 +181,20 @@ namespace core
 			}
 
 			delete _object;
+		};
+
+
+		Camera *SceneManager::createCamera(const std::string &_name, ScriptNodePtr _nodeValues)
+		{
+			throw std::logic_error("unimplemented");
+		};
+
+
+		MovableObject *SceneManager::createObject(ScriptNodePtr _nodeValues)
+		{
+			MovableObjectUPtr object = objectFactory->createObject(_nodeValues);
+			addObject(object.get());
+			return object.release();
 		};
 
 
@@ -189,9 +213,18 @@ namespace core
 		};
 
 
+		SpritedText *SceneManager::createSpritedText(const std::string &_name, ScriptNodePtr _nodeValues)
+		{
+			SpritedTextUPtr object = objectFactory->createSpritedText(_name, _nodeValues);
+			addObject(object.get());
+			return object.release();
+		};
+
 
 		void SceneManager::renderScene()
 		{
+			if (timeValue)
+				paramsManager.setTimeElapsed(timeValue->getElapsedTime());
 
 			findVisibleRenderables();
 
@@ -248,6 +281,11 @@ namespace core
 			renderQueue->clear();
 		};
 
+
+		void SceneManager::setTimeControllerValue(SharedFrameTimeControllerValuePtr _timeValue)
+		{
+			timeValue = _timeValue;
+		};
 
 
 

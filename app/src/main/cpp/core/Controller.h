@@ -18,7 +18,7 @@ namespace core
 	template<class T>
 	class TTimeframeControllerValue : public ControllerValue
 	{
-	private:
+	protected:
 		T *owner;
 
 	public:
@@ -34,7 +34,7 @@ namespace core
 
 		virtual void set(float _value)
 		{
-			owner->update(_value);
+			owner->progress(_value);
 		};
 	};
 

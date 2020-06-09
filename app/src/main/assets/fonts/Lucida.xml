@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font>
+  <configuration name="Lucida" type="sprited" spacing="mono" font_size="1.0" line_height="1.0" defaultChar="?" texture="lucida_sprites.bmp" />
+
+  <characters>
+    <letter cp="a" />
+    <letter cp="b" />
+    <letter cp="c" />
+    <letter cp="d" />
+    <letter cp="e" />
+    <letter cp="f" />
+    <letter cp="g" />
+    <letter cp="h" />
+    <letter cp="i" />
+    <letter cp="j" />
+    <letter cp="k" />
+    <letter cp="l" />
+    <letter cp="m" />
+    <letter cp="n" />
+    <letter cp="o" />
+    <letter cp="p" />
+    <letter cp="q" />
+    <letter cp="r" />
+    <letter cp="s" />
+    <letter cp="t" />
+    <letter cp="u" />
+    <letter cp="v" />
+    <letter cp="w" />
+    <letter cp="x" />
+    <letter cp="y" />
+    <letter cp="z" />
+    <letter cp="A" />
+    <letter cp="B" />
+    <letter cp="C" />
+    <letter cp="D" />
+    <letter cp="E" />
+    <letter cp="F" />
+    <letter cp="G" />
+    <letter cp="H" />
+    <letter cp="I" />
+    <letter cp="J" />
+    <letter cp="K" />
+    <letter cp="L" />
+    <letter cp="M" />
+    <letter cp="N" />
+    <letter cp="O" />
+    <letter cp="P" />
+    <letter cp="Q" />
+    <letter cp="R" />
+    <letter cp="S" />
+    <letter cp="T" />
+    <letter cp="U" />
+    <letter cp="V" />
+    <letter cp="W" />
+    <letter cp="X" />
+    <letter cp="Y" />
+    <letter cp="Z" />
+    <letter cp=" " />
+    <letter cp="1" />
+    <letter cp="2" />
+    <letter cp="3" />
+    <letter cp="4" />
+    <letter cp="5" />
+    <letter cp="6" />
+    <letter cp="7" />
+    <letter cp="8" />
+    <letter cp="9" />
+    <letter cp="0" />
+    <letter cp="`" />
+    <letter cp="-" />
+    <letter cp="=" />
+    <letter cp="[" />
+    <letter cp="]" />
+    <letter cp="\" />
+    <letter cp=";" />
+    <letter cp="'" />
+    <letter cp="," />
+    <letter cp="." />
+    <letter cp="/" />
+    <letter cp="~" />
+    <letter cp="!" />
+    <letter cp="@" />
+    <letter cp="#" />
+    <letter cp="$" />
+    <letter cp="%" />
+    <letter cp="^" />
+    <letter cp="&amp;" />
+    <letter cp="*" />
+    <letter cp="(" />
+    <letter cp=")" />
+    <letter cp="_" />
+    <letter cp="+" />
+    <letter cp="{" />
+    <letter cp="}" />
+    <letter cp="|" />
+    <letter cp=":" />
+    <letter cp="&quot;" />
+    <letter cp="&lt;" />
+    <letter cp=">" />
+    <letter cp="?" />
+  </characters>
+
+  <kerning>
+  </kerning>
+</font>

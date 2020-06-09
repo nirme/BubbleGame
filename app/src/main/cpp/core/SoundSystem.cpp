@@ -28,7 +28,7 @@ namespace core
 
 
 
-	SoundPlayer* SoundSystem::getPlayer(SoundPriority _priority)
+	SoundPlayer* SoundSystem::getPlayer(SoundPriority _priority, bool _freePlayerOnSoundEnd)
 	{
 		SoundPlayer *player = nullptr;
 
@@ -44,7 +44,6 @@ namespace core
 			{
 				player = pair.second;
 				usedPlayers.pop_front();
-
 			}
 		}
 
@@ -63,6 +62,8 @@ namespace core
 
 			if (!insertFlag)
 				usedPlayers.push_back({_priority, player});
+
+			player->setReserved(!_freePlayerOnSoundEnd);
 		}
 
 		return player;

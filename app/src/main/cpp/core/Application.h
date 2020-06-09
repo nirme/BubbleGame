@@ -120,17 +120,14 @@ namespace core
 
 			case APP_CMD_TERM_WINDOW:
 				engine->onTermWindow();
-				deactivate();
 				return;
 
 			case APP_CMD_GAINED_FOCUS:
-				activate();
 				engine->onGainedFocus();
 				return;
 
 			case APP_CMD_LOST_FOCUS:
 				engine->onLostFocus();
-				deactivate();
 				return;
 
 			case APP_CMD_CONFIG_CHANGED:
@@ -146,17 +143,24 @@ namespace core
 				return;
 
 			case APP_CMD_RESUME:
+			{
+				if (!isActive)
+					activate();
 				engine->onResume(androidApp->savedState, androidApp->savedStateSize);
 				return;
+			}
 
 			case APP_CMD_SAVE_STATE:
 				engine->onSaveState(&(androidApp->savedState), &(androidApp->savedStateSize));
 				return;
 
 			case APP_CMD_PAUSE:
+			{
 				engine->onPause();
-				deactivate();
+				if (isActive)
+					deactivate();
 				return;
+			}
 
 			case APP_CMD_STOP:
 				engine->onStop();
@@ -164,8 +168,8 @@ namespace core
 
 			case APP_CMD_DESTROY:
 				engine->onDestroy();
-				deactivate();
 				return;
+
 			}
 		};
 

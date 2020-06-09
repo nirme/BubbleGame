@@ -11,4 +11,7 @@
   
   <texture type="texture2d" group="objects" name="objects.bmp" filter="nearest" />
 
+  <texture type="texture2d" group="fonts" name="font1_tex.bmp" filter="nearest" />
+  <texture type="texture2d" group="fonts" name="lucida_sprites.bmp" filter="nearest" />
+
 </resources>

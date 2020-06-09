@@ -6,7 +6,7 @@ namespace core
 {
 	namespace _2d
 	{
-
+/*
 		AxisAlignedBox RigidObject::_boundingBoxImpl() const
 		{
 			ShapesList &frame = frameTransformedShapes.front();
@@ -18,13 +18,16 @@ namespace core
 
 			return aabb;
 		};
-
+*/
 
 		void RigidObject::updateShapes() const
 		{
+			assert(entity && "rigid object must have entity connected");
+			const Matrix3 &mx = entity->getWorldTransform();
+
 			frameTransformedShapes.emplace_front(shapes.size());
 			ShapesList &frame = frameTransformedShapes.front();
-			const Matrix3 &mx = this->getWorldTransform();
+
 			for (unsigned int i = 0, iEnd = shapes.size(); i < iEnd; ++i)
 			{
 				frame[i] = shapes[i]->transform(mx);
@@ -35,8 +38,30 @@ namespace core
 		};
 
 
-		void RigidObject::update(float _frameTime)
+		void RigidObject::registerListener(Listener *_listener)
 		{
+			listener = _listener;
+		};
+
+
+		void RigidObject::collisionDetected(RigidObject *_object)
+		{
+			if (listener)
+				listener->onCollisionDetected(_object);
+		};
+
+
+		void RigidObject::collisionEnded(RigidObject *_object)
+		{
+			if (listener)
+				listener->onCollisionEnded(_object);
+		};
+
+
+		void RigidObject::progress(float _frameTime)
+		{
+			cashedAABBNeedUpdate = true;
+
 			if (!staticObject && positionFrames.size() > 1)
 			{
 				for (AffectorsMap::iterator it = affectors.begin(), itEnd = affectors.end(); it != itEnd; ++it)
@@ -106,22 +131,24 @@ namespace core
 
 		void RigidObject::progressTransformation(float _time)
 		{
-			Vector2 worldDirection = transformVector(inverse(parent->getWorldTransform()), directionVector);
-			//positionFrames.push_front(
-			// getPosition() + (worldDirection * _time));
-			positionFrames.push_front( (positionFrames.size() ? positionFrames.front() : getPosition()) + (worldDirection * _time));
+			assert(entity && "rigid object must have entity connected");
+			Vector2 worldDirection = transformVector(inverse(entity->getParent()->getWorldTransform()), directionVector);
+			positionFrames.push_front( (positionFrames.size() ? positionFrames.front() : entity->getPosition()) + (worldDirection * _time));
 		};
 
 
 		void RigidObject::progressPartialTransformation(float _time)
 		{
-			Vector2 worldDirection = transformVector(inverse(parent->getWorldTransform()), directionVector);
+			assert(entity && "rigid object must have entity connected");
+			Vector2 worldDirection = transformVector(inverse(entity->getParent()->getWorldTransform()), directionVector);
 			positionFrames.front() += (worldDirection * _time);
 		};
 
 
 		void RigidObject::rewindTransformation()
 		{
+			cashedAABBNeedUpdate = true;
+
 			if (frameTransformedShapes.size())
 				frameTransformedShapes.pop_front();
 			if (positionFrames.size())
@@ -131,7 +158,9 @@ namespace core
 
 		void RigidObject::updateTransformation()
 		{
-			MovableObject::setPosition(positionFrames.front());
+			assert(entity && "rigid object must have entity connected");
+			cashedAABBNeedUpdate = true;
+			entity->setPosition(positionFrames.front());
 			updateShapes();
 		};
 
@@ -150,10 +179,11 @@ namespace core
 		};
 
 
-		RigidObject::RigidObject(const std::string &_name, const std::string &_collidableObjectType, PhysicsSystem *_collisionSystem) :
-				MovableObject(_name),
+		RigidObject::RigidObject(const std::string &_collidableObjectType, PhysicsSystem *_collisionSystem) :
 				collidableObjectType(_collidableObjectType),
 				collisionSystem(nullptr),
+				entity(nullptr),
+				enabled(true),
 				staticObject(false),
 				bounceFactor(1.0f),
 				directionVector(0.0f)
@@ -163,9 +193,64 @@ namespace core
 		};
 
 
+		RigidObject::~RigidObject()
+		{
+			if (collisionSystem)
+			{
+				collisionSystem->unregisterObject(this);
+				collisionSystem = nullptr;
+			}
+		};
+
+
+		void RigidObject::setEntity(MovableObject *_entity)
+		{
+			entity = _entity;
+		};
+
+
+		void RigidObject::setEnabled(bool _enabled)
+		{
+			enabled = _enabled;
+		};
+
+
+		bool RigidObject::isEnabled()
+		{
+			return enabled;
+		};
+
+
+		const AxisAlignedBox &RigidObject::getBoundingBox() const
+		{
+			if (cashedAABBNeedUpdate)
+			{
+				ShapesList &frame = frameTransformedShapes.front();
+				AxisAlignedBox aabb;
+				for (unsigned int i = 0, iEnd = frame.size(); i < iEnd; ++i)
+				{
+					aabb.merge(frame[i]->getAABB());
+				}
+
+				cashedAABB = aabb;
+				cashedAABBNeedUpdate = false;
+			}
+
+			return cashedAABB;
+		};
+
+
 		void RigidObject::addShape(ShapePtr &_shape)
 		{
 			shapes.push_back(std::move(_shape));
+		};
+
+
+		void RigidObject::clearShapes()
+		{
+			shapes.clear();
+			frameTransformedShapes.clear();
+			cashedAABBNeedUpdate = true;
 		};
 
 

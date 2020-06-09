@@ -10,6 +10,14 @@ namespace core
 {
 	struct SpriteCoords
 	{
+		enum SIDE
+		{
+			S_LEFT = 0x01,
+			S_RIGHT = 0x02,
+			S_TOP = 0x03,
+			S_BOTTOM = 0x04,
+		};
+
 		union
 		{
 			float uvArray[8];
@@ -20,6 +28,7 @@ namespace core
 
 		SpriteCoords(const SpriteCoords &_rhs = SpriteCoords::SPRITE_SQUARE);
 		SpriteCoords(float _left, float _right, float _top, float _bottom);
+		SpriteCoords(float _width, float _height);
 		SpriteCoords(const Vector2 &_minV, const Vector2 &_maxV);
 		SpriteCoords(const Vector2 &_v0, const Vector2 &_v1, const Vector2 &_v2, const Vector2 &_v3);
 
@@ -29,6 +38,8 @@ namespace core
 		SpriteCoords& transform(const Matrix3& _m);
 
 		_2d::AxisAlignedBox getBoundingAABB();
+
+		void set(SIDE _side, float _value);
 	};
 
 

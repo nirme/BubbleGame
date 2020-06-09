@@ -1,4 +1,5 @@
 #include "SpritedFontManager.h"
+#include "ScriptLoader.h"
 
 
 template<>

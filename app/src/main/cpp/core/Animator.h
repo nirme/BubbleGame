@@ -17,7 +17,7 @@ namespace core
 		class Listener
 		{
 		public:
-			virtual void update(float _value) = 0;
+			virtual void progress(float _value) = 0;
 			virtual ~Listener() {};
 		};
 

@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 #include "AxisAlignedBox.h"
-#include "MovableObject.h"
 #include "PhysicsSystem.h"
 #include "shapes/Shape.h"
+#include "MovableObject.h"
 #include "PhysicsAffector.h"
 #include "../Math2D.h"
 
@@ -15,10 +15,19 @@ namespace core
 	{
 		class PhysicsSystem;
 
-		class RigidObject : virtual public MovableObject
+		class RigidObject
 		{
 		public:
 			typedef std::vector<ShapePtr> ShapesList;
+
+			class Listener
+			{
+			public:
+				virtual void onCollisionDetected(RigidObject *_object) = 0;
+				virtual void onCollisionEnded(RigidObject *_object) = 0;
+				virtual ~Listener(){};
+			};
+
 
 		protected:
 			typedef std::list<ShapesList> TransformedShapesFrameList;
@@ -29,25 +38,35 @@ namespace core
 			ShapesList shapes;
 			mutable TransformedShapesFrameList frameTransformedShapes;
 
+			mutable bool cashedAABBNeedUpdate;
+			mutable AxisAlignedBox cashedAABB;
+
+			MovableObject *entity;
+			std::list<Vector2> positionFrames;
+
+			bool enabled;
 			bool staticObject;
 			float bounceFactor;
 			Vector2 directionVector;
-			std::list<Vector2> positionFrames;
 
 
 			typedef std::unordered_map<std::string, PhysicsAffectorPtr> AffectorsMap;
 			AffectorsMap affectors;
 
 
-			virtual void _invalidateWorldTransformImpl() const
-			{};
-			virtual AxisAlignedBox _boundingBoxImpl() const;
-			virtual void updateShapes() const;
+			Listener *listener;
 
+			//virtual AxisAlignedBox _boundingBoxImpl() const;
+
+			void updateShapes() const;
 
 		public:
 
-			void update(float _frameTime);
+			void registerListener(Listener *_listener = nullptr);
+			void collisionDetected(RigidObject *_object);
+			void collisionEnded(RigidObject *_object);
+
+			void progress(float _frameTime);
 
 			bool isStatic();
 			void setStatic(bool _static);
@@ -68,9 +87,19 @@ namespace core
 			const std::vector<ShapePtr> &getCurrentFrameShapes() const;
 			const std::vector<ShapePtr> &getPreviousFrameShapes() const;
 
-			RigidObject(const std::string &_name, const std::string &_collidableObjectType, PhysicsSystem *_collisionSystem = nullptr);
+			RigidObject(const std::string &_collidableObjectType, PhysicsSystem *_collisionSystem = nullptr);
+			~RigidObject();
+
+			void setEntity(MovableObject *_entity);
+
+			void setEnabled(bool _enabled);
+			bool isEnabled();
+
+			const AxisAlignedBox &getBoundingBox() const;
 
 			void addShape(ShapePtr &_shape);
+			void clearShapes();
+
 			void addAffector(std::string _name);
 			void setAffector(std::string _name, PhysicsAffectorPtr _affector);
 			void removeAffector(std::string _name);
@@ -79,5 +108,10 @@ namespace core
 			void registerCollidableObject(PhysicsSystem *_collisionSystem);
 
 		};
+
+
+		typedef std::unique_ptr<RigidObject> RigidObjectUPtr;
+		typedef std::shared_ptr<RigidObject> RigidObjectPtr;
+
 	}
 }

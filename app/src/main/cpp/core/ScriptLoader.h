@@ -8,6 +8,7 @@
 
 
 #include "SingletonTemplate.h"
+#include "./StringUtils.h"
 
 #include "ScriptParser.h"
 #include "Texture.h"
@@ -21,6 +22,9 @@
 #include "SpriteCoords.h"
 
 #include "DataStream.h"
+
+#include "_2d/shapes/ShapeFactory.h"
+
 
 
 
@@ -89,6 +93,7 @@ namespace core
 
 		// scene node
 
+		std::string parseNodeName(ScriptNodePtr _node);
 		Vector2 parseNodeScale(ScriptNodePtr _node);
 		_2d::Quaternion parseNodeRotation(ScriptNodePtr _node);
 		Vector2 parseNodePosition(ScriptNodePtr _node);
@@ -102,14 +107,34 @@ namespace core
 		std::string parseObjectName(ScriptNodePtr _node);
 		std::string parseObjectShader(ScriptNodePtr _node);
 		std::string parseObjectImageSprite(ScriptNodePtr _node);
+		std::string parseObjectFont(ScriptNodePtr _node);
+
 		Vector2 parseObjectScale(ScriptNodePtr _node);
 		_2d::Quaternion parseObjectRotation(ScriptNodePtr _node);
 		Vector2 parseObjectPosition(ScriptNodePtr _node);
+
+		_2d::SpritedText::ANCHOR_POSITION parseTextAnchorPosition(ScriptNodePtr _node);
+		std::string parseObjectText(ScriptNodePtr _node);
 
 		_2d::Priority parseRenderablePriority(ScriptNodePtr _node);
 		SpriteCoords parseSingleSpriteCoords(ScriptNodePtr _node);
 
 		std::list<std::string> parseParticlesImageSprites(ScriptNodePtr _node);
+
+
+
+
+
+		//shapes
+
+		_2d::SHAPE_TYPE parseShapeType(ScriptNodePtr _node);
+		Vector2 parseShapePosition(ScriptNodePtr _node);
+
+		float parseCircleRadius(ScriptNodePtr _node);
+		Vector2 parseRectangleSize(ScriptNodePtr _node);
+		float parseRectangleRotation(ScriptNodePtr _node);
+		Vector3 parse2DLineParams(ScriptNodePtr _node);
+
 
 	};
 

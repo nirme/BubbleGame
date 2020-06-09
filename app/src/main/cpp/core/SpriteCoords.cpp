@@ -23,6 +23,16 @@ namespace core
 	{};
 
 
+	SpriteCoords::SpriteCoords(float _width, float _height) :
+		uvArray{
+			_width * -0.5f, _height * 0.5f,
+			_width * 0.5f, _height * 0.5f,
+			_width * -0.5f, _height * -0.5f,
+			_width * 0.5f, _height * -0.5f,
+		}
+	{};
+
+
 	SpriteCoords::SpriteCoords(const Vector2 &_minV, const Vector2 &_maxV) :
 		uvArray{
 			_minV.x, _maxV.y,
@@ -115,6 +125,42 @@ namespace core
 
 		return _2d::AxisAlignedBox(min, max);
 	};
+
+
+	void SpriteCoords::set(SIDE _side, float _value)
+	{
+		switch (_side)
+		{
+			case S_LEFT:
+			{
+				uvPoints[0].x = _value;
+				uvPoints[2].x = _value;
+				break;
+			}
+
+			case S_RIGHT:
+			{
+				uvPoints[1].x = _value;
+				uvPoints[3].x = _value;
+				break;
+			}
+
+			case S_TOP:
+			{
+				uvPoints[0].y = _value;
+				uvPoints[1].y = _value;
+				break;
+			}
+
+			case S_BOTTOM:
+			{
+				uvPoints[2].y = _value;
+				uvPoints[3].y = _value;
+				break;
+			}
+		}
+	};
+
 
 
 	const SpriteCoords SpriteCoords::SpriteCoords::SPRITE_SQUARE = SpriteCoords(

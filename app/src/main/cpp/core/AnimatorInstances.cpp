@@ -34,7 +34,7 @@ namespace core
 	void AnimationControllerValue::set(float _value)
 	{
 		FrameTimeControllerValue::set(_value);
-		animator->progress(elapsedTime);
+		animator->progress(frameTime);
 	};
 
 
@@ -111,7 +111,7 @@ namespace core
 
 
 	AnimatorQuadraticBezier::AnimatorQuadraticBezier( float _p1x, float _p1y, ANIMATION_MODE _mode, float _upperBound) :
-			Animator(_mode, _upperBound),
+		Animator(_mode, _upperBound)
 	{
 		setPoint(_p1x, _p1y);
 	};

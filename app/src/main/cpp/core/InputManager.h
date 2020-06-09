@@ -71,6 +71,10 @@ namespace core
 		void setScreenSize(unsigned short _width, unsigned short _height);
 
 		void registerControl(const std::string &_setName, TouchControl *_control);
+
+		TouchControl *getControlByName(const std::string &_controlName);
+		TouchControl *getControlByName(const std::string &_setName, const std::string &_controlName);
+
 		void removeControl(const std::string &_setName, TouchControl *_control);
 		void removeControlSet(const std::string &_setName);
 		void removeAllControls();

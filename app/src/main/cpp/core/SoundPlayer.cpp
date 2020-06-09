@@ -54,12 +54,16 @@ namespace core
 		}
 		else if (!bufferList.size())
 		{
-			reset();
-			if (listener)
-			{
-				listener->onSoundEnd();
-				listener = nullptr;
-			}
+			// copy listener, if player not reserved then listener will be freed
+			Listener* tmpListener = listener;
+
+			if (!reserved)
+				freePlayer();
+			else
+				stop();
+
+			if (tmpListener)
+				tmpListener->onSoundEnd();
 		}
 	};
 
@@ -70,7 +74,7 @@ namespace core
 	};
 
 
-	void SoundPlayer::reset()
+	void SoundPlayer::freePlayer()
 	{
 		assert(soundSystem && "sound player must be initialized");
 
@@ -79,10 +83,12 @@ namespace core
 			playerState = PS_STOPPED;
 			SL_ERROR_CHECK((*slPlay)->SetPlayState(slPlay, SL_PLAYSTATE_STOPPED));
 			SL_ERROR_CHECK((*slBufferQueue)->Clear(slBufferQueue));
-			bufferList.clear();
-
-			soundSystem->freePlayer(this);
 		}
+
+		bufferList.clear();
+		reserved = false;
+		listener = nullptr;
+		soundSystem->freePlayer(this);
 	};
 
 
@@ -293,10 +299,7 @@ namespace core
 			SL_ERROR_CHECK((*slPlay)->SetPlayState(slPlay, SL_PLAYSTATE_STOPPED));
 			SL_ERROR_CHECK((*slBufferQueue)->Clear(slBufferQueue));
 
-
 			soundIterator.reset();
-			bufferList.clear();
-
 			playerState = PS_STOPPED;
 		}
 	};

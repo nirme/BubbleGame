@@ -19,6 +19,7 @@ namespace core
 
 	// default transformation goes scaling -> rotation -> translation
 	Matrix3 affine2DMatrix(const Vector2 &_scale, const _2d::Quaternion &_rotation, const Vector2 &_translation);
+	Matrix3 &translateMatrix(Matrix3 &_mx, const Vector2 &_translation);
 
 	float determinant(const Matrix3 &_mx);
 
@@ -33,6 +34,8 @@ namespace core
 
 	Vector2 reflectAcrossNormal(const Vector2 &_v, const Vector2 &_normal);
 	Vector2 reflectAcrossLine(const Vector2 &_v, const Vector2 &_line);
+
+	float degreeToRad(float _r);
 }
 
 

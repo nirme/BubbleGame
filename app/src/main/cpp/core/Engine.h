@@ -47,8 +47,6 @@
 #include "_2d/ParticleEmitters.h"
 
 #include "_2d/PhysicsAffectors.h"
-#include "_2d/test_objects/SpritedBall.h"
-#include "_2d/test_objects/SpritedWall.h"
 
 
 

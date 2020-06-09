@@ -24,7 +24,7 @@ namespace core
 
 			if (objects.size())
 			{
-				for (ObjectConstIterator it = objects.begin(); it != objects.end(); ++it)
+				for (ObjectList::const_iterator it = objects.begin(); it != objects.end(); ++it)
 					boundingBox.merge((*it)->getBoundingBox());
 			}
 
@@ -205,7 +205,7 @@ namespace core
             if (_bounds->isOverlapping(getBoundingBox()))
             {
 				if (objects.size())
-					for (ObjectConstIterator it = objects.begin(); it != objects.end(); ++it)
+					for (ObjectList::const_iterator it = objects.begin(); it != objects.end(); ++it)
 						(*it)->findVisibleRenderables(_camera, _queue, _bounds);
 
 				if (children.size())
@@ -272,6 +272,19 @@ namespace core
 		};
 
 
+		MovableObject* SceneNode::getObjectByName(std::string _name)
+		{
+			ObjectList::iterator findResult = std::find_if(objects.begin(), objects.end(), [_name] (MovableObject* _object) { return !_name.compare(_object->getName());});
+			return findResult != objects.end() ? (*findResult) : nullptr;
+		};
+
+
+		SceneNode::ObjectIterator SceneNode::getObjectIterator()
+		{
+			return ObjectIterator(objects);
+		};
+
+
 		void SceneNode::destroyAllObjects()
 		{
 			while (objects.size())
@@ -291,7 +304,7 @@ namespace core
 			for (ChildNodeConstIterator it = children.begin(), itEnd = children.end(); it != itEnd; ++it)
 				(*it)->invalidateTransform();
 
-			for (ObjectConstIterator it = objects.begin(), itEnd = objects.end(); it != itEnd; ++it)
+			for (ObjectList::const_iterator it = objects.begin(), itEnd = objects.end(); it != itEnd; ++it)
 				(*it)->invalidateWorldTransform();
 		};
 

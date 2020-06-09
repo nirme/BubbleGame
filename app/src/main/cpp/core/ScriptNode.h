@@ -11,6 +11,7 @@ namespace core
 
 	typedef std::shared_ptr<ScriptNode>		ScriptNodePtr;
 	typedef std::list< ScriptNodePtr>		ScriptNodeList;
+	typedef ScriptNodeList::iterator		ScriptNodeListIterator;
 	typedef std::shared_ptr<ScriptNodeList>	ScriptNodeListPtr;
 
 	class ScriptNode

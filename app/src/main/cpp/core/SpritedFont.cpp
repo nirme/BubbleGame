@@ -114,7 +114,7 @@ namespace core
 
 			if ((ptr[0] & 0b10000000) == 0) // 0b0#######
 			{
-				_out.push_back(ptr[0]);
+				out.push_back(ptr[0]);
 				c += 1;
 				continue;
 			}
@@ -122,7 +122,7 @@ namespace core
 			{
 				if (len - c >= 2 && ((ptr[1] & 0b11000000) == 0b10000000)) // 0b10######
 				{
-					_out.push_back(
+					out.push_back(
 						( ( (wchar_t) ( ptr[0] | 0b00011111 ) ) << 6 ) |
 						( ptr[1] | 0b00111111 ) );
 					c += 2;
@@ -133,7 +133,7 @@ namespace core
 			{
 				if (len - c >= 3 && ((ptr[1] & 0b11000000) == 0b10000000) && ((ptr[2] & 0b11000000) == 0b10000000)) // 0b10###### 0b10######
 				{
-					_out.push_back(
+					out.push_back(
 							( ( (wchar_t) ( ptr[0] | 0b00001111 ) ) << 12 ) |
 							( ( (wchar_t) ( ptr[1] | 0b00111111 ) ) << 6  ) |
 							( ptr[2] | 0b00111111 ) );
@@ -145,7 +145,7 @@ namespace core
 			{
 				if (len - c >= 4 && ((ptr[1] & 0b11000000) == 0b10000000) && ((ptr[2] & 0b11000000) == 0b10000000) && ((ptr[3] & 0b11000000) == 0b10000000)) // 0b10###### 0b10###### 0b10######
 				{
-					_out.push_back(
+					out.push_back(
 							( ( (wchar_t) ( ptr[0] | 0b00000111 ) ) << 18 ) |
 							( ( (wchar_t) ( ptr[1] | 0b00111111 ) ) << 12 ) |
 							( ( (wchar_t) ( ptr[2] | 0b00111111 ) ) << 6  ) |
@@ -211,7 +211,9 @@ namespace core
 		assert(charMapNode && "character map node not present");
 
 		{
+			std::string textureName = sloader.parseFontTexture(configNode);
 			spriteAtlas = TextureManager::getSingleton().getByName(sloader.parseFontTexture(configNode), getGroup());
+			spriteAtlas->load();
 			std::string fontName = sloader.parseFontName(configNode);
 			spriteNamePrefix = spriteAtlas->getName() + "#" + fontName + "#";
 
@@ -236,14 +238,17 @@ namespace core
 				codePointUTF8 = sloader.parseCodePoint(*charIt);
 				Utf8ToCodepoint(codePointUTF8, codePoint);
 
-				ImageSpritePtr sprite = spriteManager.getByName(spriteNamePrefix + codePointUTF8, getGroup());
-				sprite->load();
-
 				charWidth = sloader.parseCharWidth(*charIt);
-				Vector2 size = sprite->getCoords().uvPoints[3] - sprite->getCoords().uvPoints[0];
-				charHeight = (charWidth / size.x) * size.y;
-
 				visibility = sloader.parseCharVisibility(*charIt);
+
+				ImageSpritePtr sprite(nullptr);
+				if (visibility)
+				{
+					sprite = spriteManager.getByName(spriteNamePrefix + codePointUTF8, getGroup());
+					sprite->load();
+					Vector2 size = sprite->getCoords().uvPoints[3] - sprite->getCoords().uvPoints[0];
+					charHeight = (charWidth / size.x) * size.y;
+				}
 
 				if (codePoint.compare(defaultCharacter) == 0)
 					defaultChar = CharSprite(-1, sprite, charWidth, charHeight, visibility);
@@ -327,11 +332,27 @@ namespace core
 
 	SpritedTextVertices SpritedFont::generateSpritedVector(const std::wstring &_text, Vector2 *_textSize, float _maxWidth)
 	{
-		unsigned int len = _text.length();
+		std::wstring preparedText;
+		preparedText.reserve(_text.size());
+
+		for (unsigned int i = 0, iEnd = _text.size(); i < iEnd; ++i)
+		{
+			if (_text[i] < 0x20 && _text[i] != L'\n')
+			{
+				// tab to 4 spaces
+				if (_text[i] == 0x09)
+					preparedText += L"    ";
+			}
+			else
+				preparedText += _text[i];
+		}
+
+
+		unsigned int len = preparedText.length();
 		if (!len)
 			return SpritedTextVertices();
 
-		const Character *textArr = _text.c_str();
+		const Character *textArr = preparedText.c_str();
 
 		Vector2 nextLetterPosition;
 		Vector2 spriteSize;
@@ -344,8 +365,29 @@ namespace core
 
 		SpritedTextVertices out(len);
 
+		unsigned int outIndex = 0;
+
 		for (unsigned int i = 0; i < len; ++i)
 		{
+			if (textArr[i] < 0x20)
+			{
+				switch (textArr[i])
+				{
+					case L'\n':
+					{
+						nextLetterPosition.y -= lineHeight;
+
+						if (textSize.x < nextLetterPosition.x)
+							textSize.x = nextLetterPosition.x;
+					}
+					case L'\r':
+						nextLetterPosition.x = 0.0f;
+						break;
+				}
+
+				continue;
+			}
+
 			charSpriteIt = characters.find((Character)textArr[i]);
 			CharSprite &charSprite = (charSpriteIt != characters.end()) ? (*charSpriteIt).second : defaultChar;
 
@@ -353,7 +395,7 @@ namespace core
 			// move due to kerning
 			if (spacing == FS_PROPORTIONAL && i > 0)
 			{
-				auto kernIt = kerningTable.find({_text[i-1], _text[i]});
+				auto kernIt = kerningTable.find({preparedText[i-1], preparedText[i]});
 				if (kernIt != kerningTable.end())
 					nextLetterPosition.x += (*kernIt).second;
 			}
@@ -381,28 +423,32 @@ namespace core
 
 
             //fill in vertices
-			out[i].vertex0 = nextLetterPosition;
+			out[outIndex].vertex0 = nextLetterPosition;
 
-			out[i].vertex1.x = nextLetterPosition.x + spriteSize.x;
-            out[i].vertex1.y = nextLetterPosition.y;
+			out[outIndex].vertex1.x = nextLetterPosition.x + spriteSize.x;
+            out[outIndex].vertex1.y = nextLetterPosition.y;
 
-			out[i].vertex2.x = nextLetterPosition.x;
-			out[i].vertex2.y = nextLetterPosition.y + spriteSize.y;
+			out[outIndex].vertex2.x = nextLetterPosition.x;
+			out[outIndex].vertex2.y = nextLetterPosition.y - spriteSize.y;
 
-			out[i].vertex3 = nextLetterPosition + spriteSize;
+			out[outIndex].vertex3.x = nextLetterPosition.x + spriteSize.x;
+			out[outIndex].vertex3.y = nextLetterPosition.y - spriteSize.y;
 
 
 			//fill in texels
 			const TextureSpriteCoords &texCoords = charSprite.sprite->getCoords();
-			out[i].texel0 = texCoords.uvPoints[0];
-			out[i].texel1 = texCoords.uvPoints[1];
-			out[i].texel2 = texCoords.uvPoints[2];
-			out[i].texel3 = texCoords.uvPoints[3];
+			out[outIndex].texel0 = texCoords.uvPoints[0];
+			out[outIndex].texel1 = texCoords.uvPoints[1];
+			out[outIndex].texel2 = texCoords.uvPoints[2];
+			out[outIndex].texel3 = texCoords.uvPoints[3];
 
 
 			nextLetterPosition.x += spriteSize.x;
+			++outIndex;
 		}
 
+		// drop length in case we got nonrendered chars
+		out.resize(outIndex);
 
 		if (out.back().vertex3.x > textSize.x)
 			textSize.x = out.back().vertex3.x;

@@ -8,7 +8,7 @@ namespace core
 
 		void SpritedText::_updateTextCoords() const
 		{
-			if (visibleFrom == 0 && visibleCount == text.length())
+			if (visibleFrom == 0 && visibleCount == vertices.size())
 			{
 				textCoords = SpriteCoords(0.0f, textSize.x, 0.0f, textSize.y);
 			}
@@ -28,36 +28,33 @@ namespace core
 				textCoords = SpriteCoords(vMin, vMax);
 			}
 
+			updatePosition();
 			textCoordsNeedUpdate = false;
 		};
 
 
-		void SpritedText::updatePosition()
+		void SpritedText::updatePosition() const
 		{
-			if (textCoordsNeedUpdate)
-				_updateTextCoords();
-
 			AxisAlignedBox aabb = textCoords.getBoundingAABB();
-			Vector2 size = aabb.getMaximum() - aabb.getMinimum();
-			Vector2 position = aabb.getMinimum();
+			Vector2 position;
 
 			// horizontal
 			if ((textAnchor & 0x0F) == AP_LEFT)
-				;
+				position.x = aabb.getMinimum().x;
 			else if ((textAnchor & 0x0F) == AP_RIGHT)
 				position.x = -aabb.getMaximum().x;
 			else
-				position.x += (aabb.getMaximum().x - aabb.getMinimum().x) * 0.5f;
+				position.x = -0.5f * (aabb.getMaximum().x - aabb.getMinimum().x);
 
 			// vertical
 			if ((textAnchor & 0xF0) == AP_TOP)
-				;
+				position.y = aabb.getMaximum().y;
 			else if ((textAnchor & 0xF0) == AP_BOTTOM)
-				position.y = -aabb.getMaximum().y;
+				position.y = -aabb.getMinimum().y; // sprite go down from 0 level
 			else
-				position.y += (aabb.getMaximum().y - aabb.getMinimum().y) * 0.5f;
+				position.y = 0.5f * (aabb.getMaximum().y - aabb.getMinimum().y);
 
-			setPosition(position);
+			textAnchorCorrection = position;
 		};
 
 
@@ -73,6 +70,8 @@ namespace core
 				_updateTextCoords();
 
 			SpriteCoords coords(textCoords);
+			coords += textAnchorCorrection;
+
 			coords.transform(MovableObject::getWorldTransform());
 			return coords.getBoundingAABB();
 		};
@@ -88,7 +87,11 @@ namespace core
 		{
 			assert(cashedTextNeedUpdate && "cashe don't need to be updated");
 
-			const Matrix3& mx = getTransform();
+			updatePosition();
+
+			Matrix3 mx = getTransform();
+			translateMatrix(mx, textAnchorCorrection);
+
 			cashedVertices.resize(vertices.size());
 
 			for (unsigned int i = 0, iMax = vertices.size(); i < iMax; ++i)
@@ -122,13 +125,17 @@ namespace core
 
 		void SpritedText::setMaterial(ShadingProgramPtr _program, SpritedFontPtr _font)
 		{
+			_program->load();
+			_font->load();
+
 			textFont = _font;
 			Renderable::setMaterial(_program, textFont->getTexture());
 
 			if (text.length() && textFont)
 			{
 				vertices = textFont->generateSpritedVector(text, &textSize);
-				textCoordsNeedUpdate = true;
+				setVisibleChars(0, text.length());
+				_updateTextCoords();
 				cashedTextNeedUpdate = true;
 			}
 		};
@@ -174,7 +181,6 @@ namespace core
 			if (textAnchor != _anchorPosition)
 			{
 				textAnchor = _anchorPosition;
-				textCoordsNeedUpdate = true;
 				updatePosition();
 			}
 		};
@@ -194,33 +200,35 @@ namespace core
 
 		void SpritedText::setVisibleChars(unsigned int _visibleFrom, unsigned int _visibleCount)
 		{
-			if (_visibleFrom > text.length())
-				_visibleFrom = text.length();
+			if (_visibleFrom > vertices.size())
+				_visibleFrom = vertices.size();
 
-			if (_visibleFrom + _visibleCount)
-				_visibleCount = text.length() - _visibleFrom;
+			if (_visibleFrom + _visibleCount > vertices.size())
+				_visibleCount = vertices.size() - _visibleFrom;
 
-			if (visibleFrom != _visibleFrom && visibleCount != _visibleCount)
+			if (visibleFrom != _visibleFrom || visibleCount != _visibleCount)
 			{
 				visibleFrom = _visibleFrom;
 				visibleCount = _visibleCount;
 				textCoordsNeedUpdate = true;
-				updatePosition();
 			}
 		};
 
 
-		void SpritedText::setText(std::string _text)
+		void SpritedText::setText(std::string _text, float _maxWidth)
 		{
 			text = _text;
 			visibleFrom = 0;
 			visibleCount = text.length();
 			cashedTextNeedUpdate = true;
+			textCoordsNeedUpdate = true;
 
 			if (textFont)
 			{
 				cashedVertices.clear();
-				vertices = textFont->generateSpritedVector(text, &textSize);
+				vertices = textFont->generateSpritedVector(text, &textSize, _maxWidth);
+				setVisibleChars(0, text.length());
+				_updateTextCoords();
 			}
 
 		};

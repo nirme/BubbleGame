@@ -36,6 +36,12 @@ namespace core
 		};
 
 
+		const SpriteCoords &SingleSprite::getSpriteCoords()
+		{
+			return spriteCoords;
+		};
+
+
 		void SingleSprite::setMaterial(ShadingProgramPtr _program, ImageSpritePtr _sprite)
 		{
 			sprite = _sprite;

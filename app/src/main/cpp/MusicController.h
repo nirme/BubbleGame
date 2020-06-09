@@ -1,7 +1,10 @@
 #pragma once
 
 #include <memory>
+#include <cstdlib>
+#include <atomic>
 #include "core/ControllerManager.h"
+#include "core/Logger.h"
 #include "core/Animator.h"
 #include "core/AnimatorInstances.h"
 #include "core/SoundSystem.h"
@@ -11,7 +14,9 @@
 class MusicController
 {
 protected:
-	static constexpr float MusicFadeTime = 3.0f;
+	static constexpr float MusicFadeTime = 1.2f;
+
+	struct SoundSet;
 
 	class MusicFadeAnimatorListener : public core::Animator::Listener
 	{
@@ -25,85 +30,59 @@ protected:
 		float maxVolume;
 
 	public:
-		MusicFadeAnimatorListener(MusicController *_owner, float _maxVolume = 1.0f) :
-			core::Animator::Listener(),
-			owner(_owner),
-			fadeOutPlayer(nullptr),
-			fadeInPlayer(nullptr),
-			maxVolume(_maxVolume)
-		{};
-
-		virtual ~MusicFadeAnimator()
-		{};
-
-		virtual void update(float _value)
-		{
-			if (_value < 1.0f)
-			{
-				if (fadeOutPlayer)
-					fadeOutPlayer->setVolume(maxVolume * _value);
-
-				if (fadeInPlayer)
-					fadeOutPlayer->setVolume(maxVolume * (1.0f - _value));
-			}
-			else
-			{
-				if (fadeOutPlayer)
-				{
-					fadeOutPlayer->stop();
-					fadeOutPlayer = nullptr; // player is freed on stop
-				}
-
-				if (fadeInPlayer)
-					fadeOutPlayer->setVolume(maxVolume);
-
-				owner->animationComplete();
-			}
-		};
+		MusicFadeAnimatorListener(MusicController *_owner, float _maxVolume = 1.0f);
+		virtual ~MusicFadeAnimatorListener();
+		virtual void progress(float _value);
 	};
 
 
-	bool initialized;
+	class PlayersListener : public core::SoundPlayer::Listener
+	{
+	protected:
+		MusicController *owner;
+		SoundSet *listenerSet;
 
+	public:
+		PlayersListener(MusicController *_owner, SoundSet *_listenerSet);
+		virtual void onSoundEnd();
+		virtual ~PlayersListener();
+	};
+
+	struct SoundSet
+	{
+		std::string name;
+
+		core::SoundPlayer* player;
+		PlayersListener playerListener;
+		std::vector<core::SoundPtr> musicList;
+		unsigned int currentSound;
+
+		SoundSet(const std::string &_name, MusicController *_owner);
+	};
+
+
+
+	std::atomic<unsigned short> isAnimating;
 	MusicFadeAnimatorListener fadeAnimatorListener;
 	core::AnimationControllerValuePtr fadeAnimatorControllerValue;
 	//std::unique_ptr<core::Animator> fadeAnimatorPtr;
 	core::ControllerPtr fadeController;
 
+	core::SoundSystem *soundSystem;
 
-	void fadeMusic(core::SoundPlayer *_fadeOutPlayer, core::SoundPlayer *_fadeInPlayer)
-	{
-//		fadeAnimatorPtr->setUpperBound(4.0f); //4 seconds fade effect
-//		fadeAnimatorPtr->registerListener(&fadeAnimatorListener);
-
-		fadeAnimatorControllerValue->getAnimator()->reset();
-		fadeAnimatorControllerValue->resetTime();
-		fadeAnimatorListener.fadeOutPlayer = _fadeOutPlayer;
-		fadeAnimatorListener.fadeInPlayer = _fadeInPlayer;
-
-		fadeController = core::ControllerManager::getSingleton().createFrameTimeController(std::static_pointer_cast<core::ControllerValue>(fadeAnimatorControllerValue));
-	};
+	std::unordered_map<std::string, SoundSet> soundSetsMap;
+	SoundSet* currentSet;
 
 
-protected:
-	void animationComplete()
-	{
-		core::ControllerManager::getSingleton().removeController(fadeController);
-	};
+	void fadeMusic(core::SoundPlayer *_fadeOutPlayer, core::SoundPlayer *_fadeInPlayer);
+	void animationComplete();
+	void playNextSong();
 
+public:
 
-	void initialize()
-	{
-		fadeAnimatorListener.maxVolume = 1.0f;
-		std::unique_ptr<core::Animator> animator(new core::AnimatorEaseInOutSine(core::Animator::AM_ONCE, MusicFadeTime));
+	MusicController(core::SoundSystem *_soundSystem);
 
-		fadeAnimatorControllerValue->setAnimator(animator);
-
-
-		std::unique_ptr<core::Animator> fadeAnimatorPtr;
-		core::ControllerPtr fadeController;
-
-	};
-
+	void registerSound(const std::string &_setName, core::SoundPtr _musicPtr);
+	void playSet(const std::string &_setName);
 
 };
