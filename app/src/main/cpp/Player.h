@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-
+#include <array>
 
 #include "core/Logger.h"
 #include "core/ControllerManager.h"
@@ -20,6 +20,7 @@
 #include "InstanceParticleEmitters.h"
 
 #include "core/_2d/RigidObject.h"
+#include "core/_2d/shapes/ShapeFactory.h"
 
 #include "core/InputManager.h"
 #include "core/TouchControls.h"
@@ -38,6 +39,16 @@ static constexpr char *rigidTypeEnemy = "enemy";
 
 class Player
 {
+public:
+
+	class Listener
+	{
+	public:
+		virtual void onEnemyHit() = 0;
+		virtual ~Listener(){};
+
+	};
+
 protected:
 
 	static constexpr char *playerSceneNodeName = "player_node";
@@ -57,15 +68,10 @@ protected:
 
 
 
-
-
-
-
-
 	static constexpr char *movementAffector = "player_affector";
 	static constexpr PhysicsSpeedAffector::ModifierOperation movementAffectorOperation = PhysicsSpeedAffector::MO_MUL;
 	static constexpr float movementAffectorFactor = 0.8f;
-	static constexpr float invulnerabilityTimeAfterEnemyHit = 3.0f;
+	static constexpr float invulnerabilityTimeAfterEnemyHit = 3.0f; // in seconds
 	static constexpr float invulnerabilityFlickerTime  = 0.5f;
 
 
@@ -106,7 +112,6 @@ protected:
 	static constexpr unsigned int particlesOnLaser = 100;
 
 
-
 	// state
 
 	bool shooting;
@@ -123,15 +128,17 @@ protected:
 
 	//callbacks and controllers
 
-	std::unique_ptr<TouchArea::Listener> touchControlListeners[3];
-	std::unique_ptr<AnimatedSprite::Listener> animationListeners[2];
-	ControllerPtr controllers[3];
-	std::unique_ptr<RigidObject::Listener> rigidObjectListeners[2];
+	std::array<std::unique_ptr<TouchArea::Listener>, 3> touchControlListeners;
+	std::array<std::unique_ptr<AnimatedSprite::Listener>, 2> animationListeners;
+	std::array<ControllerPtr, 3> controllers;
+	std::array<std::unique_ptr<RigidObject::Listener>, 2> rigidObjectListeners;
+
+	Listener *enemyHitListener;
 
 
 	// visuals
-	SceneManager *scene;
 
+	SceneManager *scene;
 	SceneNode *playerNode;
 
 	AnimatedSprite *bodySprite;
@@ -146,150 +153,15 @@ protected:
 	ParticleSystem *laserParticleSystem;
 
 
+public:
 
+	// state management
 
+	void create(InputManager *_inputManager, SceneManager *_scene, ScriptNodePtr _data);
+	void setupCallbacks(InputManager *_inputManager);
 
-
-
-
-	void create(SceneManager *_scene, ScriptNodePtr _data)
-	{
-		// move affector to load from script
-		if (!PhysicsSystem::getSingleton().getAffector(movementAffector))
-		{
-			PhysicsAffectorPtr playerAffector = std::make_unique<PhysicsSpeedAffector>(movementAffectorOperation, movementAffectorFactor);
-			PhysicsSystem::getSingleton().registerAffector(movementAffector, playerAffector);
-		}
-
-		shooting = false;
-		direction = dirNone;
-		walking = false;
-		invulnerable = false;
-		invulnerabilityTimeLeft = 0.0f;
-
-
-		acceleration = std::stof(_data->getValue(accelerationValueName));
-		maximumSpeed = std::stof(_data->getValue(maximumSpeedValueName));
-		laserExtensionSpeed = std::stof(_data->getValue(laserExtensionSpeedValueName));
-		laserPositionOffset = stov2(_data->getValue(laserPositionOffsetValueName));
-
-
-		scene = _scene;
-		ScriptNodeListPtr nodeList = _data->getChildList();
-		ScriptNodeList::iterator res = std::find_if((*nodeList).begin(),
-													(*nodeList).end(),
-													[] (ScriptNodePtr _node) { return !_node->getName().compare(playerSceneNodeName); });
-
-		assert(res != nodeList->end() && "player scene node data not found");
-		ScriptNodePtr sceneNodeData = *res;
-
-		playerNode = scene->createNode(sceneNodeData);
-
-// load visuals from data provided
-
-/*
-AnimatedSprite *bodySprite;
-RigidObjectUPtr playerBounds;
-
-AnimatedSprite *laserHead;
-SingleSprite *laser;
-RigidObjectUPtr laserBounds;
-
-ParticleSystem *laserParticleSystem;
-
-
-
-
-
-
-
-
-		static constexpr char *bodySpriteNodeName = "body_sprite";
-		static constexpr char *laserHeadNodeName = "laser_head";
-		static constexpr char *laserNodeName = "laser";
-		static constexpr char *laserParticleSystemNodeName = "laser_particle_system";
-
-		static constexpr char *playerBoundsNodeName = "player_bounds";
-		static constexpr char *laserBoundsNodeName = "laser_bounds";
-*/
-	};
-
-
-
-	void setupCallbacks(InputManager *_inputManager)
-	{
-		// input callbacks
-		TouchControl *touchControl(nullptr);
-
-		// left button
-		touchControl = _inputManager->getControlByName(inputLeftControlName);
-		assert(touchControl && "touch control not found");
-		if (!touchControlListeners[inputLeftControlIndex])
-			touchControlListeners[inputLeftControlIndex] = std::make_unique<PlayerMovementInputControl>(this, DirLeft);
-		touchControl->registerListener(touchControlListeners[inputLeftControlIndex].get());
-
-		// right button
-		touchControl = _inputManager->getControlByName(inputRightControlName);
-		assert(touchControl && "touch control not found");
-		if (!touchControlListeners[inputRightControlIndex])
-			touchControlListeners[inputRightControlIndex] = std::make_unique<PlayerMovementInputControl>(this, DirRight);
-		touchControl->registerListener(touchControlListeners[inputRightControlIndex].get());
-
-		// shooting button
-		touchControl = _inputManager->getControlByName(inputCenterControlName);
-		assert(touchControl && "touch control not found");
-		if (!touchControlListeners[inputShootingControlIndex])
-			touchControlListeners[inputShootingControlIndex] = std::make_unique<PlayerShootingInputControl>(this);
-		touchControl->registerListener(touchControlListeners[inputShootingControlIndex].get());
-
-
-		// start laser when in position
-		if (!animationListeners[animationShootingStartListenerIndex])
-			animationListeners[animationShootingStartListenerIndex] = std::make_unique<LaserStartAnimationListener>(this);
-		bodySprite->registerAnimationListener(animationShootingStart, animationListeners[animationShootingStartListenerIndex].get());
-
-		// end sequence when animation reaches end
-		if (!animationListeners[animationShootingEndListenerIndex])
-			animationListeners[animationShootingEndListenerIndex] = std::make_unique<PlayerShootingEndAnimationListener>(this);
-		bodySprite->registerAnimationListener(animationShootingEnd, animationListeners[animationShootingEndListenerIndex].get());
-
-
-		// create laser expansion controller value
-		if (!controllers[controllerLaserExpansionIndex])
-		{
-			SharedControllerValuePtr laserExpansionControllerValue = std::make_shared<LaserExpansionController>(this);
-			controllers[controllerLaserExpansionIndex] = ControllerManager::getSingleton().createFrameTimeController(laserExpansionControllerValue);
-			controllers[controllerLaserExpansionIndex]->setEnabled(false);
-		}
-
-		// create walking speed controller value and register for updates
-		if (!controllers[controllerWalkingSpeedChangeIndex])
-		{
-			SharedControllerValuePtr walkingControllerValue = std::make_shared<WalkingSpeedChangeController>(this);
-			controllers[controllerWalkingSpeedChangeIndex] = ControllerManager::getSingleton().createFrameTimeController(walkingControllerValue);
-			controllers[controllerWalkingSpeedChangeIndex]->setEnabled(false);
-		}
-
-		// create invulnerability controller value and register for updates
-		if (!controllers[controllerInvulnerabilityTimerIndex])
-		{
-			SharedControllerValuePtr invulnerabilityControllerValue = std::make_shared<InvulnerabilityTimerController>(this);
-			controllers[controllerInvulnerabilityTimerIndex] = ControllerManager::getSingleton().createFrameTimeController(invulnerabilityControllerValue);
-			controllers[controllerInvulnerabilityTimerIndex]->setEnabled(false);
-		}
-
-
-		// register laser collision
-		if (!rigidObjectListeners[rigidObjectListenerLaserIndex])
-			rigidObjectListeners[rigidObjectListenerLaserIndex] = std::make_unique<LaserCollisionListener>(this);
-		laserBounds->registerListener(rigidObjectListeners[rigidObjectListenerLaserIndex].get());
-
-		// register player collision
-		if (!rigidObjectListeners[rigidObjectListenerPlayerIndex])
-			rigidObjectListeners[rigidObjectListenerPlayerIndex] = std::make_unique<PlayerCollisionListener>(this);
-		laserBounds->registerListener(rigidObjectListeners[rigidObjectListenerPlayerIndex].get());
-	};
-
+	void registerEnemyHitListener(Listener *_enemyHitListener);
+	void resetPlayer();
 
 
 	// callback functions
@@ -304,7 +176,6 @@ ParticleSystem *laserParticleSystem;
 	void hitByEnemy(); //lost a live if not invulnerable
 	void beginInvulnerability(float _time); //start invulnerability period
 	void progressInvulnerability(float _timeDelta); //progres/end invulnerability
-
 
 
 	// callback listeners etc

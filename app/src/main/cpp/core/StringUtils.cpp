@@ -50,5 +50,12 @@ namespace core
 		return Vector2(x, y);
 	};
 
+	
+	template <>
+	bool parse(const std::string& _value)
+	{
+		return _value.compare("true") == 0 || _value.compare("TRUE") == 0;
+	};
+
 
 }

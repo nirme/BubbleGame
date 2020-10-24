@@ -55,5 +55,7 @@ namespace core
 			virtual Vector2 separatingAxisNormal(const Rectangle *_shape) const;
 			virtual Vector2 separatingAxisNormal(const LineArea *_shape) const;
 		};
+
+		typedef std::unique_ptr<Rectangle> RectanglePtr;
 	}
 }

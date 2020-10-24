@@ -148,6 +148,19 @@ namespace core
 		};
 
 
+		bool AnimatedSprite::pauseAnimation(bool _pause)
+		{
+			assert(animationController && currentAnimation != animationSet.end() && "no animation is playing/paused");
+
+			if (animationController->isEnabled() == _pause)
+			{
+				animationController->setEnabled(!_pause);
+				return true;
+			}
+			return false;
+		};
+
+
 		void AnimatedSprite::stopAnimation()
 		{
 			if (animationController)
@@ -157,6 +170,14 @@ namespace core
 			animationMode = defaultMode;
 			stopAfterAnimation = false;
 			currentAnimationTime = 0.0f;
+		};
+
+
+		bool AnimatedSprite::isPaused() const
+		{
+			return currentAnimation != animationSet.end() &&
+				   animationController &&
+				   !animationController->isEnabled();
 		};
 
 

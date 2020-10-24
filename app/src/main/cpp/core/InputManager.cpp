@@ -73,7 +73,7 @@ namespace core
 		for (TouchControlSetsIterator it = controlSets.begin(), itEnd = controlSets.end(); it != itEnd; ++it)
 		{
 			TouchControlList &list = *((*it).second.get());
-			auto controlIt = std::find(list.begin(), list.end(), [_controlName] (TouchControl* _control) { return !_controlName.compare(_control->getName()); });
+			auto controlIt = std::find_if(list.begin(), list.end(), [_controlName] (TouchControl* _control) { return !_controlName.compare(_control->getName()); });
 			if (controlIt != list.end())
 				return *controlIt;
 		}
@@ -87,7 +87,7 @@ namespace core
 		assert(it != controlSets.end() && "specified set doesn't exist");
 
 		TouchControlList &list = *((*it).second.get()) ;
-		auto controlIt = std::find(list.begin(), list.end(), [_controlName] (TouchControl* _control) { return !_controlName.compare(_control->getName()); });
+		auto controlIt = std::find_if(list.begin(), list.end(), [_controlName] (TouchControl* _control) { return !_controlName.compare(_control->getName()); });
 
 		return controlIt != list.end() ? *controlIt : nullptr;
 	};

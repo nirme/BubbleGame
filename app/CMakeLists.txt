@@ -139,7 +139,8 @@ add_library(
 
     src/main/cpp/InstanceParticleEmitters.cpp
     src/main/cpp/Player.cpp
-    src/main/cpp/GameObjects.cpp
+    src/main/cpp/Enemy.cpp
+    src/main/cpp/Stage.cpp
 
 
 

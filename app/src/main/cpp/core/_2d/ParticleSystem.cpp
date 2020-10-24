@@ -71,7 +71,7 @@ namespace core
             while (it != itEnd)
             {
                 prt = (*it);
-                if (prt->ageLeft < _timeElapsed)
+                if (prt->ageLeft <= _timeElapsed)
                 {
 					++particlesRemoved;
 
@@ -271,6 +271,13 @@ namespace core
 
             updateParticles(_timeElapsed);
             emitParticles(_timeElapsed);
+        };
+
+
+        void ParticleSystem::reset()
+        {
+            // expire everything that has life timer
+            expireParticles(std::numeric_limits<float>::max());
         };
 
 

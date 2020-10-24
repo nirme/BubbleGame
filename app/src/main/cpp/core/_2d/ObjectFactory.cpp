@@ -108,8 +108,17 @@ namespace core
 
 		switch (type)
 		{
-		case OT_SINGLE_SPRITE:
-			return createSingleSprite(name, _scriptNode);
+			case OT_SINGLE_SPRITE:
+				return createSingleSprite(name, _scriptNode);
+
+			case OT_ANIMATED_SPRITE:
+				return createAnimatedSprite(name, _scriptNode);
+
+			case OT_PARTICLE_SYSTEM:
+				return createParticleSystem(name, _scriptNode);
+
+			case OT_SPRITED_FONT:
+				return createSpritedText(name, _scriptNode);
 		}
 
 		return _2d::MovableObjectUPtr(nullptr);

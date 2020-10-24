@@ -113,6 +113,7 @@ namespace core
             void initSystem(unsigned int _particleCount = 500);
 
 			void progress(float _timeElapsed);
+			void reset();
 
 
 			void setMaterial(ShadingProgramPtr _program, TexturePtr _tex);

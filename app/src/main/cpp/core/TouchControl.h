@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "Vector2.h"
 
 namespace core
@@ -36,7 +37,7 @@ namespace core
 
 		virtual ~TouchControl() {};
 
-		inline const std::string &getName()
+		inline const std::string &getName() const
 		{
 			return name;
 		};

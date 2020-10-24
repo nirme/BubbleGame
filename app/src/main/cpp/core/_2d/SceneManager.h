@@ -91,6 +91,7 @@ namespace core
 			MovableObject *createObject(ScriptNodePtr _nodeValues);
 
 			SingleSprite *createSingleSprite(const std::string &_name, ScriptNodePtr _nodeValues);
+			AnimatedSprite *createAnimatedSprite(const std::string &_name, ScriptNodePtr _nodeValues);
 			ParticleSystem *createParticleSystem(const std::string &_name, ScriptNodePtr _nodeValues);
 			SpritedText *createSpritedText(const std::string &_name, ScriptNodePtr _nodeValues);
 

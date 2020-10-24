@@ -2,8 +2,8 @@
 #include "../../ScriptLoader.h"
 
 
-template<>
-core::_2d::ShapeFactory* Singleton<core::_2d::ShapeFactory>::impl = nullptr;
+//template<>
+//core::_2d::ShapeFactory* Singleton<core::_2d::ShapeFactory>::impl = nullptr;
 
 namespace core
 {

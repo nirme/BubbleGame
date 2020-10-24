@@ -2,6 +2,213 @@
 
 
 
+void Player::create(InputManager *_inputManager, SceneManager *_scene, ScriptNodePtr _data)
+{
+	assert(_scene && "no scene manager provided");
+
+	// move affector to load from script
+	if (!PhysicsSystem::getSingleton().getAffector(movementAffector))
+	{
+		PhysicsAffectorPtr playerAffector = std::make_unique<PhysicsSpeedAffector>(movementAffectorOperation, movementAffectorFactor);
+		PhysicsSystem::getSingleton().registerAffector(movementAffector, playerAffector);
+	}
+
+	shooting = false;
+	direction = dirNone;
+	walking = false;
+	invulnerable = false;
+	invulnerabilityTimeLeft = 0.0f;
+
+
+	acceleration = std::stof(_data->getValue(accelerationValueName));
+	maximumSpeed = std::stof(_data->getValue(maximumSpeedValueName));
+	laserExtensionSpeed = std::stof(_data->getValue(laserExtensionSpeedValueName));
+	laserPositionOffset = stov2(_data->getValue(laserPositionOffsetValueName));
+
+
+	scene = _scene;
+	ScriptNodeListPtr nodeList = _data->getChildList();
+	ScriptNodeList::iterator res = std::find_if((*nodeList).begin(),
+												(*nodeList).end(),
+												[] (ScriptNodePtr _node) { return !_node->getName().compare(playerSceneNodeName); });
+
+	assert(res != nodeList->end() && "player scene node data not found");
+	ScriptNodePtr sceneNodeData = *res;
+
+	playerNode = scene->createNode(sceneNodeData);
+
+
+	nodeList = sceneNodeData->getChildList();
+
+	for (auto it = nodeList->begin(), itEnd = nodeList->end(); it != itEnd; ++it)
+	{
+		if ((*it)->getName().compare(bodySpriteNodeName) == 0)
+		{
+			bodySprite = scene->createAnimatedSprite(bodySpriteNodeName, *it);
+			playerNode->appendObject(bodySprite);
+		}
+		else if ((*it)->getName().compare(laserHeadNodeName) == 0)
+		{
+			laserHead = scene->createAnimatedSprite(laserHeadNodeName, *it);
+			playerNode->appendObject(laserHead);
+		}
+		else if ((*it)->getName().compare(laserNodeName) == 0)
+		{
+			laser = scene->createSingleSprite(laserNodeName, (*it));
+			playerNode->appendObject(laser);
+		}
+		else if ((*it)->getName().compare(laserParticleSystemNodeName) == 0)
+		{
+			laserParticleSystem = scene->createParticleSystem(laserParticleSystemNodeName, (*it));
+			playerNode->appendObject(laserParticleSystem);
+		}
+		else if ((*it)->getName().compare(playerBoundsNodeName) == 0)
+		{
+			playerBounds = std::make_unique<RigidObject>(rigidTypePlayer, PhysicsSystem::getSingletonPtr());
+			playerBounds->addAffector(movementAffector);
+
+			ScriptNodeListPtr shapeList = (*it)->getChildList();
+			for (auto shapeIt = shapeList->begin(), shapeItEnd = shapeList->end(); shapeIt != shapeItEnd; ++shapeIt)
+			{
+				if ((*shapeIt)->getName().compare("shape") == 0)
+				{
+					ShapePtr parsedShape = ShapeFactory::parseShape(*shapeIt);
+					playerBounds->addShape(parsedShape);
+				}
+			}
+		}
+		else if ((*it)->getName().compare(laserBoundsNodeName) == 0)
+		{
+			laserBounds = std::make_unique<RigidObject>(rigidTypePlayer, PhysicsSystem::getSingletonPtr());
+
+			ScriptNodeListPtr shapeList = (*it)->getChildList();
+			for (auto shapeIt = shapeList->begin(), shapeItEnd = shapeList->end(); shapeIt != shapeItEnd; ++shapeIt)
+			{
+				if ((*shapeIt)->getName().compare("shape") == 0)
+				{
+					ShapePtr parsedShape = ShapeFactory::parseShape(*shapeIt);
+					laserBounds->addShape(parsedShape);
+				}
+			}
+		}
+	}
+
+	playerBounds->setEntity(bodySprite);
+	laserBounds->setEntity(laser);
+
+	setupCallbacks(_inputManager);
+};
+
+
+void Player::setupCallbacks(InputManager *_inputManager)
+{
+	// input callbacks
+	TouchControl *touchControl(nullptr);
+
+	// left button
+	touchControl = _inputManager->getControlByName(inputLeftControlName);
+	assert(touchControl && "touch control not found");
+	if (!touchControlListeners[inputLeftControlIndex])
+		touchControlListeners[inputLeftControlIndex] = std::make_unique<PlayerMovementInputControl>(this, dirLeft);
+	touchControl->registerListener(touchControlListeners[inputLeftControlIndex].get());
+
+	// right button
+	touchControl = _inputManager->getControlByName(inputRightControlName);
+	assert(touchControl && "touch control not found");
+	if (!touchControlListeners[inputRightControlIndex])
+		touchControlListeners[inputRightControlIndex] = std::make_unique<PlayerMovementInputControl>(this, dirRight);
+	touchControl->registerListener(touchControlListeners[inputRightControlIndex].get());
+
+	// shooting button
+	touchControl = _inputManager->getControlByName(inputCenterControlName);
+	assert(touchControl && "touch control not found");
+	if (!touchControlListeners[inputShootingControlIndex])
+		touchControlListeners[inputShootingControlIndex] = std::make_unique<PlayerShootingInputControl>(this);
+	touchControl->registerListener(touchControlListeners[inputShootingControlIndex].get());
+
+
+	// start laser when in position
+	if (!animationListeners[animationShootingStartListenerIndex])
+		animationListeners[animationShootingStartListenerIndex] = std::make_unique<LaserStartAnimationListener>(this);
+	bodySprite->registerAnimationListener(animationShootingStart, animationListeners[animationShootingStartListenerIndex].get());
+
+	// end sequence when animation reaches end
+	if (!animationListeners[animationShootingEndListenerIndex])
+		animationListeners[animationShootingEndListenerIndex] = std::make_unique<PlayerShootingEndAnimationListener>(this);
+	bodySprite->registerAnimationListener(animationShootingEnd, animationListeners[animationShootingEndListenerIndex].get());
+
+
+	// create laser expansion controller value
+	if (!controllers[controllerLaserExpansionIndex])
+	{
+		SharedControllerValuePtr laserExpansionControllerValue = std::make_shared<LaserExpansionController>(this);
+		controllers[controllerLaserExpansionIndex] = ControllerManager::getSingleton().createFrameTimeController(laserExpansionControllerValue);
+		controllers[controllerLaserExpansionIndex]->setEnabled(false);
+	}
+
+	// create walking speed controller value and register for updates
+	if (!controllers[controllerWalkingSpeedChangeIndex])
+	{
+		SharedControllerValuePtr walkingControllerValue = std::make_shared<WalkingSpeedChangeController>(this);
+		controllers[controllerWalkingSpeedChangeIndex] = ControllerManager::getSingleton().createFrameTimeController(walkingControllerValue);
+		controllers[controllerWalkingSpeedChangeIndex]->setEnabled(false);
+	}
+
+	// create invulnerability controller value and register for updates
+	if (!controllers[controllerInvulnerabilityTimerIndex])
+	{
+		SharedControllerValuePtr invulnerabilityControllerValue = std::make_shared<InvulnerabilityTimerController>(this);
+		controllers[controllerInvulnerabilityTimerIndex] = ControllerManager::getSingleton().createFrameTimeController(invulnerabilityControllerValue);
+		controllers[controllerInvulnerabilityTimerIndex]->setEnabled(false);
+	}
+
+
+	// register laser collision
+	if (!rigidObjectListeners[rigidObjectListenerLaserIndex])
+		rigidObjectListeners[rigidObjectListenerLaserIndex] = std::make_unique<LaserCollisionListener>(this);
+	laserBounds->registerListener(rigidObjectListeners[rigidObjectListenerLaserIndex].get());
+
+	// register player collision
+	if (!rigidObjectListeners[rigidObjectListenerPlayerIndex])
+		rigidObjectListeners[rigidObjectListenerPlayerIndex] = std::make_unique<PlayerCollisionListener>(this);
+	laserBounds->registerListener(rigidObjectListeners[rigidObjectListenerPlayerIndex].get());
+};
+
+
+void Player::registerEnemyHitListener(Listener *_enemyHitListener)
+{
+	enemyHitListener = _enemyHitListener;
+};
+
+
+void Player::resetPlayer()
+{
+	unsigned int i=0;
+	while (i < controllers.size())
+		controllers[i++]->setEnabled(false);
+
+	shooting = false;
+	direction = dirNone;
+	walking = false;
+	invulnerable = false;
+	invulnerabilityTimeLeft = 0.0f;
+
+	playerBounds->setDirectionVector({0.0f});
+	laserBounds->setDirectionVector({0.0f});
+	laserBounds->setEnabled(false);
+
+	bodySprite->stopAnimation();
+	bodySprite->setEnabled(true);
+
+	laserHead->stopAnimation();
+	laserHead->setEnabled(false);
+
+	laser->setEnabled(false);
+
+	laserParticleSystem->reset();
+};
+
+
 void Player::updateDirection(short _direction, bool _addDirection) //add/remove direction
 {
 	Logger::getSingleton().debug(__FUNCTION__);
@@ -153,7 +360,8 @@ void Player::hitByEnemy()
 {
 	if (!invulnerable)
 	{
-		--lives;
+		if (enemyHitListener)
+			enemyHitListener->onEnemyHit();
 		beginInvulnerability(invulnerabilityTimeAfterEnemyHit);
 	}
 };
@@ -279,7 +487,9 @@ Player::LaserExpansionController::~LaserExpansionController()
 {};
 
 float Player::LaserExpansionController::get() const
-{};
+{
+	return 0.0f;
+};
 
 void Player::LaserExpansionController::set(float _value)
 {
@@ -298,7 +508,9 @@ Player::WalkingSpeedChangeController::~WalkingSpeedChangeController()
 {};
 
 float Player::WalkingSpeedChangeController::get() const
-{};
+{
+	return 0.0f;
+};
 
 void Player::WalkingSpeedChangeController::set(float _value)
 {
@@ -317,7 +529,9 @@ Player::InvulnerabilityTimerController::~InvulnerabilityTimerController()
 {};
 
 float Player::InvulnerabilityTimerController::get() const
-{};
+{
+	return 0.0f;
+};
 
 void Player::InvulnerabilityTimerController::set(float _value)
 {

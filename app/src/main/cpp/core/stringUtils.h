@@ -14,4 +14,13 @@ namespace core
 
 	Vector2 stov2(const std::string& str, size_t* idx = 0);
 
+	template <typename T>
+	T parse(const std::string& _value)
+	{
+		throw std::logic_error("unimplemented");
+	};
+
+	template <>
+	bool parse(const std::string& _value);
+
 }

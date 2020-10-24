@@ -205,6 +205,13 @@ namespace core
 			return object.release();
 		};
 
+		AnimatedSprite *SceneManager::createAnimatedSprite(const std::string &_name, ScriptNodePtr _nodeValues)
+		{
+			AnimatedSpriteUPtr object = objectFactory->createAnimatedSprite(_name, _nodeValues);
+			addObject(object.get());
+			return object.release();
+		};
+
 		ParticleSystem *SceneManager::createParticleSystem(const std::string &_name, ScriptNodePtr _nodeValues)
 		{
 			ParticleSystemUPtr object = objectFactory->createParticleSystem(_name, _nodeValues);

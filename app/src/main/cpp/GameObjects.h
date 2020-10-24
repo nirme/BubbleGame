@@ -65,69 +65,10 @@ static constexpr char *rigidTypeEnemy = "enemy";
 
 
 
-
-
-class Laser
-{
-
-};
-
-
-class Enemy
-{
-
-};
-
-
 class Upgrade
 {
 
 };
 
-
-class Stage
-{
-protected:
-
-	SceneManager *scene;
-
-	float width, height;
-	float gravityStrength;
-
-	SceneNode *backgroundNode;
-	MovableObject *baseObject;
-
-
-	RigidObjectUPtr bounds;
-
-
-	void resetStage();
-	void setBackground(ScriptNodePtr _bgData);
-	void setGravity(float _gravityStrength);
-	void setupBounds(float _width, float _height);
-
-public:
-
-	void createStage(ScriptNodePtr _stageData)
-	{
-		resetStage();
-
-		float gravity = std::stof(_stageData->getValue(stageGravityValueName));
-		setGravity(gravity);
-
-		ScriptNodeListPtr nodeList = _stageData->getChildList();
-		ScriptNodeList::iterator findRes = std::find(nodeList->begin(),
-				nodeList->end(),
-				[] (auto it) { return !((*it)->getName().compare(entityNodeName)); } );
-		assert(findRes != nodeList->end() && "no scene node data in the script");
-		setBackground(*findRes);
-
-		std::string stageSize = _stageData->getValue(stageSize);
-		std::vector<std::string> sizeTok = tokenize(stageSize, ",");
-		assert(sizeTok.size() == 2 && "tokenized size require 2 numbers");
-		setupBounds(std::stof(sizeTok[0]), std::stof(sizeTok[1]));
-	};
-
-};
 
 

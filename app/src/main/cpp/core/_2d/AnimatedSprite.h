@@ -37,7 +37,7 @@ namespace core
 			public:
 				virtual void onAnimationBegin() = 0;
 				virtual void onAnimationEnd() = 0;
-				virtual ~Listener() = 0;
+				virtual ~Listener(){};
 			};
 
 		protected:
@@ -89,7 +89,9 @@ namespace core
 			void addAnimation(const std::string &_animationName, const std::vector<std::pair<float, ImageSpritePtr>> &_keyframes, float _timeLength);
 			void registerAnimationListener(const std::string &_animationName, Listener *_listener);
 			void playAnimation(const std::string &_name, Animator::ANIMATION_MODE _mode, bool _stopAfter = false);
+			bool pauseAnimation(bool _pause = true);
 			void stopAnimation();
+			bool isPaused() const;
 
 			AnimatedSprite(const std::string &_name, Priority _renderPriority, MaterialPtr _material);
 

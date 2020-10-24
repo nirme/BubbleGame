@@ -21,16 +21,16 @@ namespace core
 		};
 
 
-		class ShapeFactory : public Singleton<ShapeFactory>
+		class ShapeFactory // : public Singleton<ShapeFactory>
 		{
 		protected:
 
-			ShapePtr createCircle(ScriptNodePtr _data);
-			ShapePtr createRectangle(ScriptNodePtr _data);
-			ShapePtr createLineArea(ScriptNodePtr _data);
+			static ShapePtr createCircle(ScriptNodePtr _data);
+			static ShapePtr createRectangle(ScriptNodePtr _data);
+			static ShapePtr createLineArea(ScriptNodePtr _data);
 
 		public:
-			ShapePtr parseShape(ScriptNodePtr _data);
+			static ShapePtr parseShape(ScriptNodePtr _data);
 
 		};
 	}

@@ -3,26 +3,31 @@
 
 InstanceParticleEmitters::InstanceParticleEmitters(ParticleSystem* _parent, unsigned int _particleCount, const Rectangle& _emittingArea) :
 		ParticleEmitter(_parent, true, 0.0f),
-		alive(true),
-		ageLeft(std::numeric_limits<float>::infinity()),
-		totalAge(std::numeric_limits<float>::infinity()),
-		minRotation(0.0f),
-		maxRotation(2.0f * M_PI),
-		minSize(1.0f),
-		maxSize(1.0f),
-		minDirection(0.0f),
-		maxDirection(2.0f * M_PI),
-		minDirectionSpeed(1.0f),
-		maxDirectionSpeed(1.0f),
-		minRotationalSpeed(0.0f),
-		maxRotationalSpeed(0.0f),
-		minSizeChangeSpeed(1.0f),
-		maxSizeChangeSpeed(1.0f),
-		minTimeAlive(1.0f),
-		maxTimeAlive(1.0f),
 		emittingArea(_emittingArea),
 		currentParticleCounter(0)
 {
+	// particle values
+	Particle::alive = true;
+	Particle::ageLeft = std::numeric_limits<float>::infinity();
+	Particle::totalAge = std::numeric_limits<float>::infinity();
+
+	// base values
+	ParticleEmitter::minRotation = 0.0f;
+	ParticleEmitter::maxRotation = 2.0f * M_PI;
+	ParticleEmitter::minSize = 1.0f;
+	ParticleEmitter::maxSize = 1.0f;
+	ParticleEmitter::minDirection = 0.0f;
+	ParticleEmitter::maxDirection = 2.0f * M_PI;
+	ParticleEmitter::minDirectionSpeed = 1.0f;
+	ParticleEmitter::maxDirectionSpeed = 1.0f;
+	ParticleEmitter::minRotationalSpeed = 0.0f;
+	ParticleEmitter::maxRotationalSpeed = 0.0f;
+	ParticleEmitter::minSizeChangeSpeed = 1.0f;
+	ParticleEmitter::maxSizeChangeSpeed = 1.0f;
+	ParticleEmitter::minTimeAlive = 1.0f;
+	ParticleEmitter::maxTimeAlive = 1.0f;
+
+
 	particlesPerLength = std::floor(std::sqrt(_particleCount));
 	emissionRate = particlesPerLength * particlesPerLength;
 

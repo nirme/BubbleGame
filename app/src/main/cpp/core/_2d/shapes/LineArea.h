@@ -58,5 +58,6 @@ namespace core
 			virtual Vector2 separatingAxisNormal(const LineArea *_shape) const;
 		};
 
+		typedef std::unique_ptr<LineArea> LineAreaPtr;
 	}
 }

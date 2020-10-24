@@ -7,6 +7,28 @@
 #include "core/_2d/shapes/Circle.h"
 #include "core/_2d/shapes/LineArea.h"
 
+/*
+
+class Game1 : public core::Engine
+{
+
+public:
+
+	Game(android_app* _androidApp) : Engine(_androidApp)
+			{};
+
+	void onStep()
+	{
+		Engine::onStep();
+
+
+	};
+};
+
+*/
+
+
+
 
 
 class Game : public core::Engine
@@ -29,30 +51,30 @@ public:
 	void onStep()
 	{
 
-		if (!initialized)
-			return;
-
 		Engine::onStep();
 
 
-		fpsTime += frameTime.getLastUpdateTime<float>();
-		++cc;
 
-		if (fpsTime >= 1.0f)
-		{
-			fps = static_cast<int>(100.0f * cc / fpsTime) * 0.01f;
-			cc = 0;
-			fpsTime = 0.0f;
 
-			fpsText->setText(std::string("FPS: ") + std::to_string(fps).substr(0, 5));
+/*
+fpsTime += frameTime.getLastUpdateTime<float>();
+++cc;
 
-			core::_2d::Quaternion q = fpsText->getRotation();
-			//q *= core::_2d::Quaternion(0.2f);
-			//q.normalize();
-			//q.rotate(core::degreeToRad(10.0f));
-			//fpsText->setRotation(q);
-		}
+if (fpsTime >= 1.0f)
+{
+	fps = static_cast<int>(100.0f * cc / fpsTime) * 0.01f;
+	cc = 0;
+	fpsTime = 0.0f;
 
+	fpsText->setText(std::string("FPS: ") + std::to_string(fps).substr(0, 5));
+
+	core::_2d::Quaternion q = fpsText->getRotation();
+	//q *= core::_2d::Quaternion(0.2f);
+	//q.normalize();
+	//q.rotate(core::degreeToRad(10.0f));
+	//fpsText->setRotation(q);
+}
+*/
 	};
 
 
@@ -74,7 +96,7 @@ public:
 
 
 		{
-			core::_2d::SceneNode *node = mainScene->createNode("TestNode", nullptr);
+			core::_2d::SceneNode *node = mainScene->createNode("TestNode");
 			mainScene->getRootNode()->appendChild(node);
 
 
@@ -145,7 +167,7 @@ public:
 
 
 
-			core::_2d::SceneNode *node4 = mainScene->createNode("Text", nullptr);
+			core::_2d::SceneNode *node4 = mainScene->createNode("Text");
 			mainScene->getRootNode()->appendChild(node4);
 
 			node4->setPosition({ 14.0f, 8.0f });
@@ -174,7 +196,7 @@ public:
 
 			// Particle system test
 
-			core::_2d::SceneNode *node2 = mainScene->createNode("ParticleSystemTest", nullptr);
+			core::_2d::SceneNode *node2 = mainScene->createNode("ParticleSystemTest");
 			mainScene->getRootNode()->appendChild(node2);
 
 			node2->setPosition({ -5.0f, 0.0f });
@@ -239,7 +261,7 @@ public:
 				mList1->speedChange = -0.1f;
 
 				core::_2d::Shape *btn1Shape = new core::_2d::Rectangle(1.0f, 2.2f, {-0.6f, 0.0f}, 0.0f);
-				core::TouchArea *buttonLeft = new core::TouchArea(btn1Shape);
+				core::TouchArea *buttonLeft = new core::TouchArea("left_button", btn1Shape);
 				buttonLeft->registerListener(mList1);
 				inputManager->registerControl("base_control", buttonLeft);
 
@@ -250,7 +272,7 @@ public:
 				mList2->speedChange = 0.1f;
 
 				core::_2d::Shape *btn2Shape = new core::_2d::Rectangle(1.0f, 2.2f, {0.6f, 0.0f}, 0.0f);
-				core::TouchArea *buttonRight = new core::TouchArea(btn2Shape);
+				core::TouchArea *buttonRight = new core::TouchArea("right_button", btn2Shape);
 				buttonRight->registerListener(mList2);
 
 				inputManager->registerControl("base_control", buttonRight);
@@ -335,7 +357,7 @@ public:
 		musicController->playSet("menu");
 
 		core::_2d::Shape *btn1Shape = new core::_2d::Rectangle(1.1f, 2.2f, {0.0f}, 0.0f);
-		core::TouchArea *buttonCenter = new core::TouchArea(btn1Shape);
+		core::TouchArea *buttonCenter = new core::TouchArea("center_button", btn1Shape);
 		buttonCenter->registerListener(mListT);
 		inputManager->registerControl("base_control", buttonCenter);
 
@@ -440,7 +462,7 @@ public:
 			reinterpret_cast<core::_2d::PhysicsLinearAffector*>(gravity.get())->setDirection({0.0f, -10.0f});
 			physicsSystem->registerAffector("gravity", gravity);
 
-			core::_2d::SceneNode *node3 = mainScene->createNode("PhysicsSystemTest", nullptr);
+			core::_2d::SceneNode *node3 = mainScene->createNode("PhysicsSystemTest");
 			mainScene->getRootNode()->appendChild(node3);
 
 			node3->setPosition({ 0.0f, 0.0f });
