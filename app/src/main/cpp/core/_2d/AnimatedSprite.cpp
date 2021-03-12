@@ -124,10 +124,34 @@ namespace core
 
 			for (unsigned int i = 0, iEnd = _keyframes.size(); i < iEnd; ++i)
 			{
+				if (!_keyframes[i].second)
+					continue;
+
 				assert(_keyframes[i].second->getTexture() == material->textures[0] && "animation texture not matching with material");
 				assert(_keyframes[i].first < _timeLength && "keyframes cannot got above animation length");
 
 				animation.emplace(_keyframes[i].first, _keyframes[i].second);
+			}
+
+			animation.emplace(_timeLength, nullptr);
+		};
+
+
+		void AnimatedSprite::addAnimation(const std::string &_animationName, const std::map<float, ImageSpritePtr> &_keyframes, float _timeLength)
+		{
+			assert(material && "material must be set first");
+
+			SpriteAnimation &animation = animationSet[_animationName].animation;
+
+			for (auto it = _keyframes.begin(), itEnd = _keyframes.end(); it != itEnd; ++it)
+			{
+				if (!(*it).second)
+					continue;
+
+				assert((*it).second->getTexture() == material->textures[0] && "animation texture not matching with material");
+				assert((*it).first < _timeLength && "keyframes cannot got above animation length");
+
+				animation.emplace((*it).first, (*it).second);
 			}
 
 			animation.emplace(_timeLength, nullptr);
@@ -185,6 +209,30 @@ namespace core
 				MovableObject(_name),
 				Renderable(_renderPriority, _material, true)
 		{};
+
+
+		MovableObject* AnimatedSprite::clone(const std::string &_name) const
+		{
+			AnimatedSprite *object = parent->getOwner()->createAnimatedSprite(_name, nullptr);
+
+			object->setMaterial(material->program, material->textures[0]);
+			object->setScale(scale);
+			object->setRotation(rotation);
+			object->setPosition(position);
+
+			for (auto setIt = animationSet.begin(), setItEnd = animationSet.end(); setIt != setItEnd; ++setIt)
+				object->addAnimation((*setIt).first, (*setIt).second.animation, (*(*setIt).second.animation.rbegin()).first);
+
+			object->setDefaultAnimation(defaultAnimation, defaultMode);
+
+			return object;
+		};
+
+
+		void AnimatedSprite::setMaterial(ShadingProgramPtr _program, TexturePtr _spriteTexture)
+		{
+			Renderable::setMaterial(_program, _spriteTexture);
+		};
 
 
 		const Matrix3& AnimatedSprite::getTransform() const

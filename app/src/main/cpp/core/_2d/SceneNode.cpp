@@ -98,6 +98,22 @@ namespace core
 		};
 
 
+		void SceneNode::setEnabled(bool _enabled)
+		{
+			if (enabled != _enabled)
+			{
+				enabled = _enabled;
+				invalidateBoundingBox();
+			}
+		};
+
+
+		bool SceneNode::isEnabled()
+		{
+			return enabled;
+		};
+
+
 		void SceneNode::setScale(const Vector2 &_scale)
 		{
 			scale = _scale;
@@ -202,7 +218,7 @@ namespace core
 
         void SceneNode::findVisibleRenderables(Camera *_camera, RenderQueue *_queue, const AxisAlignedBox *_bounds) const
         {
-            if (_bounds->isOverlapping(getBoundingBox()))
+            if (enabled && _bounds->isOverlapping(getBoundingBox()))
             {
 				if (objects.size())
 					for (ObjectList::const_iterator it = objects.begin(); it != objects.end(); ++it)

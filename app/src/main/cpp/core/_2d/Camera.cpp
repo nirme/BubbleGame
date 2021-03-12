@@ -8,6 +8,7 @@ namespace core
 		void Camera::_invalidateWorldTransformImpl() const
 		{
 			cashedViewMatrixNeedUpdate = true;
+			cashedInverseViewMatrixNeedUpdate = true;
 		};
 
 
@@ -29,6 +30,19 @@ namespace core
 			}
 
 			return cashedViewMatrix;
+		};
+
+
+		const Matrix3& Camera::getInvViewMatrix() const
+		{
+			if (cashedInverseViewMatrixNeedUpdate)
+			{
+				const Matrix3 &mx = getViewMatrix();
+				cashedInverseViewMatrix = inverse(mx);
+				cashedInverseViewMatrixNeedUpdate = false;
+			}
+
+			return cashedInverseViewMatrix;
 		};
 
 

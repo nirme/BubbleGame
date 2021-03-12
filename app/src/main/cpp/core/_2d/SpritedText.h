@@ -32,8 +32,8 @@ namespace core
 		protected:
 			SpritedFontPtr textFont;
 
-
 			std::string text;
+			float maxTextWidth;
 
 			SpritedTextVertices vertices;
 			unsigned int visibleFrom, visibleCount;
@@ -62,17 +62,16 @@ namespace core
 		public:
 
 			SpritedText(const std::string &_name, Priority _renderPriority = 0, MaterialPtr _material = nullptr);
-
-			~SpritedText() {};
+			virtual ~SpritedText();
+			MovableObject* clone(const std::string &_name) const;
 
 			void setMaterial(ShadingProgramPtr _program, SpritedFontPtr _font);
+
 			const Matrix3& getTransform() const;
 
 			BuffWriteResult writeVertexData(GraphicBuffer &_buffer, unsigned int _fromSprite = 0) const;
 
 			void setAnchorPosition(ANCHOR_POSITION _anchorPosition);
-			unsigned int getVisibleCharsFrom() const;
-			unsigned int getVisibleCharsCount() const;
 			void setVisibleChars(unsigned int _visibleFrom, unsigned int _visibleCount);
 			void setText(std::string _text, float _maxWidth = std::numeric_limits<float>::max());
 

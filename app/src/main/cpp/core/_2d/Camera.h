@@ -17,7 +17,9 @@ namespace core
 			ViewPort* viewPort;
 		
 			mutable bool cashedViewMatrixNeedUpdate;
+			mutable bool cashedInverseViewMatrixNeedUpdate;
 			mutable Matrix3 cashedViewMatrix;
+			mutable Matrix3 cashedInverseViewMatrix;
 
 			
 			virtual void _invalidateWorldTransformImpl() const;
@@ -29,6 +31,8 @@ namespace core
 
 			Camera(const char *_name = "camera", ViewPort* _viewPort = nullptr);
 			virtual const Matrix3& getViewMatrix() const;
+			virtual const Matrix3& getInvViewMatrix() const;
+
 			virtual void setViewPort(ViewPort* _viewPort);
 			virtual ViewPort* getViewPort() const;
 

@@ -9,6 +9,7 @@
 
 #include "../ShadingProgramManager.h"
 #include "../ImageSpriteManager.h"
+#include "../ImageSpriteManager.h"
 #include "../SpritedFontManager.h"
 
 
@@ -32,34 +33,7 @@ namespace core
 
 		_2d::SingleSpriteUPtr createSingleSprite(const std::string &_name, ScriptNodePtr _scriptNode);
 
-		_2d::AnimatedSpriteUPtr createAnimatedSprite(const std::string &_name, ScriptNodePtr _scriptNode)
-		{
-			throw std::logic_error("unimplemented");
-/*
-			// keep object as unique ptr until another object take resposibility for it
-			_2d::SingleSpriteUPtr object = std::make_unique<_2d::SingleSprite>(_name);
-
-			if (!_scriptNode)
-				return object;
-
-			ScriptLoader &scriptLoader = ScriptLoader::getSingleton();
-
-			object->setMaterial(
-					ShadingProgramManager::getSingleton().getByName(scriptLoader.parseObjectShader(_scriptNode)),
-					ImageSpriteManager::getSingleton().getByName(scriptLoader.parseObjectImageSprite(_scriptNode))
-			);
-
-			object->setScale(scriptLoader.parseObjectScale(_scriptNode));
-			object->setRotation(scriptLoader.parseObjectRotation(_scriptNode));
-			object->setPosition(scriptLoader.parseObjectPosition(_scriptNode));
-
-			object->setPriority(scriptLoader.parseRenderablePriority(_scriptNode));
-			object->setSpriteCoords(scriptLoader.parseSingleSpriteCoords(_scriptNode));
-
-
-			return object;
-			*/
-		};
+		_2d::AnimatedSpriteUPtr createAnimatedSprite(const std::string &_name, ScriptNodePtr _scriptNode);
 
 		_2d::ParticleSystemUPtr createParticleSystem(const std::string &_name, ScriptNodePtr _scriptNode);
 

@@ -31,6 +31,66 @@ namespace core
 	};
 
 
+
+	_2d::AnimatedSpriteUPtr ObjectFactory::createAnimatedSprite(const std::string &_name, ScriptNodePtr _scriptNode)
+	{
+		_2d::AnimatedSpriteUPtr object = std::make_unique<_2d::AnimatedSprite>(_name);
+
+		if (!_scriptNode)
+			return object;
+
+		ScriptLoader &scriptLoader = ScriptLoader::getSingleton();
+		ImageSpriteManager &spriteManager = ImageSpriteManager::getSingleton();
+
+
+		ScriptNodeListPtr animationNodeList = scriptLoader.getAnimationNodesList(_scriptNode);
+
+		for (ScriptNodeListIterator it = animationNodeList->begin(); it != animationNodeList->end(); ++it)
+		{
+			std::map<float, std::string> sortedKeyframes;
+
+			ScriptNodeListPtr keyframeNodeList = scriptLoader.getKeyframeNodeList(*it);
+			for (ScriptNodeListIterator itFrame = keyframeNodeList->begin(); itFrame != keyframeNodeList->end(); ++itFrame)
+			{
+				sortedKeyframes.insert({
+											   scriptLoader.parseKeyframeTime(*itFrame),
+											   scriptLoader.parseKeyframeSpriteName(*itFrame)
+									   });
+			}
+
+			std::vector<std::pair<float, ImageSpritePtr>> keyframes;
+			keyframes.reserve(sortedKeyframes.size());
+			for (auto itMap = sortedKeyframes.begin(), itMapEnd = sortedKeyframes.end(); itMap != itMapEnd; ++itMap)
+			{
+				keyframes.push_back({itMap->first, spriteManager.getByName(itMap->second)});
+			}
+
+			if (!object->getMaterial())
+				object->setMaterial(
+						ShadingProgramManager::getSingleton().getByName(scriptLoader.parseObjectShader(_scriptNode)),
+						keyframes[0].second->getTexture()
+				);
+
+			object->addAnimation(
+					scriptLoader.parseAnimationName(*it),
+					keyframes,
+					scriptLoader.parseAnimationLength(*it));
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		object->setDefaultAnimation(scriptLoader.parseDefaultAnimationName(_scriptNode), scriptLoader.parseDefaultAnimationMode(_scriptNode));
+
+		object->setScale(scriptLoader.parseObjectScale(_scriptNode));
+		object->setRotation(scriptLoader.parseObjectRotation(_scriptNode));
+		object->setPosition(scriptLoader.parseObjectPosition(_scriptNode));
+
+		object->setPriority(scriptLoader.parseRenderablePriority(_scriptNode));
+
+		return object;
+
+	};
+
+
 	_2d::ParticleSystemUPtr ObjectFactory::createParticleSystem(const std::string &_name, ScriptNodePtr _scriptNode)
 	{
 		// keep object as unique ptr until another object take resposibility for it
@@ -89,7 +149,6 @@ namespace core
 		object->setPosition(scriptLoader.parseObjectPosition(_scriptNode));
 
 		object->setPriority(scriptLoader.parseRenderablePriority(_scriptNode));
-		//object->setSpriteCoords(scriptLoader.parseSingleSpriteCoords(_scriptNode));
 
 		object->setAnchorPosition(scriptLoader.parseTextAnchorPosition(_scriptNode));
 		object->setText(scriptLoader.parseObjectText(_scriptNode));

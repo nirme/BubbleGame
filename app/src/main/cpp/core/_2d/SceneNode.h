@@ -16,6 +16,8 @@
 
 #include "../IteratorTemplate.h"
 
+#include "SceneManager.h"
+
 
 namespace core
 {
@@ -48,6 +50,7 @@ namespace core
 
 			SceneNode* parent;
 			ChildNodeList children;
+			bool enabled;
 
 			Vector2 scale;
 			Quaternion rotation;
@@ -78,6 +81,9 @@ namespace core
 
 			void setName(const std::string &_name);
 			const std::string &getName() const;
+
+			void setEnabled(bool _enabled);
+			bool isEnabled();
 
 			void setScale(const Vector2 &_scale);
 			const Vector2 &getScale() const;

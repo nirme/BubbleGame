@@ -29,6 +29,26 @@ namespace core
 		{};
 
 
+		SingleSprite::~SingleSprite()
+		{};
+
+
+		MovableObject* SingleSprite::clone(const std::string &_name) const
+		{
+			SingleSprite *object = parent->getOwner()->createSingleSprite(_name, nullptr);
+
+			object->setMaterial(material->program, sprite);
+
+			object->setScale(scale);
+			object->setRotation(rotation);
+			object->setPosition(position);
+
+			object->setSpriteCoords(spriteCoords);
+
+			return object;
+		};
+
+
 		void SingleSprite::setSpriteCoords(const SpriteCoords &_spriteCoords)
 		{
 			spriteCoords = _spriteCoords;
@@ -36,7 +56,7 @@ namespace core
 		};
 
 
-		const SpriteCoords &SingleSprite::getSpriteCoords()
+		const SpriteCoords &SingleSprite::getSpriteCoords() const
 		{
 			return spriteCoords;
 		};

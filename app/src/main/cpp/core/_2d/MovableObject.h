@@ -45,6 +45,8 @@ namespace core
 			MovableObject(const std::string &_name);
 			virtual ~MovableObject();
 
+			virtual MovableObject* clone(const std::string &_name) const = 0;
+
 			void setName(const std::string &_name);
 			const std::string &getName() const;
 

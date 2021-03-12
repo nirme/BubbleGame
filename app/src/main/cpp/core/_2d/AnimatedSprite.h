@@ -86,14 +86,20 @@ namespace core
 		public:
 			void progress(float _value);
 			void setDefaultAnimation(const std::string &_defaultAnimation, Animator::ANIMATION_MODE _defaultMode);
+
 			void addAnimation(const std::string &_animationName, const std::vector<std::pair<float, ImageSpritePtr>> &_keyframes, float _timeLength);
+			void addAnimation(const std::string &_animationName, const std::map<float, ImageSpritePtr> &_keyframes, float _timeLength);
 			void registerAnimationListener(const std::string &_animationName, Listener *_listener);
 			void playAnimation(const std::string &_name, Animator::ANIMATION_MODE _mode, bool _stopAfter = false);
 			bool pauseAnimation(bool _pause = true);
 			void stopAnimation();
 			bool isPaused() const;
 
-			AnimatedSprite(const std::string &_name, Priority _renderPriority, MaterialPtr _material);
+			AnimatedSprite(const std::string &_name, Priority _renderPriority = 0, MaterialPtr _material = nullptr);
+			~AnimatedSprite(){};
+			MovableObject* clone(const std::string &_name) const;
+
+			void setMaterial(ShadingProgramPtr _program, TexturePtr _spriteTexture);
 
 			const Matrix3& getTransform() const;
 			BuffWriteResult writeVertexData(GraphicBuffer &_buffer, unsigned int _fromSprite = 0) const;

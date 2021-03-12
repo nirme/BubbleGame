@@ -95,6 +95,9 @@ namespace core
 			ParticleSystem *createParticleSystem(const std::string &_name, ScriptNodePtr _nodeValues);
 			SpritedText *createSpritedText(const std::string &_name, ScriptNodePtr _nodeValues);
 
+			MovableObject *getObjectByName(const std::string &_name) const;
+			Camera *getCurrentCamera() const;
+
 			void renderScene();
 
 			void setTimeControllerValue(SharedFrameTimeControllerValuePtr _timeValue);

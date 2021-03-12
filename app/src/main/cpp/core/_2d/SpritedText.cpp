@@ -122,6 +122,25 @@ namespace core
 		{};
 
 
+		SpritedText::~SpritedText()
+		{};
+
+
+		MovableObject* SpritedText::clone(const std::string &_name) const
+		{
+			SpritedText *object = parent->getOwner()->createSpritedText(_name, nullptr);
+			object->setMaterial(material->program, textFont);
+			object->setScale(scale);
+			object->setRotation(rotation);
+			object->setPosition(position);
+
+			object->setAnchorPosition(textAnchor);
+			object->setText(text, maxTextWidth);
+			object->setVisibleChars(visibleFrom, visibleCount);
+
+			return object;
+		};
+
 
 		void SpritedText::setMaterial(ShadingProgramPtr _program, SpritedFontPtr _font)
 		{
@@ -186,18 +205,6 @@ namespace core
 		};
 
 
-		unsigned int SpritedText::getVisibleCharsFrom() const
-		{
-			return visibleFrom;
-		};
-
-
-		unsigned int SpritedText::getVisibleCharsCount() const
-		{
-			return visibleCount;
-		};
-
-
 		void SpritedText::setVisibleChars(unsigned int _visibleFrom, unsigned int _visibleCount)
 		{
 			if (_visibleFrom > vertices.size())
@@ -218,6 +225,7 @@ namespace core
 		void SpritedText::setText(std::string _text, float _maxWidth)
 		{
 			text = _text;
+			maxTextWidth = _maxWidth;
 			visibleFrom = 0;
 			visibleCount = text.length();
 			cashedTextNeedUpdate = true;

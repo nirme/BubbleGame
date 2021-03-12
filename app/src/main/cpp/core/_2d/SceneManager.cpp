@@ -228,6 +228,19 @@ namespace core
 		};
 
 
+		MovableObject *SceneManager::getObjectByName(const std::string &_name) const
+		{
+			auto it = namedObjects.find(_name);
+			return it != namedObjects.end() ? (*it).second : nullptr;
+		};
+
+
+		Camera *SceneManager::getCurrentCamera() const
+		{
+			return currentCamera.get();
+		};
+
+
 		void SceneManager::renderScene()
 		{
 			if (timeValue)

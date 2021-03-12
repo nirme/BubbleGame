@@ -39,8 +39,10 @@ namespace core
 			SingleSprite(const std::string &_name, Priority _renderPriority = 0, MaterialPtr _material = nullptr, ImageSpritePtr _sprite = nullptr);
 			~SingleSprite() {};
 
+			MovableObject* clone(const std::string &_name) const;
+
 			void setSpriteCoords(const SpriteCoords &_spriteCoords);
-			const SpriteCoords &getSpriteCoords();
+			const SpriteCoords &getSpriteCoords() const;
 
 			void setMaterial(ShadingProgramPtr _program, ImageSpritePtr _sprite);
 
