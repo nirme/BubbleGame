@@ -3,6 +3,7 @@
 #include "Circle.h"
 #include "Rectangle.h"
 #include "LineArea.h"
+#include "Pill.h"
 
 namespace core
 {
@@ -42,6 +43,11 @@ namespace core
 			float distance = (a * circlePos.x + b * circlePos.y + _line->getParamC()) / sqrt(a * a + b * b);
 
 			return distance < _circle->getRadius();
+		};
+
+		bool intersect(const Circle *_circle, const Pill *_pill)
+		{
+			return distance(_pill, _circle->getPosition()) <= _circle->getRadius();
 		};
 
 		bool intersect(const Rectangle *_rect, const Circle *_circle)
@@ -102,6 +108,77 @@ namespace core
 			return false;
 		};
 
+		bool intersect(const Rectangle *_rect, const Pill *_pill)
+		{
+			const Vector2 &pillA = _pill->getPointA();
+			const Vector2 &pillB = _pill->getPointB();
+
+			// rect contains part of pill
+			if (_rect->contains(pillA) || _rect->contains(pillB))
+				return true;
+
+			// pill contain point from rectangle
+			Vector2 pillABVec = pillB - pillA;
+			float pillABdistSq = pillABVec.lengthSq();
+			float pillRadiusSq = _pill->getRadius() * _pill->getRadius();
+			Vector2 pillNormal = normalize(normalVectorCCW(pillABVec));
+
+			float tangentDist[4];
+			short verticalPos[4];
+
+			for (unsigned short i = 0; i < 4; ++i)
+			{
+				tangentDist[i] = std::abs(dotProduct(pillNormal, _rect->getPoint(i) - pillA));
+				float verticalDist = dotProduct(pillABVec, _rect->getPoint(i) - pillA);
+				verticalPos[i] = verticalDist < 0.0f ? -1 : (verticalDist > pillABdistSq ? 1 : 0);
+
+ 				if (!verticalPos[i] && tangentDist[i] <= _pill->getRadius() ||
+ 					verticalPos[i] > 0 && (_rect->getPoint(i) - pillB).lengthSq() <= pillRadiusSq ||
+ 					verticalPos[i] < 0 && (_rect->getPoint(i) - pillA).lengthSq() <= pillRadiusSq)
+					return true;
+			}
+
+			// rect contains part of pill
+			if (_rect->contains(pillA) || _rect->contains(pillB))
+				return true;
+
+			// rect segments cross pill or close enough
+			bool pillP1Inside = true, pillP2Inside = true;
+			for (unsigned short i = 0; i < 4; ++i)
+			{
+				const Vector2 &rectP0 = _rect->getPoint(i);
+				const Vector2 &rectP1 = _rect->getPoint((i+1)%4);
+
+				Vector2 rectVector = rectP1 - rectP0;
+				Vector2 leftNormal = normalVectorCCW(rectVector);
+				float pillAsqDist = dotProduct(leftNormal, pillA - rectP0);
+				float pillBsqDist = dotProduct(leftNormal, pillB - rectP0);
+
+				if (pillAsqDist * pillBsqDist <= 0.0) // pill segment crossing line
+				{
+					// segments crossing
+					if (dotProduct(pillNormal, rectP0 - pillA) * dotProduct(pillNormal, rectP1 - pillA) < 0.0f)
+						return true;
+				}
+				else if (pillAsqDist > 0.0f) // entire segment to the left
+				{
+					float recNormalLen = 1.0f / leftNormal.length();
+
+					// pill A closer to center segment than r
+					float verticalDist = dotProduct(rectVector, pillA - rectP0);
+					if (verticalDist >= 0.0 && verticalDist <= rectVector.lengthSq() && pillAsqDist * recNormalLen <= _pill->getRadius())
+						return true;
+
+					// pill B closer to center segment than r
+					verticalDist = dotProduct(rectVector, pillB - rectP0);
+					if (verticalDist >= 0.0 && verticalDist <= rectVector.lengthSq() && pillBsqDist * recNormalLen <= _pill->getRadius())
+						return true;
+				}
+			}
+
+			return false;
+		};
+
 		bool intersect(const LineArea *_line, const Circle *_circle)
 		{
 			return intersect(_circle, _line);
@@ -119,6 +196,59 @@ namespace core
 				(_line1->getParamC() + _line2->getParamC()) > 0.0f)
 				return false;
 			return true;
+		};
+
+		bool intersect(const LineArea *_line, const Pill *_pill)
+		{
+			return _line->distance(_pill->getPointA()) <= _pill->getRadius() ||
+					_line->distance(_pill->getPointB()) <= _pill->getRadius();
+		};
+
+		bool intersect(const Pill *_pill, const Circle *_circle)
+		{
+			return intersect(_circle, _pill);
+		};
+
+		bool intersect(const Pill *_pill, const Rectangle *_rect)
+		{
+			return intersect(_rect, _pill);
+		};
+
+		bool intersect(const Pill *_pill, const LineArea *_line)
+		{
+			return intersect(_line, _pill);
+		};
+
+		bool intersect(const Pill *_pill1, const Pill *_pill2)
+		{
+			const Vector2 &a1 = _pill1->getPointA(), &b1 = _pill1->getPointB(), a2 = _pill2->getPointA(), b2 = _pill2->getPointB();
+
+			Vector2 a1b1 = b1 - a1;
+			Vector2 b1a2 = a2 - b1;
+			Vector2 b1b2 = b2 - b1;
+
+			Vector2 a2b2 = b2 - a2;
+			Vector2 b2a1 = a1 - b2;
+			Vector2 b2b1 = b1 - b2;
+
+			//a1b1.y*b1a2.x - b1a2.y*a1b1.x < 0.0f //is ccw
+			//a1b1.y*b1b2.x - b1b2.y*a1b1.x > 0.0f //is cw
+
+			//a2b2.y*b2a1.x - b2a1.y*a2b2.x < 0.0f //is ccw
+			//a2b2.y*b2b1.x - b2b1.y*a2b2.x > 0.0f //is cw
+
+			//check for intersection of the segments
+			if ((a1b1.y * b1a2.x - b1a2.y*a1b1.x) * (a1b1.y*b1b2.x - b1b2.y*a1b1.x) < 0.0f &&
+				(a2b2.y*b2a1.x - b2a1.y*a2b2.x) * (a2b2.y*b2b1.x - b2b1.y*a2b2.x) < 0.0f)
+				return true;
+
+			// no intersections, check all distances
+			float r1 = _pill1->getRadius(), r2 = _pill2->getRadius();
+
+			return (distance(_pill1, a2) <= r2 ||
+					distance(_pill1, b2) <= r2 ||
+					distance(_pill2, a1) <= r1 ||
+					distance(_pill2, b1) <= r1);
 		};
 
 
@@ -177,6 +307,22 @@ namespace core
 		};
 
 
+		float distance(const Pill *_pill, const Vector2 &_point)
+		{
+			Vector2 ap = _point - _pill->getPointB();
+			Vector2 ab = _pill->getPointB() - _pill->getPointB();
+			if (dotProduct(ap, ab) <= 0.0f)
+				return ap.length() - _pill->getRadius();
+
+			Vector2 bp = _point - _pill->getPointB();
+			Vector2 ba = _pill->getPointB() - _pill->getPointB();
+			if (dotProduct(bp, ba) <= 0.0f)
+				return bp.length() - _pill->getRadius();
+
+			return std::abs(dotProduct(normalVectorCW(ab), ap)) - _pill->getRadius();
+		};
+
+
 		float distance(const Circle *_circle1, const Circle *_circle2)
 		{
 			return (_circle1->getPosition() - _circle2->getPosition()).length() - _circle1->getRadius() - _circle2->getRadius();
@@ -192,6 +338,12 @@ namespace core
 		float distance(const Circle *_circle, const LineArea *_line)
 		{
 			return distance(_line, _circle->getPosition()) - _circle->getRadius();
+		};
+
+
+		float distance(const Circle *_circle, const Pill *_pill)
+		{
+			return distance(_pill, _circle->getPosition()) - _circle->getRadius();
 		};
 
 
@@ -231,6 +383,12 @@ namespace core
 		};
 
 
+		float distance(const Rectangle *_rect, const Pill *_pill)
+		{
+			throw std::logic_error("unimplemented");
+		};
+
+
 		float distance(const LineArea *_line, const Circle *_circle)
 		{
 			return distance(_circle,_line);
@@ -246,6 +404,63 @@ namespace core
 		float distance(const LineArea *_line1, const LineArea *_line2)
 		{
 			return intersect(_line1, _line2) ? std::numeric_limits<float>::infinity() : -std::numeric_limits<float>::infinity();
+		};
+
+
+		float distance(const LineArea *_line, const Pill *_pill)
+		{
+			return std::min(_line->distance(_pill->getPointA()), _line->distance(_pill->getPointB())) - _pill->getRadius();
+		};
+
+
+		float distance(const Pill *_pill, const Circle *_circle)
+		{
+			return distance(_circle, _pill);
+		};
+
+
+		float distance(const Pill *_pill, const Rectangle *_rect)
+		{
+			return distance(_rect, _pill);
+		};
+
+
+		float distance(const Pill *_pill, const LineArea *_line)
+		{
+			return distance(_line, _pill);
+		};
+
+		float distance(const Pill *_pill1, const Pill *_pill2)
+		{
+			const Vector2 &a1 = _pill1->getPointA(), &b1 = _pill1->getPointB(), a2 = _pill2->getPointA(), b2 = _pill2->getPointB();
+
+			Vector2 a1b1 = b1 - a1;
+			Vector2 b1a2 = a2 - b1;
+			Vector2 b1b2 = b2 - b1;
+
+			Vector2 a2b2 = b2 - a2;
+			Vector2 b2a1 = a1 - b2;
+			Vector2 b2b1 = b1 - b2;
+
+			//p2 intersect with line from p1
+			if ((a1b1.y * b1a2.x - b1a2.y*a1b1.x) * (a1b1.y*b1b2.x - b1b2.y*a1b1.x) < 0.0f)
+			{
+				//and p1 intersect with line from p2
+				if ((a2b2.y*b2a1.x - b2a1.y*a2b2.x) * (a2b2.y*b2b1.x - b2b1.y*a2b2.x) < 0.0f)
+					return -std::min(_pill1->getRadius(), _pill2->getRadius());
+
+				return std::min(distance(_pill2, a1), distance(_pill2, b1)) - _pill1->getRadius();
+			}
+
+			//p1 intersect with line from p2
+			if ((a2b2.y*b2a1.x - b2a1.y*a2b2.x) * (a2b2.y*b2b1.x - b2b1.y*a2b2.x) < 0.0f)
+				return std::min(distance(_pill1, a2), distance(_pill1, b2)) - _pill2->getRadius();
+
+			// no intersection
+			return std::min(distance(_pill1, a2) - _pill2->getRadius(),
+							distance(_pill1, b2) - _pill2->getRadius(),
+							distance(_pill2, a1) - _pill1->getRadius(),
+							distance(_pill2, b1) - _pill1->getRadius());
 		};
 
 
@@ -319,6 +534,18 @@ namespace core
 		};
 
 
+		Vector2 separatingAxisNormal(const Circle *_circle, const Pill *_pill)
+		{
+			throw std::logic_error("unimplemented");
+		};
+
+
+		Vector2 separatingAxisNormal(const Pill *_pill, const Circle *_circle)
+		{
+			return -separatingAxisNormal(_circle, _pill);
+		};
+
+
 		Vector2 separatingAxisNormal(const Rectangle *_rect1, const Rectangle *_rect2)
 		{
 			Vector2 sideVector,  pointDistance;
@@ -383,11 +610,11 @@ namespace core
 			{
 				if (min < 4)
 				{
-					return normalize(normalVectorCCW(_rect1->getPoint((min+1)%4) - _rect1->getPoint(min)));
+					return normalVectorCCW(_rect1->getPoint((min+1)%4) - _rect1->getPoint(min));
 				}
 				else
 				{
-					return -normalize(normalVectorCCW(_rect2->getPoint((min+1)%4) - _rect2->getPoint(min)));
+					return normalVectorCW(_rect2->getPoint((min+1)%4) - _rect2->getPoint(min));
 				}
 			}
 
@@ -421,20 +648,51 @@ namespace core
 		};
 
 
+		Vector2 separatingAxisNormal(const Rectangle *_rect, const LineArea *_line)
+		{
+			return -separatingAxisNormal(_line, _rect);
+		};
+
+
 		Vector2 separatingAxisNormal(const LineArea *_line, const Rectangle *_rect)
 		{
 			return normalize(Vector2(_line->getParamA(), _line->getParamB()));
 		};
 
 
-		Vector2 separatingAxisNormal(const Rectangle *_rect, const LineArea *_line)
+		Vector2 separatingAxisNormal(const Rectangle *_rect, const Pill *_pill)
 		{
-			return -separatingAxisNormal(_line, _rect);
+			throw std::logic_error("unimplemented");
 		};
+
+
+		Vector2 separatingAxisNormal(const Pill *_pill, const Rectangle *_rect)
+		{
+			return -separatingAxisNormal(_rect, _pill);
+		};
+
 
 		Vector2 separatingAxisNormal(const LineArea *_line1, const LineArea *_line2)
 		{
 			return normalize(normalize({_line2->getParamA(), _line2->getParamB()}) - normalize({_line1->getParamA(), _line1->getParamB()}));
+		};
+
+
+		Vector2 separatingAxisNormal(const LineArea *_line, const Pill *_pill)
+		{
+			return normalize(Vector2(_line->getParamA(), _line->getParamB()));
+		};
+
+
+		Vector2 separatingAxisNormal(const Pill *_pill, const LineArea *_line)
+		{
+			return -normalize(Vector2(_line->getParamA(), _line->getParamB()));
+		};
+
+
+		Vector2 separatingAxisNormal(const Pill *_pill1, const Pill *_pill2)
+		{
+			throw std::logic_error("unimplemented");
 		};
 
 	}

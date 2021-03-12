@@ -25,6 +25,12 @@ namespace core
 		{};
 
 
+		ShapePtr Circle::clone()
+		{
+			return std::make_unique<Circle>(position, radius);
+		};
+
+
 		void Circle::setPosition(const Vector2 &_position)
 		{
 			position = _position;
@@ -52,7 +58,7 @@ namespace core
 		ShapePtr Circle::transform(const Matrix3 &_mx) const
 		{
 			//assert((std::abs(_mx.m11 + _mx.m12) - std::abs(_mx.m21 + _mx.m22)) < EPSILON && "circle cannot be transformed with different x/y scales");
-			return ShapePtr(new Circle(_mx * position, Vector2(_mx.m11 * radius, _mx.m21 * radius).length()));
+			return std::make_unique<Circle>(_mx * position, Vector2(_mx.m11 * radius, _mx.m21 * radius).length());
 		};
 
 
@@ -93,6 +99,12 @@ namespace core
 		};
 
 
+		bool Circle::intersect(const Pill *_shape) const
+		{
+			return _2d::intersect(this, _shape);
+		};
+
+
 		float Circle::distance(const Vector2 &_point) const
 		{
 			return _2d::distance(this, _point);
@@ -123,6 +135,12 @@ namespace core
 		};
 
 
+		float Circle::distance(const Pill *_shape) const
+		{
+			return _2d::distance(this, _shape);
+		};
+
+
 		Vector2 Circle::separatingAxisNormal(const Shape *_shape) const
 		{
 			return -(_shape->separatingAxisNormal(this));
@@ -142,6 +160,12 @@ namespace core
 
 
 		Vector2 Circle::separatingAxisNormal(const LineArea *_shape) const
+		{
+			return _2d::separatingAxisNormal(this, _shape);
+		};
+
+
+		Vector2 Circle::separatingAxisNormal(const Pill *_shape) const
 		{
 			return _2d::separatingAxisNormal(this, _shape);
 		};

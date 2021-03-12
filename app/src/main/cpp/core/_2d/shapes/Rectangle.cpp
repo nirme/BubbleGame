@@ -22,9 +22,22 @@ namespace core
 		};
 
 
+		Rectangle::Rectangle(float _bottom, float _left, float _top, float _right)
+		{
+			setRectangle(_right - _left, _top - _bottom, {(_right - _left) * 0.5f, (_top - _bottom) * 0.5f});
+		};
+
+
 		Rectangle::Rectangle(float _width, float _height, const Vector2 &_position, float _cwRotation) : Shape()
 		{
 			setRectangle(_width, _height, _position, _cwRotation);
+		};
+
+
+		Rectangle::Rectangle(const Rectangle &_rhs) :
+				points{_rhs.points[0], _rhs.points[1], _rhs.points[2], _rhs.points[3]}
+		{
+			updateAABB();
 		};
 
 
@@ -32,12 +45,19 @@ namespace core
 		{};
 
 
+		ShapePtr Rectangle::clone()
+		{
+			return std::make_unique<Rectangle>(*this);
+		};
+
+
 		void Rectangle::setRectangle(float _width, float _height, const Vector2 &_position, float _cwRotation)
 		{
 			points[0] = Vector2(-std::abs(_width * 0.5f), std::abs(_height * 0.5f));
 			points[1] = Vector2(std::abs(_width * 0.5f), std::abs(_height * 0.5f));
 
-			if (_cwRotation > EPSILON)
+
+			if (std::fmodf(std::abs(_cwRotation), 2.0f * M_PI) > EPSILON)
 			{
 				float cr(std::cos(_cwRotation)), sr(std::sin(_cwRotation));
 
@@ -64,7 +84,7 @@ namespace core
 
 		ShapePtr Rectangle::transform(const Matrix3 &_mx) const
 		{
-			return ShapePtr(new Rectangle(_mx * points[0], _mx * points[1], _mx * points[2], _mx * points[3]));
+			return std::make_unique<Rectangle>(_mx * points[0], _mx * points[1], _mx * points[2], _mx * points[3]);
 		};
 
 
@@ -76,13 +96,13 @@ namespace core
 
 		bool Rectangle::contains(const Vector2 &_point) const
 		{
-			Vector2 normalVector, vectorToPoint;
+			Vector2 perpendicularVector, pointToPoint;
 
 			for (unsigned int i = 0; i < 4; ++i)
 			{
-				normalVector = normalVectorCCW(points[(i + 1) % 4] - points[i]);
-				vectorToPoint = _point - points[i];
-				if (dotProduct(normalVector, vectorToPoint) >= 0)
+				perpendicularVector = normalVectorCCW(points[(i + 1) % 4] - points[i]);
+				pointToPoint = _point - points[i];
+				if (dotProduct(perpendicularVector, pointToPoint) >= 0)
 					return false;
 			}
 
@@ -109,6 +129,12 @@ namespace core
 
 
 		bool Rectangle::intersect(const LineArea *_shape) const
+		{
+			return _2d::intersect(this, _shape);
+		};
+
+
+		bool Rectangle::intersect(const Pill *_shape) const
 		{
 			return _2d::intersect(this, _shape);
 		};
@@ -144,6 +170,12 @@ namespace core
 		};
 
 
+		float Rectangle::distance(const Pill *_shape) const
+		{
+			return _2d::distance(this, _shape);
+		};
+
+
 		Vector2 Rectangle::separatingAxisNormal(const Shape *_shape) const
 		{
 			return -(_shape->separatingAxisNormal(this));
@@ -166,5 +198,12 @@ namespace core
 		{
 			return _2d::separatingAxisNormal(this, _shape);
 		};
+
+
+		Vector2 Rectangle::separatingAxisNormal(const Pill *_shape) const
+		{
+			return _2d::separatingAxisNormal(this, _shape);
+		};
+
 	}
 }

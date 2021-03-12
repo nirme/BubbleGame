@@ -97,6 +97,12 @@ namespace core
 		{};
 
 
+		ShapePtr LineArea::clone()
+		{
+			return std::make_unique<LineArea>(a,b,c);
+		};
+
+
 		Vector3 LineArea::getParameters() const
 		{
 			return Vector3(a, b, c);
@@ -124,10 +130,10 @@ namespace core
 		ShapePtr LineArea::transform(const Matrix3 &_mx) const
 		{
 			Matrix3 invMx = inverse(_mx);
-			return ShapePtr(new LineArea(
-			a * invMx.m11 + b * invMx.m21 + c * invMx.m31,
-			a * invMx.m12 + b * invMx.m22 + c * invMx.m32,
-			a * invMx.m13 + b * invMx.m23 + c * invMx.m33));
+			return std::make_unique<LineArea>(
+					a * invMx.m11 + b * invMx.m21 + c * invMx.m31,
+					a * invMx.m12 + b * invMx.m22 + c * invMx.m32,
+					a * invMx.m13 + b * invMx.m23 + c * invMx.m33);
 		};
 
 
@@ -167,6 +173,12 @@ namespace core
 		};
 
 
+		bool LineArea::intersect(const Pill *_shape) const
+		{
+			return _2d::intersect(this, _shape);
+		};
+
+
 		float LineArea::distance(const Vector2 &_point) const
 		{
 			return _2d::distance(this, _point);
@@ -197,6 +209,12 @@ namespace core
 		};
 
 
+		float LineArea::distance(const Pill *_shape) const
+		{
+			return _2d::distance(this, _shape);
+		};
+
+
 		Vector2 LineArea::separatingAxisNormal(const Shape *_shape) const
 		{
 			return -(_shape->separatingAxisNormal(this));
@@ -219,5 +237,12 @@ namespace core
 		{
 			return _2d::separatingAxisNormal(this, _shape);
 		};
+
+
+		Vector2 LineArea::separatingAxisNormal(const Pill *_shape) const
+		{
+			return _2d::separatingAxisNormal(this, _shape);
+		};
+
 	}
 }

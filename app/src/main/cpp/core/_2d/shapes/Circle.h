@@ -1,7 +1,6 @@
 #pragma once
 
-#include <stdlib.h>
-#include <cassert>
+#include <memory>
 #include "Shape.h"
 #include "ShapeMath.h"
 
@@ -25,6 +24,8 @@ namespace core
 
 			Circle(const Vector2 &_position, float _radius);
 			~Circle();
+			virtual ShapePtr clone();
+
 
 			void setPosition(const Vector2 &_position);
 			void setRadius(float _radius);
@@ -40,17 +41,20 @@ namespace core
 			virtual bool intersect(const Circle *_shape) const;
 			virtual bool intersect(const Rectangle *_shape) const;
 			virtual bool intersect(const LineArea *_shape) const;
+			virtual bool intersect(const Pill *_shape) const;
 
 			virtual float distance(const Vector2 &_point) const;
 			virtual float distance(const Shape *_shape) const;
 			virtual float distance(const Circle *_shape) const;
 			virtual float distance(const Rectangle *_shape) const;
 			virtual float distance(const LineArea *_shape) const;
+			virtual float distance(const Pill *_shape) const;
 
 			virtual Vector2 separatingAxisNormal(const Shape *_shape) const;
 			virtual Vector2 separatingAxisNormal(const Circle *_shape) const;
 			virtual Vector2 separatingAxisNormal(const Rectangle *_shape) const;
 			virtual Vector2 separatingAxisNormal(const LineArea *_shape) const;
+			virtual Vector2 separatingAxisNormal(const Pill *_shape) const;
 		};
 
 		typedef std::unique_ptr<Circle> CirclePtr;
