@@ -73,7 +73,7 @@ namespace core
 			inline void normalize()
 			{
 				float len = w * w + z * z;
-				if (std::fabs(len - 1.0f) > EPSILON)
+				if (std::abs(len - 1.0f) > EPSILON)
 				{
 					len = 1.0f / std::sqrt(len);
 					w *= len;
