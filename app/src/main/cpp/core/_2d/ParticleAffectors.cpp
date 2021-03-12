@@ -16,15 +16,24 @@ namespace core
 
         {};
 
+
+        ParticleAffector *ParticleSpeedAffector::clone(ParticleSystem *_parent)
+        {
+            return new ParticleSpeedAffector(parent, operation, direction);
+        };
+
+
         void ParticleSpeedAffector::setOperation(SPEED_MODIFIER_OPERATION _operation)
         {
             operation = _operation;
         };
 
+
         void ParticleSpeedAffector::setDirection(Vector2 _direction)
         {
             direction = _direction;
         };
+
 
         Vector2 ParticleSpeedAffector::getDirection()
         {
@@ -34,6 +43,7 @@ namespace core
 
         void ParticleSpeedAffector::initParticle(Particle *_prt)
         {};
+
 
         void ParticleSpeedAffector::affect(ParticleSystem &_system, float _timeElapsed)
         {
@@ -68,6 +78,17 @@ namespace core
                 ParticleAffector(_parent)
         {};
 
+
+        ParticleAffector *ParticleSpriteAgeAffector::clone(ParticleSystem *_parent)
+        {
+            auto affector = new ParticleSpriteAgeAffector(parent);
+            for (auto it = spriteChangeMap.begin(), itEnd = spriteChangeMap.end(); it != itEnd; ++it)
+                affector->setSprite((*it).first, (*it).second.spriteName);
+
+            return affector;
+        };
+
+
         void ParticleSpriteAgeAffector::setSprite(float _timeLeft, const std::string &_spriteName)
         {
             short index = parent->getSpriteIndex(_spriteName);
@@ -75,10 +96,12 @@ namespace core
             spriteChangeMap.insert({_timeLeft, {index, _spriteName}});
         };
 
+
         void ParticleSpriteAgeAffector::initParticle(Particle *_prt)
         {
             _prt->spriteIndex = (*spriteChangeMap.rbegin()).second.spriteIndex;
         };
+
 
         void ParticleSpriteAgeAffector::affect(ParticleSystem &_system, float _timeElapsed)
         {

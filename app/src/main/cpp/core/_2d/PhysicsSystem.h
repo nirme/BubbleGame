@@ -41,6 +41,8 @@ namespace core
 
 		protected:
 
+			bool enabled;
+
 			typedef std::unordered_map<std::string, PhysicsAffectorPtr> AffectorsMap;
 			AffectorsMap activeAffectors;
 
@@ -120,6 +122,11 @@ namespace core
 
 
 		public:
+
+			void setEnabled(bool _enabled)
+			{
+				enabled = _enabled;
+			};
 
 			void registerAffector(std::string _name, PhysicsAffectorPtr _affector);
 			void unregisterAffector(std::string _name);

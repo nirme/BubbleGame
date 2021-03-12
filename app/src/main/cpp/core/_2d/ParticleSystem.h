@@ -22,6 +22,7 @@
 #include "../ControllerManager.h"
 
 #include "Particle.h"
+#include "ParticleAffector.h"
 
 
 namespace core
@@ -83,6 +84,7 @@ namespace core
 			ParticleAffectorList activeAffectors;
 
 			float speedFactor;
+			bool paused;
 
 
 			AxisAlignedBox _boundingBoxImpl() const;
@@ -101,6 +103,8 @@ namespace core
 
 			ParticleIterator getActiveParticleIterator();
 			ParticleSystem(const std::string &_name, Priority _renderPriority = 0, MaterialPtr _material = nullptr);
+			virtual ~ParticleSystem();
+			MovableObject* clone(const std::string &_name) const;
 
 			short getSpriteIndex(const std::string &_spriteName);
 
@@ -109,19 +113,22 @@ namespace core
 
             void addEmiter(ParticleEmitter *_emiter);
 
-            void addAffector(ParticleAffector *_affector);
+			// this should never be here
+			void addAffector(ParticleAffector *_affector); //temporary solution, internal use only
             void initSystem(unsigned int _particleCount = 500);
 
 			void progress(float _timeElapsed);
 			void reset();
+
+			bool isPaused() const;
+			void pauseSystem(bool _pause = true);
 
 
 			void setMaterial(ShadingProgramPtr _program, TexturePtr _tex);
 			const Matrix3& getTransform() const;
 			virtual void notifyAttached(SceneNode* _parent);
 			virtual BuffWriteResult writeVertexData(GraphicBuffer &_buffer, unsigned int _fromSprite = 0) const;
-
-        };
+		};
 
         typedef std::shared_ptr<ParticleSystem> ParticleSystemPtr;
         typedef std::unique_ptr<ParticleSystem> ParticleSystemUPtr;

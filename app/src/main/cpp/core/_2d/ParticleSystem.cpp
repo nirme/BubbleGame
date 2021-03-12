@@ -202,8 +202,49 @@ namespace core
         ParticleSystem::ParticleSystem(const std::string &_name, Priority _renderPriority, MaterialPtr _material) :
                 MovableObject(_name),
                 Renderable(_renderPriority, _material, false),
-                speedFactor(1.0f)
+                speedFactor(1.0f),
+                paused(false)
         {};
+
+
+        ParticleSystem::~ParticleSystem()
+        {
+            while (activeEmitters.size())
+            {
+                delete activeEmitters.front();
+                activeEmitters.pop_front();
+            }
+
+            while (activeAffectors.size())
+            {
+                delete activeAffectors.front();
+                activeAffectors.pop_front();
+            }
+        };
+
+
+        MovableObject* ParticleSystem::clone(const std::string &_name) const
+        {
+            ParticleSystem *object = parent->getOwner()->createParticleSystem(_name, nullptr);
+
+            object->setMaterial(material->program, material->textures[0]);
+            object->setScale(scale);
+            object->setRotation(rotation);
+            object->setPosition(position);
+
+            object->setSpeedFactor(speedFactor);
+
+            for (unsigned int i = 0, iEnd = sprites.size(); i < iEnd; ++i)
+                object->addSprite(sprites[i]);
+
+
+            for (auto it = activeAffectors.begin(), itEnd = activeAffectors.end(); it != itEnd; ++it)
+                (*it)->clone(object);
+
+            object->initSystem(particlesPool.size());
+
+            return object;
+        };
 
 
         short ParticleSystem::getSpriteIndex(const std::string &_spriteName)
@@ -278,6 +319,20 @@ namespace core
         {
             // expire everything that has life timer
             expireParticles(std::numeric_limits<float>::max());
+        };
+
+
+        bool ParticleSystem::isPaused() const
+        {
+            return paused;
+        };
+
+        void ParticleSystem::pauseSystem(bool _pause)
+        {
+            if (paused == _pause)
+                return;
+
+            controller->setEnabled(!(paused = _pause));
         };
 
 
@@ -376,5 +431,18 @@ namespace core
             return BuffWriteResult({ particlesWritten + _fromSprite, true });
         };
 
-	}
+        unsigned int ParticleSystem::getSpritesCount() const
+        {
+            return sprites.size();
+        };
+
+        ImageSpritePtr ParticleSystem::getSprite(unsigned int _index) const
+        {
+            if (_index < sprites.size())
+                return sprites[_index];
+            return nullptr;
+
+        };
+
+    }
 }

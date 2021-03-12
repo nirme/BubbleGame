@@ -10,6 +10,7 @@
 #include <cmath>
 #undef _USE_MATH_DEFINES
 #include "Particle.h"
+#include "ParticleAffector.h"
 //#include "ParticleSystem.h"
 #include "../Texture.h"
 #include "../ImageSprite.h"
@@ -40,6 +41,10 @@ namespace core
             ParticleSpeedAffector(ParticleSystem *_parent,
                                   SPEED_MODIFIER_OPERATION _operation = SMO_ADD,
                                   Vector2 _direction = 0.0f);
+
+            // this should never be here
+            ParticleAffector *clone(ParticleSystem *_parent);
+
             void setOperation(SPEED_MODIFIER_OPERATION _operation);
             void setDirection(Vector2 _direction);
             Vector2 getDirection();
@@ -60,6 +65,10 @@ namespace core
         public:
 
             ParticleSpriteAgeAffector(ParticleSystem *_parent);
+
+            // this should never be here
+            ParticleAffector *clone(ParticleSystem *_parent);
+
             void setSprite(float _timeLeft, const std::string &_spriteName);
             virtual void initParticle(Particle *_prt);
             virtual void affect(ParticleSystem &_system, float _timeElapsed);

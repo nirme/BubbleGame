@@ -221,22 +221,5 @@ namespace core
 			};
 		};
 
-
-		class ParticleAffector
-		{
-		protected:
-			ParticleSystem *parent;
-
-		public:
-			ParticleAffector(ParticleSystem *_parent) :
-				parent(_parent)
-			{};
-
-			virtual ~ParticleAffector(){};
-
-			virtual void initParticle(Particle *_prt) {};
-			virtual void affect(ParticleSystem &_system, float _timeElapsed){};
-		};
-
 	}
 }

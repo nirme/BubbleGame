@@ -123,6 +123,9 @@ namespace core
 
 		void PhysicsSystem::progressTime(float _frameTime)
 		{
+			if (!enabled)
+				return;
+
 			// move all the objects first
 			for (unsigned int i = 0, iEnd = registeredObjects.size(); i < iEnd; ++i)
 			{
