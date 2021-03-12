@@ -87,6 +87,7 @@ add_library(
     src/main/cpp/core/_2d/EmptyObject.cpp
 
     src/main/cpp/core/_2d/ParticleSystem.cpp
+    src/main/cpp/core/_2d/ParticleAffector.cpp
     src/main/cpp/core/_2d/ParticleEmitters.cpp
     src/main/cpp/core/_2d/ParticleAffectors.cpp
 
@@ -122,6 +123,7 @@ add_library(
     src/main/cpp/core/_2d/shapes/Circle.cpp
     src/main/cpp/core/_2d/shapes/Rectangle.cpp
     src/main/cpp/core/_2d/shapes/LineArea.cpp
+    src/main/cpp/core/_2d/shapes/Pill.cpp
     src/main/cpp/core/_2d/shapes/ShapeMath.cpp
     src/main/cpp/core/_2d/shapes/ShapeFactory.cpp
 
@@ -132,15 +134,22 @@ add_library(
     src/main/cpp/core/AnimatorInstances.cpp
 
 
+        src/main/cpp/core/ObjectAttachedTouchButton.cpp
+
+
     src/main/cpp/MusicController.cpp
 
     src/main/cpp/core/Engine.cpp
+
+
+    # game instance files
 
 
     src/main/cpp/InstanceParticleEmitters.cpp
     src/main/cpp/Player.cpp
     src/main/cpp/Enemy.cpp
     src/main/cpp/Stage.cpp
+    src/main/cpp/GameManager.cpp
 
 
 

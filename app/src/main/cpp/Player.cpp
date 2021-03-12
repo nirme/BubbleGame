@@ -106,21 +106,21 @@ void Player::setupCallbacks(InputManager *_inputManager)
 	TouchControl *touchControl(nullptr);
 
 	// left button
-	touchControl = _inputManager->getControlByName(inputLeftControlName);
+	touchControl = _inputManager->getControlByName(inputLeftControlStr);
 	assert(touchControl && "touch control not found");
 	if (!touchControlListeners[inputLeftControlIndex])
 		touchControlListeners[inputLeftControlIndex] = std::make_unique<PlayerMovementInputControl>(this, dirLeft);
 	touchControl->registerListener(touchControlListeners[inputLeftControlIndex].get());
 
 	// right button
-	touchControl = _inputManager->getControlByName(inputRightControlName);
+	touchControl = _inputManager->getControlByName(inputRightControlStr);
 	assert(touchControl && "touch control not found");
 	if (!touchControlListeners[inputRightControlIndex])
 		touchControlListeners[inputRightControlIndex] = std::make_unique<PlayerMovementInputControl>(this, dirRight);
 	touchControl->registerListener(touchControlListeners[inputRightControlIndex].get());
 
 	// shooting button
-	touchControl = _inputManager->getControlByName(inputCenterControlName);
+	touchControl = _inputManager->getControlByName(inputCenterControlStr);
 	assert(touchControl && "touch control not found");
 	if (!touchControlListeners[inputShootingControlIndex])
 		touchControlListeners[inputShootingControlIndex] = std::make_unique<PlayerShootingInputControl>(this);
@@ -209,6 +209,43 @@ void Player::resetPlayer()
 };
 
 
+void Player::pause()
+{
+	//save controllers state and pause them
+	for (unsigned int i = 0 ; i < controllers.size(); ++i)
+		if (controllersState[i] = controllers[i]->isEnabled())
+			controllers[i]->setEnabled(false);
+
+	bodySprite->pauseAnimation(true);
+
+	if (laserHead->isEnabled())
+		laserHead->pauseAnimation(true);
+
+	laserParticleSystem->pauseSystem(true);
+
+	playerBounds->setEnabled(false);
+	laserBounds->setEnabled(false);
+};
+
+
+void Player::resume()
+{
+	for (unsigned int i = 0 ; i < controllers.size(); ++i)
+		if (controllersState[i])
+			controllers[i]->setEnabled(true);
+
+	bodySprite->pauseAnimation(false);
+
+	if (laserHead->isEnabled())
+		laserHead->pauseAnimation(false);
+
+	laserParticleSystem->pauseSystem(false);
+
+	playerBounds->setEnabled(true);
+	laserBounds->setEnabled(true);
+};
+
+
 void Player::updateDirection(short _direction, bool _addDirection) //add/remove direction
 {
 	Logger::getSingleton().debug(__FUNCTION__);
@@ -272,6 +309,8 @@ void Player::shootLaser() //shoot laser
 	//bodySprite->stopAnimation();
 	bodySprite->playAnimation(animationShootingStart, Animator::AM_ONCE, true);
 	// end animation listener will call startLaser() when done
+
+	shooting = true;
 };
 
 

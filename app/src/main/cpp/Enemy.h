@@ -15,13 +15,12 @@
 #include "core/_2d/shapes/ShapeFactory.h"
 
 
+#include "GameStrings.h"
+#include "Stage.h"
+
+
 using namespace core;
 using namespace core::_2d;
-
-static constexpr char *rigidTypePlayer = "player";
-static constexpr char *rigidTypeLaser = "laser";
-static constexpr char *rigidTypeStage = "stage";
-static constexpr char *rigidTypeEnemy = "enemy";
 
 
 class Enemy
@@ -33,6 +32,8 @@ public:
 		LEVEL_1 = 0,
 		LEVEL_2 = 1,
 		LEVEL_3 = 2,
+		LAST_LEVEL = 2,
+		UNDEFINED = 0xFF
 	};
 
 	class Listener
@@ -51,18 +52,22 @@ protected:
 	static constexpr char *enemySpriteNodeName = "sprite";
 	static constexpr char *enemyBoundsNodeName = "bounds";
 
-
-	static constexpr char *gravityAffector = "gravity";
-
 	static constexpr float invulnerabilityFlickerTime  = 0.5f;
 	static constexpr float invulnerabilityTimeOnSpawn  = 2.0f; // in seconds
 
+	static constexpr char *enemySpriteName = "enemy_sprite_%d";
+	static int enemyCounter;
+
+	static std::string getNextName();
 
 	//callbacks and controllers
 
 	std::unique_ptr<RigidObject::Listener> rigidObjectListener;
 	ControllerPtr timeoutController;
-	Listener *listener;
+	bool timeoutControllerState;
+	std::unique_ptr<Listener> listener;
+	Stage *stage;
+
 
 
 	bool alive;
@@ -78,13 +83,28 @@ protected:
 	RigidObjectUPtr bounds;
 
 
+
 public:
 
+	Enemy();
+	Enemy(const Enemy &_rhs);
 
-	void create(SceneManager *_scene, ScriptNodePtr _data);
+	void create(SceneManager *_scene, ScriptNodePtr _data, Stage *_stage);
+
 	void setupCallbacks();
-	void registerListener(Listener *_listener);
+	void registerListener(std::unique_ptr<Listener> _listener);
 
+	void setLevel(LEVEL _level);
+	LEVEL getLevel() const;
+	void lowerLevel();
+	void kill();
+
+	Vector2 getPosition() const;
+	Vector2 getDirection() const;
+	float getRadius() const;
+
+	void pause();
+	void resume();
 
 	// callback functions
 

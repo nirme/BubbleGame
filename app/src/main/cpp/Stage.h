@@ -24,14 +24,11 @@
 #include "core/_2d/shapes/ShapeFactory.h"
 
 
+#include "GameStrings.h"
+
+
 using namespace core;
 using namespace core::_2d;
-
-static constexpr char *rigidTypePlayer = "player";
-static constexpr char *rigidTypeLaser = "laser";
-static constexpr char *rigidTypeStage = "stage";
-static constexpr char *rigidTypeEnemy = "enemy";
-
 
 class Stage
 {
@@ -45,11 +42,13 @@ protected:
 
 	static constexpr char *stageGravityValueName = "gravity";
 
+
 	static constexpr char *bgSpriteNodeName = "background_sprite";
 	static constexpr char *bgSpriteIsAnimatedValueName = "is_animated";
 
 	static constexpr char *spriteIdleAnimationValue = "idle_loop";
 
+	static constexpr unsigned int explosionParticleCount = 100;
 
 
 	float width, height;
@@ -63,20 +62,16 @@ protected:
 	AnimatedSprite *animatedBackground;
 	RigidObjectUPtr bounds;
 
-
-
-	void resetStage();
-	void setBackground(ScriptNodePtr _bgData);
-	void setGravity(float _gravityStrength);
-	void setupBounds(float _width, float _height);
+	ParticleSystem *explosionSystem;
 
 public:
 
 	void create(SceneManager *_scene, ScriptNodePtr _data);
 	void setupCallbacks() {};
 
+	void pause();
+	void resume();
 
-	void playAnimation();
-	void pauseAnimation();
+	void playExplosion(const Vector2 &_position, float radius);
 
 };

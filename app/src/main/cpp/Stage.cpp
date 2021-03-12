@@ -41,6 +41,10 @@ void Stage::create(SceneManager *_scene, ScriptNodePtr _data)
 	}
 
 
+	PhysicsAffectorPtr gravity = std::make_unique<PhysicsLinearAffector>(Vector2(0.0f, -gravityStrength));
+	PhysicsSystem::getSingletonPtr()->registerAffector(gravityAffector, gravity);
+
+
 	bounds = std::make_unique<RigidObject>(rigidTypeStage, PhysicsSystem::getSingletonPtr());
 
 	ShapePtr border;
@@ -58,26 +62,33 @@ void Stage::create(SceneManager *_scene, ScriptNodePtr _data)
 	bounds->setEntity(isAnimated ? static_cast<MovableObject*>(animatedBackground) : static_cast<MovableObject*>(staticBackground));
 
 	setupCallbacks();
+
+	// run default animation loop
+	if(isAnimated)
+		animatedBackground->playAnimation(spriteIdleAnimationValue, Animator::AM_REPEAT, false);
 };
 
 
-void Stage::playAnimation()
+void Stage::pause()
 {
 	if(isAnimated)
-	{
-		if (animatedBackground->isPaused())
-			animatedBackground->pauseAnimation(false);
-		else
-			animatedBackground->playAnimation(spriteIdleAnimationValue, Animator::AM_REPEAT, false);
-	}
-};
-
-
-void Stage::pauseAnimation()
-{
-	if(isAnimated)
-	{
 		animatedBackground->pauseAnimation(true);
-	}
+
+	bounds->setEnabled(false);
 };
 
+
+void Stage::resume()
+{
+	if(isAnimated)
+		animatedBackground->pauseAnimation(false);
+
+	bounds->setEnabled(true);
+};
+
+
+void Stage::playExplosion(const Vector2 &_position, float radius)
+{
+	ParticleEmitter *emiter = new InstanceParticleEmitters(explosionSystem, explosionParticleCount, {2.0f * radius, 2.0f * radius, _position, 0.0f});
+	explosionSystem->addEmiter(emiter);
+};

@@ -1,8 +1,54 @@
 #include "Enemy.h"
 
 
+int Enemy::enemyCounter = 1;
 
-void Enemy::create(SceneManager *_scene, ScriptNodePtr _data)
+std::string Enemy::getNextName()
+{
+	char name[32];
+	printf(name, enemySpriteName, enemyCounter++);
+	return std::string(name);
+};
+
+
+Enemy::Enemy() :
+		alive(false),
+		invulnerable(false),
+		invulnerabilityTimeLeft(0),
+		enemyLevel(UNDEFINED),
+		scene(nullptr),
+		enemyNode(nullptr),
+		sprite(nullptr),
+		bounds(nullptr),
+		stage(nullptr)
+{};
+
+
+Enemy::Enemy(const Enemy &_rhs) :
+		alive(false),
+		invulnerable(false),
+		invulnerabilityTimeLeft(0.0f),
+		enemyLevel(_rhs.enemyLevel),
+		scene(_rhs.scene),
+		enemyNode(_rhs.enemyNode),
+		stage(_rhs.stage)
+{
+	if (!scene)
+		return;
+
+	sprite = dynamic_cast<SingleSprite*>(_rhs.sprite->clone(getNextName()));
+	enemyNode->appendObject(sprite);
+
+	bounds = std::make_unique<RigidObject>(*_rhs.bounds);
+
+	bounds->setEnabled(false);
+	bounds->setEntity(sprite);
+
+	setupCallbacks();
+};
+
+
+void Enemy::create(SceneManager *_scene, ScriptNodePtr _data, Stage *_stage)
 {
 	assert(_scene && "no scene manager provided");
 
@@ -10,6 +56,7 @@ void Enemy::create(SceneManager *_scene, ScriptNodePtr _data)
 	invulnerable = false;
 	invulnerabilityTimeLeft = 0.0f;
 	enemyLevel = (LEVEL) std::stoi(_data->getValue(enemyLevelValueName));
+	stage = _stage;
 
 	scene = _scene;
 	enemyNode = scene->getNodeByName(enemySceneNodeName);
@@ -22,7 +69,7 @@ void Enemy::create(SceneManager *_scene, ScriptNodePtr _data)
 	{
 		if ((*it)->getName().compare(enemySpriteNodeName) == 0)
 		{
-			sprite = scene->createSingleSprite(enemySpriteNodeName, *it);
+			sprite = scene->createSingleSprite(getNextName(), *it);
 			enemyNode->appendObject(sprite);
 		}
 		else if ((*it)->getName().compare(enemyBoundsNodeName) == 0)
@@ -65,9 +112,76 @@ void Enemy::setupCallbacks()
 };
 
 
-void Enemy::registerListener(Listener *_listener)
+void Enemy::registerListener(std::unique_ptr<Listener> _listener)
 {
-	listener = _listener;
+	listener.reset();
+	listener.swap(_listener);
+};
+
+
+void Enemy::setLevel(LEVEL _level)
+{
+	enemyLevel = _level;
+};
+
+
+Enemy::LEVEL Enemy::getLevel() const
+{
+	return enemyLevel;
+};
+
+
+void Enemy::lowerLevel()
+{
+	enemyLevel = (LEVEL)((int)enemyLevel + 1);
+	sprite->setScale(sprite->getScale() * 0.5f);
+};
+
+
+void Enemy::kill()
+{
+	// add timer with scaling down to 0 instead of turning right off
+	alive = false;
+	sprite->setEnabled(false);
+
+	stage->playExplosion(getPosition(), getRadius()); //show explosion from shared particle manager
+};
+
+
+Vector2 Enemy::getPosition() const
+{
+	return bounds->getCurrentPosition();
+};
+
+
+Vector2 Enemy::getDirection() const
+{
+	return bounds->getDirectionVector();
+};
+
+
+float Enemy::getRadius() const
+{
+	const AxisAlignedBox &aabb = bounds->getBoundingBox();
+	return (aabb.getMaximum().x - aabb.getMinimum().x) * 0.5f;
+};
+
+
+void Enemy::pause()
+{
+	if (timeoutControllerState = timeoutController->isEnabled())
+		timeoutController->setEnabled(false);
+
+	bounds->setEnabled(false);
+};
+
+
+void Enemy::resume()
+{
+	if (timeoutControllerState)
+		timeoutController->setEnabled(true);
+
+	bounds->setEnabled(false);
 };
 
 

@@ -28,14 +28,11 @@
 #include "core/StringUtils.h"
 
 
+#include "GameStrings.h"
+
+
 using namespace core;
 using namespace core::_2d;
-
-static constexpr char *rigidTypePlayer = "player";
-static constexpr char *rigidTypeLaser = "laser";
-static constexpr char *rigidTypeStage = "stage";
-static constexpr char *rigidTypeEnemy = "enemy";
-
 
 class Player
 {
@@ -80,10 +77,6 @@ protected:
 	static constexpr char *animationLaserHeadShooting = "fire_loop";
 	//static constexpr char *animationLaserHeadAgaintsWall = "wall_hit_loop";
 
-
-	static constexpr char *inputLeftControlName = "touch_left";
-	static constexpr char *inputRightControlName = "touch_right";
-	static constexpr char *inputCenterControlName = "touch_center";
 
 	static constexpr unsigned int inputLeftControlIndex = 0;
 	static constexpr unsigned int inputRightControlIndex = 1;
@@ -131,6 +124,7 @@ protected:
 	std::array<std::unique_ptr<TouchArea::Listener>, 3> touchControlListeners;
 	std::array<std::unique_ptr<AnimatedSprite::Listener>, 2> animationListeners;
 	std::array<ControllerPtr, 3> controllers;
+	std::array<bool, 3> controllersState;
 	std::array<std::unique_ptr<RigidObject::Listener>, 2> rigidObjectListeners;
 
 	Listener *enemyHitListener;
@@ -162,6 +156,9 @@ public:
 
 	void registerEnemyHitListener(Listener *_enemyHitListener);
 	void resetPlayer();
+
+	void pause();
+	void resume();
 
 
 	// callback functions

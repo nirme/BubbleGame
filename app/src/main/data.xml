@@ -1,0 +1,204 @@
+<root>
+
+	<variables
+		enemy_speed_base="1.0"
+		enemy_speed_multiplier="1.1"
+		enemy_count_base="2"
+		enemy_count_multiplier="1.5"
+		enemy_starting_spawn_count="2"
+		enemy_starting_spawn_multiplier="1.25"
+		enemy_spawn_timer="30"
+		enemy_spawn_timer_multiplier="0.95"
+	/>
+
+	<stages>
+		<scene name="earth">
+			<node name="stage_node">
+			</node>
+
+			<node name="player_node">
+			</node>
+
+			<node name="enemy_node">
+			</node>
+
+
+
+
+		</scene>
+
+	</stages>
+
+
+	<scene name="menu_scene">
+
+		<node name="main_menu">
+
+			<object name="menu_bg" type="" render_priority="1">
+				<animations/>
+			</object>
+
+			<object name="start_game_button" type="" render_priority="2">
+			</object>
+
+			<object name="settings_button" type="" render_priority="2">
+			</object>
+
+			<object name="exit_button" type="" render_priority="2">
+			</object>
+
+		</node>
+
+
+		<node name="settings_menu">
+
+			<object name="settings_bg" type="" render_priority="11"></object>
+
+			<object name="back_to_menu_button" type="" render_priority="12">
+			</object>
+
+		</node>
+
+
+		<node name="ingame">
+
+			<object name="ingame_menu_button" type="" render_priority="101">
+			</object>
+		</node>
+
+
+		<node name="ingame_menu">
+
+			<object name="ingame_menu_bg" type="" render_priority="111"></object>
+
+			<object name="ingame_reset_button" type="" render_priority="112">
+			</object>
+
+			<object name="ingame_resume_button" type="" render_priority="112">
+			</object>
+
+			<object name="ingame_back_to_menu_button" type="" render_priority="112">
+			</object>
+
+		</node>
+
+
+		<node name="loading_screen">
+			<object name="loading_bg" type="animated_sprite" render_priority="255" defaultAnimation="" defaultAnimationMode="repeat/loop/once" >
+				<animations>
+					<animation name="" length="">
+
+						<keyframe sprite_name="" time="" />
+						<keyframe sprite_name="" time="" />
+						<keyframe sprite_name="" time="" />
+						<keyframe sprite_name="" time="" />
+						<keyframe sprite_name="" time="" />
+
+					</animation>
+				</animations>
+
+				<defaultAnimation name="" mode="" />
+
+			</object>
+		</node>
+
+	</scene>
+
+
+
+
+	<controls>
+
+		<control
+			set="main_menu_controls"
+			name="start_game_button"
+			type="object_touch_button"
+			attached_to="start_game_button" >
+				<shape type="pill" position="x,y" length="l" radius="r" />
+		</control>
+
+
+		<control
+			set="main_menu_controls"
+			name="settings_button"
+			type="object_touch_button"
+			attached_to="settings_button" >
+				<shape type="pill" position="x,y" length="l" radius="r" />
+		</control>
+
+		<control
+			set="main_menu_controls"
+			name="exit_button"
+			type="object_touch_button"
+			attached_to="exit_button" >
+				<shape type="pill" position="x,y" length="l" radius="r" />
+		</control>
+
+
+		<control
+			set="settings_menu_controls"
+			name="back_to_menu_button"
+			type="object_touch_button"
+			attached_to="back_to_menu_button" >
+				<shape type="circle" position="x,y" radius="r" />
+		</control>
+
+
+		<control
+			set="ingame_controls"
+			name="ingame_menu_button"
+			type="object_touch_button"
+			attached_to="ingame_menu_button" >
+				<shape type="circle" position="x,y" radius="r" />
+		</control>
+
+		<control
+			set="ingame_controls"
+			name="inputLeftControl"
+			type="touch_area" >
+				<shape type="rectangle" bottom="-1" left="-1" top="1" right="-0.4" />
+		</control>
+
+		<control
+			set="ingame_controls"
+			name="inputRightControl"
+			type="touch_area" >
+				<shape type="rectangle" bottom="-1" left="0.4" top="1" right="1" />
+		</control>
+
+		<control
+			set="ingame_controls"
+			name="inputCenterControl"
+			type="touch_area" >
+				<shape type="rectangle" bottom="-1" left="-0.4" top="1" right="0.4" />
+		</control>
+
+
+		<control
+			set="ingame_menu_controls"
+			name="ingame_reset_button"
+			type="object_touch_button"
+			attached_to="ingame_reset_button" >
+				<shape type="pill" position="x,y" length="l" radius="r" />
+		</control>
+
+		<control
+			set="ingame_menu_controls"
+			name="ingame_resume_button"
+			type="object_touch_button"
+			attached_to="ingame_resume_button" >
+				<shape type="pill" position="x,y" length="l" radius="r" />
+		</control>
+
+		<control
+			set="ingame_menu_controls"
+			name="ingame_back_to_menu_button"
+			type="object_touch_button"
+			attached_to="ingame_back_to_menu_button" >
+				<shape type="pill" position="x,y" length="l" radius="r" />
+		</control>
+
+
+	</controls>
+
+</root>
