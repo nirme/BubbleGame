@@ -166,6 +166,80 @@ namespace core
         return _r * (M_PI / 180.0f);
     };
 
+
+    bool contains(const _2d::AxisAlignedBox &_box, const Vector2 &_point)
+    {
+        if (_box.isBox())
+        {
+            auto vMin = _box.getMinimum();
+            auto vMax = _box.getMaximum();
+
+            if (vMin.x <= _point.x && vMin.y <= _point.y &&
+                vMax.x >= _point.x && vMax.y >= _point.y)
+                return true;
+        }
+        else if (_box.isInfinite())
+            return true;
+
+        return false;
+    };
+
+
+    bool onLeftSide(const Vector2 &_segmentA, const Vector2 &_segmentB, const Vector2 &_point)
+    {
+        return dotProduct(normalVectorCCW(_segmentB - _segmentA), _point - _segmentA) > 0.0f;
+    };
+
+
+    bool onRightSide(const Vector2 &_segmentA, const Vector2 &_segmentB, const Vector2 &_point)
+    {
+        return dotProduct(normalVectorCCW(_segmentB - _segmentA), _point - _segmentA) < 0.0f;
+    };
+
+
+	bool segmentsCrossing(const Vector2 &_segment1A, const Vector2 &_segment1B, const Vector2 &_segment2A, const Vector2 &_segment2B)
+	{
+		Vector2 seg1Normal = normalVectorCCW(_segment1B - _segment1A);
+		float seg1to2A = dotProduct(seg1Normal, _segment2A - _segment1A);
+		float seg1to2B = dotProduct(seg1Normal, _segment2B - _segment1A);
+
+		Vector2 seg2Normal = normalVectorCCW(_segment1B - _segment1A);
+		float seg2to1A = dotProduct(seg2Normal, _segment1A - _segment2A);
+		float seg2to1B = dotProduct(seg2Normal, _segment1B - _segment2A);
+
+
+		if (seg1to2A * seg1to2B > 0.0f || seg2to1A * seg2to1B > 0.0f)
+			return false;
+
+		if (seg1to2A * seg1to2B < 0.0f && seg2to1A * seg2to1B < 0.0f ||
+			std::abs(seg1to2A + seg1to2B) < EPSILON)
+			return true;
+
+		// segments on the same line
+		// check if segments overlap
+		return (_segment1A.x - _segment2A.x) * (_segment1A.x - _segment2B.x) <= 0.0f ||
+			   (_segment1B.x - _segment2A.x) * (_segment1B.x - _segment2B.x) <= 0.0f;
+	};
+
+
+    float distance(const Vector2 &_segmentA, const Vector2 &_segmentB, const Vector2 &_point)
+    {
+        Vector2 segmentVect = _segmentB - _segmentA;
+        float projDistSq = dotProduct(segmentVect, _point - _segmentA);
+
+        // behind point A
+        if (projDistSq <= 0.0f)
+            return (_point - _segmentA).length();
+
+        // behind point B
+        if (projDistSq >= segmentVect.lengthSq())
+            return (_point - _segmentB).length();
+
+        // between A and B
+        return std::abs(dotProduct(normalize(normalVectorCCW(segmentVect)), _point - _segmentA));
+    };
+
+
 }
 
 

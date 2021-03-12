@@ -3,7 +3,9 @@
 #include "Matrix3.h"
 #include "Vector2.h"
 #include "_2d/Quaternion.h"
+#include "_2d/AxisAlignedBox.h"
 
+#define EPSILON 0.00001f
 
 namespace core
 {
@@ -30,12 +32,23 @@ namespace core
 
 	Vector2 normalVectorCCW(const Vector2 & _v);
 	Vector2 normalVectorCW(const Vector2 & _v);
+
 	Vector2 rotateVector(const Vector2 &_v, float _r);
 
 	Vector2 reflectAcrossNormal(const Vector2 &_v, const Vector2 &_normal);
 	Vector2 reflectAcrossLine(const Vector2 &_v, const Vector2 &_line);
 
 	float degreeToRad(float _r);
+
+	bool contains(const _2d::AxisAlignedBox &_box, const Vector2 &_point);
+
+
+	bool onLeftSide(const Vector2 &_segmentA, const Vector2 &_segmentB, const Vector2 &_point);
+	bool onRightSide(const Vector2 &_segmentA, const Vector2 &_segmentB, const Vector2 &_point);
+	bool segmentsCrossing(const Vector2 &_segment1A, const Vector2 &_segment1B, const Vector2 &_segment2A, const Vector2 &_segment2B);
+
+	float distance(const Vector2 &_segmentA, const Vector2 &_segmentB, const Vector2 &_point);
+
 }
 
 

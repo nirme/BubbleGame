@@ -53,10 +53,7 @@ namespace core
 			typedef std::unordered_map<std::string, PhysicsAffectorPtr> AffectorsMap;
 			AffectorsMap affectors;
 
-
 			Listener *listener;
-
-			//virtual AxisAlignedBox _boundingBoxImpl() const;
 
 			void updateShapes() const;
 
@@ -88,6 +85,7 @@ namespace core
 			const std::vector<ShapePtr> &getPreviousFrameShapes() const;
 
 			RigidObject(const std::string &_collidableObjectType, PhysicsSystem *_collisionSystem = nullptr);
+			RigidObject(const RigidObject &_rhs);
 			~RigidObject();
 
 			void setEntity(MovableObject *_entity);

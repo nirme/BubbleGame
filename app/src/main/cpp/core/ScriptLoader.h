@@ -21,6 +21,8 @@
 #include "_2d/ObjectFactory.h"
 #include "SpriteCoords.h"
 
+#include "TouchControlFactory.h"
+
 #include "DataStream.h"
 
 #include "_2d/shapes/ShapeFactory.h"
@@ -39,8 +41,8 @@ namespace core
 
 	public:
 
+		// base functions
 		ScriptLoader();
-
 
 		const ScriptParser& getParser();
 
@@ -48,8 +50,14 @@ namespace core
 
 		ScriptNodeListPtr parse(DataStreamPtr _stream);
 
-		//  generic script value parsing
 
+		//  generic data
+
+		ScriptNodePtr getChildNodeByName(ScriptNodePtr _parent, std::string _name);
+		ScriptNodePtr getChildNodeByNameAndValue(ScriptNodePtr _parent, std::string _name, std::string _attrib="", std::string _value="");
+
+
+		//  generic script value parsing
 
 		std::string parseResourceName(ScriptNodePtr _node);
 		std::string parseResourceGroup(ScriptNodePtr _node);
@@ -90,14 +98,12 @@ namespace core
 		std::string parseDefaultChar(ScriptNodePtr _node);
 
 
-
 		// scene node
 
 		std::string parseNodeName(ScriptNodePtr _node);
 		Vector2 parseNodeScale(ScriptNodePtr _node);
 		_2d::Quaternion parseNodeRotation(ScriptNodePtr _node);
 		Vector2 parseNodePosition(ScriptNodePtr _node);
-
 
 
 		// object
@@ -121,8 +127,16 @@ namespace core
 
 		std::list<std::string> parseParticlesImageSprites(ScriptNodePtr _node);
 
+		ScriptNodeListPtr getAnimationNodesList(ScriptNodePtr _node);
 
+		std::string parseAnimationName(ScriptNodePtr _node);
+		ScriptNodeListPtr getKeyframeNodeList(ScriptNodePtr _node);
+		float parseKeyframeTime(ScriptNodePtr _node);
+		std::string parseKeyframeSpriteName(ScriptNodePtr _node);
+		float parseAnimationLength(ScriptNodePtr _node);
 
+		std::string parseDefaultAnimationName(ScriptNodePtr _node);
+		Animator::ANIMATION_MODE parseDefaultAnimationMode(ScriptNodePtr _node);
 
 
 		//shapes
@@ -130,10 +144,20 @@ namespace core
 		_2d::SHAPE_TYPE parseShapeType(ScriptNodePtr _node);
 		Vector2 parseShapePosition(ScriptNodePtr _node);
 
-		float parseCircleRadius(ScriptNodePtr _node);
+		float parseShapeRadius(ScriptNodePtr _node);
 		Vector2 parseRectangleSize(ScriptNodePtr _node);
-		float parseRectangleRotation(ScriptNodePtr _node);
+		float parseShapeRotation(ScriptNodePtr _node);
 		Vector3 parse2DLineParams(ScriptNodePtr _node);
+		float parsePillLength(ScriptNodePtr _node);
+
+
+		//controls
+
+		TOUCH_CONTROL_TYPE parseTouchControlType(ScriptNodePtr _node);
+		std::string parseTouchControlName(ScriptNodePtr _node);
+		std::string parseTouchControlSet(ScriptNodePtr _node);
+		std::string parseTouchControlAttachedToObject(ScriptNodePtr _node);
+		ScriptNodePtr getTouchControlShapeNode(ScriptNodePtr _node);
 
 
 	};

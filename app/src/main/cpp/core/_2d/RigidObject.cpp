@@ -193,6 +193,31 @@ namespace core
 		};
 
 
+		RigidObject::RigidObject(const RigidObject &_rhs) :
+				collidableObjectType(_rhs.collidableObjectType),
+				collisionSystem(_rhs.collisionSystem),
+				entity(nullptr),
+				enabled(true),
+				staticObject(_rhs.staticObject),
+				bounceFactor(_rhs.bounceFactor),
+				directionVector(0.0f)
+		{
+			if (collisionSystem)
+				registerCollidableObject(collisionSystem);
+
+			for (auto it = _rhs.shapes.begin(), itEnd = _rhs.shapes.end(); it != itEnd; ++it)
+			{
+				ShapePtr ptr = (*it)->clone();
+				addShape(ptr);
+			}
+
+			for (auto it = _rhs.affectors.begin(), itEnd = _rhs.affectors.end(); it != itEnd; ++it)
+			{
+				addAffector((*it).first);
+			}
+		};
+
+
 		RigidObject::~RigidObject()
 		{
 			if (collisionSystem)

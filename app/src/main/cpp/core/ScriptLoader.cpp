@@ -29,9 +29,49 @@ namespace core
 	};
 
 
+	//  generic data
+
+	ScriptNodePtr ScriptLoader::getChildNodeByName(ScriptNodePtr _parent, std::string _name)
+	{
+		ScriptNodeListPtr children = _parent->getChildList();
+		auto childIt = std::find_if(children->begin(), children->end(), [_name] (ScriptNodePtr node) { return !node->getName().compare(_name); });
+		return childIt != children->end() ? *childIt : nullptr;
+	};
+
+
+	ScriptNodePtr ScriptLoader::getChildNodeByNameAndValue(ScriptNodePtr _parent, std::string _name, std::string _attrib, std::string _value)
+	{
+		assert((!_name.empty() || (!_attrib.empty() && !_value.empty())) && "no value provided");
+
+		ScriptNodeListPtr children = _parent->getChildList();
+
+		//_name, std::string _attrib="", std::string _value
+		ScriptNodeListIterator childIt;
+
+		if (_attrib.empty())
+			return getChildNodeByNameAndValue(_parent, _name);
+
+		if (_name.empty())
+			childIt = std::find_if(children->begin(),
+								   children->end(),
+								   [_attrib, _value] (ScriptNodePtr node)
+								   {
+									   return !node->getValue(_attrib).compare(_value);
+								   });
+
+		else
+			childIt = std::find_if(children->begin(),
+								   children->end(),
+								   [_name, _attrib, _value] (ScriptNodePtr node)
+								   {
+									   return !node->getName().compare(_name) &&
+											  !node->getValue(_attrib).compare(_name);
+								   });
+
+		return childIt != children->end() ? *childIt : nullptr;
+	};
 
 	//  generic script value parsing
-
 
 	std::string ScriptLoader::parseResourceName(ScriptNodePtr _node)
 	{
@@ -46,7 +86,6 @@ namespace core
 
 
 	//  texture specific script parsing
-
 
 	TEXTURE_TYPE ScriptLoader::parseTextureType(ScriptNodePtr _node) // stub func, only 1 tex type allowed
 	{
@@ -276,10 +315,19 @@ namespace core
 
 	OBJECT_TYPE ScriptLoader::parseRenderableType(ScriptNodePtr _node)
 	{
-		std::string value = _node->getValue("object_type");
+		std::string value = _node->getValue("type");
 
 		if (value.compare("single_sprite") == 0)
 			return OBJECT_TYPE::OT_SINGLE_SPRITE;
+
+		if (value.compare("animated_sprite") == 0)
+			return OBJECT_TYPE::OT_ANIMATED_SPRITE;
+
+		if (value.compare("particle_system") == 0)
+			return OBJECT_TYPE::OT_PARTICLE_SYSTEM;
+
+		if (value.compare("sprited_text") == 0)
+			return OBJECT_TYPE::OT_SPRITED_FONT;
 
 		return OBJECT_TYPE::OT_UNDEFINED;
 	};
@@ -469,9 +517,86 @@ namespace core
 	};
 
 
+	ScriptNodeListPtr ScriptLoader::getAnimationNodesList(ScriptNodePtr _node)
+	{
+		ScriptNodeListPtr nodeList = _node->getChildList();
+		for (ScriptNodeListIterator it = nodeList->begin(); it != nodeList->end(); ++it)
+		{
+			if ((*it)->getName().compare("animations") == 0)
+				return (*it)->getChildList();
+		}
+
+		return nullptr;
+	};
+
+
+	std::string ScriptLoader::parseAnimationName(ScriptNodePtr _node)
+	{
+		return _node->getValue("name");
+	};
+
+
+	ScriptNodeListPtr ScriptLoader::getKeyframeNodeList(ScriptNodePtr _node)
+	{
+		ScriptNodeListPtr nodeList = _node->getChildList();
+		for (ScriptNodeListIterator it = nodeList->begin(); it != nodeList->end(); ++it)
+		{
+			if ((*it)->getName().compare("animation") == 0)
+				return (*it)->getChildList();
+		}
+
+		assert(0 && "animation frames not found");
+	};
+
+
+	float ScriptLoader::parseKeyframeTime(ScriptNodePtr _node)
+	{
+		assert(_node->getName().compare("keyframe") == 0 && "not a keyframe node");
+		return std::stof(_node->getValue("time"));
+	};
+
+
+	std::string ScriptLoader::parseKeyframeSpriteName(ScriptNodePtr _node)
+	{
+		assert(_node->getName().compare("keyframe") == 0 && "not a keyframe node");
+		return _node->getValue("sprite_name");
+	};
+
+
+
+	float ScriptLoader::parseAnimationLength(ScriptNodePtr _node)
+	{
+		return std::stof(_node->getValue("length"));
+	};
+
+
+	std::string ScriptLoader::parseDefaultAnimationName(ScriptNodePtr _node)
+	{
+		ScriptNodeListPtr childList = _node->getChildList();
+		auto childIt = std::find_if(childList->begin(), childList->end(), [] (ScriptNodeListIterator _cnode) { return !(*_cnode)->getName().compare("defaultAnimation"); });
+		return childIt != childList->end() ? (*childIt)->getValue("name") : "";
+	};
+
+
+	Animator::ANIMATION_MODE ScriptLoader::parseDefaultAnimationMode(ScriptNodePtr _node)
+	{
+		ScriptNodeListPtr childList = _node->getChildList();
+		auto childIt = std::find_if(childList->begin(), childList->end(), [] (ScriptNodeListIterator _cnode) { return !(*_cnode)->getName().compare("defaultAnimation"); });
+		std::string mode = childIt != childList->end() ? (*childIt)->getValue("mode") : "";
+
+		if (mode.compare("repeat") == 0)
+			return Animator::ANIMATION_MODE::AM_REPEAT;
+
+		if (mode.compare("loop") == 0)
+			return Animator::ANIMATION_MODE::AM_LOOP;
+
+		//default
+		//if (mode.compare("once") == 0)
+		return Animator::ANIMATION_MODE::AM_ONCE;
+	};
+
 
 	//shapes
-
 
 	_2d::SHAPE_TYPE ScriptLoader::parseShapeType(ScriptNodePtr _node)
 	{
@@ -502,7 +627,7 @@ namespace core
 	};
 
 
-	float ScriptLoader::parseCircleRadius(ScriptNodePtr _node)
+	float ScriptLoader::parseShapeRadius(ScriptNodePtr _node)
 	{
 		return std::stof(_node->getValue("radius"));
 	};
@@ -524,7 +649,7 @@ namespace core
 	};
 
 
-	float ScriptLoader::parseRectangleRotation(ScriptNodePtr _node)
+	float ScriptLoader::parseShapeRotation(ScriptNodePtr _node)
 	{
 		std::string data = _node->getValue("rotation");
 		float rotation = std::stof(data);
@@ -545,6 +670,59 @@ namespace core
 					   std::stof(_node->getValue("param_b")),
 					   std::stof(_node->getValue("param_c")));
 
+	};
+
+
+	float ScriptLoader::parsePillLength(ScriptNodePtr _node)
+	{
+		std::string data = _node->getValue("length");
+		return std::stof(data);
+	};
+
+
+	TOUCH_CONTROL_TYPE parseTouchControlType(ScriptNodePtr _node)
+	{
+		assert(_node->getName().compare("control") == 0 || "Not a touch control node");
+		std::string type = _node->getValue("type");
+
+		if (!type.compare("touch_button"))
+			return TCT_BUTTON;
+		if (!type.compare("touch_area"))
+			return TCT_AREA;
+		if (!type.compare("object_touch_button"))
+			return TCT_OBJECT_BUTTON;
+		return TCT_UNDEFINED;
+	};
+
+
+	std::string parseTouchControlName(ScriptNodePtr _node)
+	{
+		assert(_node->getName().compare("control") == 0 || "Not a touch control node");
+		return _node->getValue("name");
+	};
+
+
+	std::string parseTouchControlSet(ScriptNodePtr _node)
+	{
+		assert(_node->getName().compare("control") == 0 || "Not a touch control node");
+		return _node->getValue("set");
+	};
+
+
+	std::string parseTouchControlAttachedToObject(ScriptNodePtr _node)
+	{
+		assert(_node->getName().compare("control") == 0 || "Not a touch control node");
+		return _node->getValue("attached_to");
+	};
+
+
+	ScriptNodePtr getTouchControlShapeNode(ScriptNodePtr _node)
+	{
+		assert(_node->getName().compare("control") == 0 || "Not a touch control node");
+
+		ScriptNodeListPtr childList = _node->getChildList();
+		auto childIt = std::find_if(childList->begin(), childList->end(), [] (ScriptNodeListIterator _cnode) { return !(*_cnode)->getName().compare("shape"); });
+		return childIt != childList->end() ? *childIt : nullptr;
 	};
 
 }
