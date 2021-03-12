@@ -1,6 +1,6 @@
 #pragma once
 
-#include <math.h>
+#include <cmath>
 #include "Vector2.h"
 #include "Resource.h"
 #include "Texture.h"

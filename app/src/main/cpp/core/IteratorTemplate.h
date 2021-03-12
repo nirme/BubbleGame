@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cassert>
-
 
 template <typename  T>
 class Iterator
