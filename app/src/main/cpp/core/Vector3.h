@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cmath>
 #include <math.h>
 
 #define EPSILON 0.00001f
@@ -111,7 +110,7 @@ namespace core
 		inline void normalize()
 		{
 			float lenSq = x * x + y * y + z * z;
-			if (fabsf(lenSq - 1.0f) > EPSILON)
+			if (std::abs(lenSq - 1.0f) > EPSILON)
 			{
 				*this /= std::sqrtf(lenSq);
 			}

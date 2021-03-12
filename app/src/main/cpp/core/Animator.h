@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <cassert>
 #include <vector>
 
 #include "ControllerValues.h"

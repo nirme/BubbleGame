@@ -7,13 +7,13 @@ namespace core
 
 	TextureSpriteCoords::TextureSpriteCoords(float _left, float _right, float _top, float _bottom, bool _inPixels) :
 		uvPoints{ {_left, _top}, {_right, _top}, {_left, _bottom}, {_right, _bottom} },
-		whRatio(fabsf((_top - _bottom) / (_right - _left))),
+		whRatio(std::abs((_top - _bottom) / (_right - _left))),
 		inPixels(_inPixels)
 	{};
 
 	TextureSpriteCoords::TextureSpriteCoords(const Vector2 &_v0, const Vector2 &_v1, const Vector2 &_v2, const Vector2 &_v3, bool _inPixels) :
 		uvPoints{ _v0, _v1, _v2, _v3 },
-		whRatio(fabsf((_v3.y - _v0.y) / (_v3.x - _v0.x))),
+		whRatio(std::abs((_v3.y - _v0.y) / (_v3.x - _v0.x))),
 		inPixels(_inPixels)
 	{};
 

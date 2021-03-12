@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cmath>
 #include <math.h>
 
 #define EPSILON 0.00001f
@@ -127,10 +126,15 @@ namespace core
 			return std::sqrt(x * x + y * y);
 		};
 
+		inline float lengthSq() const
+		{
+			return x * x + y * y;
+		};
+
 		inline void normalize()
 		{
 			float lenSq = x * x + y * y;
-			if (std::fabs(lenSq - 1.0f) > EPSILON)
+			if (std::abs(lenSq - 1.0f) > EPSILON)
 			{
 				*this /= std::sqrt(lenSq);
 			}
@@ -140,7 +144,7 @@ namespace core
 
 		inline bool operator== (const Vector2& _v) const
 		{
-			return (std::fabs(x - _v.x) <= EPSILON && std::fabs(y - _v.y) <= EPSILON);
+			return (std::abs(x - _v.x) <= EPSILON && std::abs(y - _v.y) <= EPSILON);
 		};
 
 		inline bool operator!= (const Vector2& _v) const

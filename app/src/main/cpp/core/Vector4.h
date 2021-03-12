@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cmath>
+#include <math.h>
 #include "Math2D.h"
 
 namespace core
@@ -117,7 +117,7 @@ namespace core
 		inline void normalise()
 		{
 			float lenSq = x * x + y * y + z * z + w * w;
-			if (std::fabs(lenSq - 1.0f) > EPSILON)
+			if (std::abs(lenSq - 1.0f) > EPSILON)
 			{
 				*this /= std::sqrt(lenSq);
 			}
