@@ -35,9 +35,10 @@ namespace core
 
 
 	InputManager::InputManager() :
+		active(false),
 		screenSize{ 1, 1 },
 		inverseScreenSize{ 1.0f, 1.0f },
-		currentSetName(""),
+		currentSetName(emptySetName),
 		currentSet(nullptr)
 	{};
 
@@ -49,22 +50,19 @@ namespace core
 	};
 
 
-	void InputManager::registerControl(const std::string &_setName, TouchControl *_control)
+	void InputManager::registerControl(const std::string &_setName, std::unique_ptr<TouchControl> _control)
 	{
 		assert(_control && "cannot add nullptr as touch control");
 
 		auto res = controlSets.find(_setName);
 		if (res == controlSets.end())
-		{
-			auto insertRes = controlSets.insert(std::make_pair(_setName, nullptr));
-			res = insertRes.first;
-            (*res).second = std::unique_ptr<TouchControlList>(new TouchControlList());
-		}
-		TouchControlList *list = (*res).second.get();
+			auto insertRes = controlSets.insert(std::make_pair(_setName, TouchControlList()));
 
-		auto it = std::find(list->begin(), list->end(), _control);
-		if (it == list->end())
-			list->push_back(_control);
+		TouchControlList &list = (*res).second;
+
+		auto it = std::find(list.begin(), list.end(), _control);
+		if (it == list.end())
+			list.push_back(std::move(_control));
 	};
 
 
@@ -72,10 +70,10 @@ namespace core
 	{
 		for (TouchControlSetsIterator it = controlSets.begin(), itEnd = controlSets.end(); it != itEnd; ++it)
 		{
-			TouchControlList &list = *((*it).second.get());
+			TouchControlList &list = (*it).second;
 			auto controlIt = std::find_if(list.begin(), list.end(), [_controlName] (TouchControl* _control) { return !_controlName.compare(_control->getName()); });
 			if (controlIt != list.end())
-				return *controlIt;
+				return (*controlIt).get();
 		}
 		return nullptr;
 	};
@@ -86,28 +84,27 @@ namespace core
 		TouchControlSetsIterator it = controlSets.find(_setName);
 		assert(it != controlSets.end() && "specified set doesn't exist");
 
-		TouchControlList &list = *((*it).second.get()) ;
+		TouchControlList &list = (*it).second;
 		auto controlIt = std::find_if(list.begin(), list.end(), [_controlName] (TouchControl* _control) { return !_controlName.compare(_control->getName()); });
 
-		return controlIt != list.end() ? *controlIt : nullptr;
+		return controlIt != list.end() ? (*controlIt).get() : nullptr;
 	};
 
 
-	void InputManager::removeControl(const std::string &_setName, TouchControl *_control)
+	void InputManager::removeControl(const std::string &_setName, std::string &_controlName)
 	{
-		assert(_control && "cannot remove nullptr as touch control");
-
 		auto it = controlSets.find(_setName);
-		if (it != controlSets.end())
-		{
-			auto it2 = std::find((*it).second->begin(), (*it).second->end(), _control);
-			if (it2 != (*it).second->end())
-			{
-				removeFromActivePointers(_control);
+		if (it == controlSets.end())
+			return;
 
-				std::swap(*it2, (*it).second->back());
-				(*it).second->pop_back();
-			}
+		TouchControlList &list = (*it).second;
+		auto it2 = std::find_if(list.begin(), list.end(), [_controlName] (TouchControl* _control) { return !_controlName.compare(_control->getName()); });
+
+		if (it2 != list.end())
+		{
+			removeFromActivePointers((*it2).get());
+			std::swap(*it2, list.back());
+			list.pop_back();
 		}
 	};
 
@@ -115,7 +112,6 @@ namespace core
 	void InputManager::removeControlSet(const std::string &_setName)
 	{
 		auto setIt = controlSets.find(_setName);
-
 		if (setIt != controlSets.end())
 		{
 			if (currentSetName == _setName)
@@ -124,9 +120,9 @@ namespace core
 				currentSet = nullptr;
 			}
 
-			TouchControlList *list = (*setIt).second.get();
-			for (auto it = list->begin(), itEnd = list->end(); it != itEnd; ++it)
-				removeFromActivePointers(*it);
+			TouchControlList &list = (*setIt).second;
+			for (auto it = list.begin(), itEnd = list.end(); it != itEnd; ++it)
+				removeFromActivePointers((*it).get());
 		}
 
 		controlSets.erase(_setName);
@@ -144,7 +140,16 @@ namespace core
 	{
 		currentSetName = _setName;
 		auto it = controlSets.find(_setName);
-		currentSet = (it != controlSets.end()) ? (*it).second.get() : nullptr;
+		currentSet = (it != controlSets.end()) ? &(*it).second : nullptr;
+		active = true;
+	};
+
+
+	void InputManager::deactivate()
+	{
+		active = false;
+		currentSetName = emptySetName;
+		currentSet = nullptr;
 	};
 
 
@@ -154,8 +159,8 @@ namespace core
 			return nullptr;
 
 		for (auto it = currentSet->begin(), itEnd = currentSet->end(); it != itEnd; ++it)
-			if ((*it)->containsPointer(_pointerId, _pointerPosition))
-				return (*it);
+			if ((*it)->containsPointer(_pointerPosition))
+				return (*it).get();
 
 		return nullptr;
 	};
@@ -164,7 +169,7 @@ namespace core
 	int InputManager::onTouchEvent(AInputEvent* _event)
 	{
 		int32_t action = AMotionEvent_getAction(_event);
-		if (action < 0) return action;
+		if (action < 0 || !active) return action;
 
 		int flags = action & AMOTION_EVENT_ACTION_MASK;
 		size_t pointerIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;

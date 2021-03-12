@@ -42,7 +42,8 @@ namespace core
 			return name;
 		};
 
-		virtual bool containsPointer(int32_t _pointerId, const PointerPosition &_pointerPosition) const = 0;
+		//virtual bool containsPointer(int32_t _pointerId, const PointerPosition &_pointerPosition) const = 0;
+		virtual bool containsPointer(const PointerPosition &_pointerPosition) const = 0;
 
 		virtual void onPointerDown(int32_t _pointerId, const PointerPosition &_pointerPosition) = 0;
 		virtual void onPointerUp(int32_t _pointerId, const PointerPosition &_pointerPosition) = 0;

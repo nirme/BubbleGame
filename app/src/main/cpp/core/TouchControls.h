@@ -14,9 +14,9 @@ namespace core
 		class Listener : public TouchControl::Listener
 		{
 		public:
-			virtual void onButtonDown() = 0;
-			virtual void onButtonUp() = 0;
-			virtual void onButtonClicked() = 0;
+			virtual void onButtonDown(){};
+			virtual void onButtonUp(){};
+			virtual void onButtonClicked(){};
 		};
 
 	protected:
@@ -30,8 +30,8 @@ namespace core
 		};
 
 	public:
-		TouchButton(const std::string& _name, _2d::Shape *_controlShape);
-		bool containsPointer(int32_t _pointerId, const PointerPosition &_pointerPosition) const;
+		TouchButton(const std::string& _name, std::unique_ptr<_2d::Shape> _controlShape);
+		virtual bool containsPointer(const PointerPosition &_pointerPosition) const;
 		void onPointerDown(int32_t _pointerId, const PointerPosition &_pointerPosition);
 		void onPointerUp(int32_t _pointerId, const PointerPosition &_pointerPosition);
 		void onPointerMove(int32_t _pointerId, const PointerPosition &_pointerPosition);
@@ -63,8 +63,8 @@ namespace core
 		};
 
 	public:
-		TouchArea(const std::string& _name, _2d::Shape *_controlShape);
-		bool containsPointer(int32_t _pointerId, const PointerPosition &_pointerPosition) const;
+		TouchArea(const std::string& _name, std::unique_ptr<_2d::Shape> _controlShape);
+		virtual bool containsPointer(const PointerPosition &_pointerPosition) const;
 		void onPointerDown(int32_t _pointerId, const PointerPosition &_pointerPosition);
 		void onPointerUp(int32_t _pointerId, const PointerPosition &_pointerPosition);
 		void onPointerMove(int32_t _pointerId, const PointerPosition &_pointerPosition);

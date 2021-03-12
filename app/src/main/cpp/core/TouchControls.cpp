@@ -3,10 +3,17 @@
 
 namespace core
 {
-	TouchButton::TouchButton(const std::string& _name, _2d::Shape *_controlShape) :
+	TouchButton::TouchButton(const std::string& _name, std::unique_ptr<_2d::Shape> _controlShape) :
 		TouchControl(_name),
-		buttonShape(_controlShape)
+		buttonShape(std::move(_controlShape))
 	{};
+
+
+	bool TouchButton::containsPointer(const PointerPosition &_pointerPosition) const
+	{
+		Vector2 point(_pointerPosition.denormProjSpaceX, _pointerPosition.projSpaceY);
+		return buttonShape->contains(point);
+	};
 
 
 	void TouchButton::onPointerDown(int32_t _pointerId, const PointerPosition &_pointerPosition)
@@ -16,13 +23,6 @@ namespace core
 			ptr->onButtonDown();
 
 		pointers.insert(_pointerId);
-	};
-
-
-	bool TouchButton::containsPointer(int32_t _pointerId, const PointerPosition &_pointerPosition) const
-	{
-		Vector2 point(_pointerPosition.denormProjSpaceX, _pointerPosition.projSpaceY);
-		return buttonShape->contains(point);
 	};
 
 
@@ -75,14 +75,13 @@ namespace core
 	};
 
 
-
-	TouchArea::TouchArea(const std::string& _name, _2d::Shape *_controlShape) :
+	TouchArea::TouchArea(const std::string& _name, std::unique_ptr<_2d::Shape> _controlShape) :
 		TouchControl(_name),
-		areaShape(_controlShape)
+		areaShape(std::move(_controlShape))
 	{};
 
 
-	bool TouchArea::containsPointer(int32_t _pointerId, const PointerPosition &_pointerPosition) const
+	bool TouchArea::containsPointer(const PointerPosition &_pointerPosition) const
 	{
 		Vector2 point(_pointerPosition.projSpaceX, _pointerPosition.projSpaceY);
 		return areaShape->contains(point);
